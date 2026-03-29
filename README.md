@@ -29,3 +29,4 @@ Then open:
 - The app loads substations, transmission lines, and power plants from shapefiles in `geoinfo/`.
 - Existing core infrastructure layers are enabled by default.
 - Planned and extra layers can be toggled in the left panel.
+- Data source can be found in <a href="https://www.epe.gov.br/en/publications/publications/webmap-epe" target="_blank" rel="noopener">EPE - Empresa de Pesquisa Energética</a>
