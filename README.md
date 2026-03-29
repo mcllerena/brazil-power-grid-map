@@ -14,13 +14,7 @@ Lightweight browser map using Leaflet + shapefile parsing in the client.
 
 Start a static server from the workspace root (`New project`) so both `webmap/` and `geoinfo/` are served.
 
-Option 1 (Python):
-
-```bash
-python -m http.server 8000
-```
-
-Option 2 (Node):
+Run with node:
 
 ```bash
 npx serve .
@@ -28,8 +22,7 @@ npx serve .
 
 Then open:
 
-- `http://localhost:8000/webmap/` (Python)
-- or the URL shown by `serve`, then `/webmap/`
+- `http://localhost:3000/webmap`
 
 ## Notes
 
