@@ -22,6 +22,17 @@
   <body>
     <div id="app-shell">
       <main id="map-shell">
+        <div id="loading-overlay" class="loading-overlay" role="status" aria-live="polite" aria-label="Loading Brazilian Power Grid map" aria-hidden="false">
+          <div class="loading-overlay-inner">
+            <div class="loading-gears" aria-hidden="true">
+              <span class="gear gear-lg">⚙</span>
+              <span class="gear gear-md">⚙</span>
+              <span class="gear gear-sm">⚙</span>
+            </div>
+            <div class="loading-title">Booting the Brazilian Power Grid</div>
+            <div class="loading-subtitle">Calibrating substations • Routing transmission • Syncing generators</div>
+          </div>
+        </div>
         <div id="map"></div>
         <button id="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
           <span class="theme-icon theme-icon-sun" aria-hidden="true">☀</span>

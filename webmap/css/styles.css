@@ -126,6 +126,125 @@ body[data-theme="dark"] .theme-icon-sun {
   height: 100%;
 }
 
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 900;
+  display: grid;
+  place-items: center;
+  background: var(--title-card-bg);
+  border-radius: 0;
+  color: var(--title-color);
+  transition: opacity 280ms ease, visibility 280ms ease;
+}
+
+.loading-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 34px 34px;
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+.loading-overlay-inner {
+  position: relative;
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+  padding: 18px 20px;
+  border: 1px solid var(--title-card-border);
+  border-radius: 20px;
+  box-shadow: var(--ui-shadow);
+  backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.18);
+  width: min(520px, calc(100vw - 28px));
+}
+
+.loading-gears {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.gear {
+  display: inline-block;
+  line-height: 1;
+  color: var(--subtitle-color);
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25));
+  transform-origin: 50% 50%;
+}
+
+.gear-lg {
+  font-size: 2.6rem;
+  animation: gear-spin 1.35s linear infinite;
+}
+
+.gear-md {
+  font-size: 2.1rem;
+  animation: gear-spin-rev 1.05s linear infinite;
+  margin-top: 10px;
+}
+
+.gear-sm {
+  font-size: 1.6rem;
+  animation: gear-spin 0.9s linear infinite;
+}
+
+.loading-title {
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.loading-subtitle {
+  font-size: 0.86rem;
+  color: var(--footnote-color);
+  text-align: center;
+}
+
+.loading-overlay.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@keyframes gear-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes gear-spin-rev {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gear-lg,
+  .gear-md,
+  .gear-sm {
+    animation: none;
+  }
+
+  .loading-overlay {
+    transition: none;
+  }
+}
+
 #map-title-card {
   position: absolute;
   top: 14px;

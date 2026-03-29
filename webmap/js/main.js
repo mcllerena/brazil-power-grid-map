@@ -79,6 +79,7 @@ const themeToggleEl = document.getElementById("theme-toggle");
 const mapTitleCardEl = document.getElementById("map-title-card");
 const statusPanelEl = document.getElementById("status-panel");
 const statusListEl = document.getElementById("status-list");
+const loadingOverlayEl = document.getElementById("loading-overlay");
 const SUBSTATION_GROUP_IDS = new Set(["substations-operation", "substations-planned"]);
 const TRANSMISSION_GROUP_IDS = new Set(["transmission-operation", "transmission-planned"]);
 const VOLTAGE_GROUP_IDS = new Set([...SUBSTATION_GROUP_IDS, ...TRANSMISSION_GROUP_IDS]);
@@ -121,6 +122,16 @@ const CATEGORY_PALETTE = [
   "#ef476f",
   "#06d6a0",
 ];
+
+function setLoadingOverlayVisible(visible) {
+  if (!loadingOverlayEl) {
+    return;
+  }
+
+  const show = Boolean(visible);
+  loadingOverlayEl.classList.toggle("is-hidden", !show);
+  loadingOverlayEl.setAttribute("aria-hidden", String(!show));
+}
 const DEFAULT_FIELD_UNITS = {
   Tensao: "kV",
   potencia: "kW",
@@ -2206,7 +2217,11 @@ async function initialize() {
   }
 }
 
-initialize().catch((error) => {
+setLoadingOverlayVisible(true);
+const loadingOverlayStartMs = performance.now();
+
+initialize()
+  .catch((error) => {
   if (!statusListEl) {
     console.error("Initialization failed", error);
     return;
@@ -2218,7 +2233,14 @@ initialize().catch((error) => {
   li.textContent = message;
   statusListEl.appendChild(li);
   console.error(message, error);
-});
+})
+  .finally(() => {
+    const elapsedMs = performance.now() - loadingOverlayStartMs;
+    const remainingMs = Math.max(0, 3000 - elapsedMs);
+    window.setTimeout(() => {
+      setLoadingOverlayVisible(false);
+    }, remainingMs);
+  });
 
 initializeThemeToggle();
 enableCardDrag(mapTitleCardEl);
