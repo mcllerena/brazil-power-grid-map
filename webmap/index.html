@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Brazilian Power Grid Map</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="icon" type="image/svg+xml" href="./assets/brazil-favicon.svg" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <div id="app-shell">
+      <main id="map-shell">
+        <div id="map"></div>
+        <button id="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+          <span class="theme-icon theme-icon-sun" aria-hidden="true">☀</span>
+          <span class="theme-icon theme-icon-moon" aria-hidden="true">☾</span>
+        </button>
+        <section id="map-title-card" class="map-ui-card">
+          <h1>Brazilian Power Grid</h1>
+          <p class="subtitle">Interactive map for substations, transmission lines, regions, and power plants</p>
+          <p class="footnote">
+            Data source: <a href="https://www.epe.gov.br/en/publications/publications/webmap-epe" target="_blank" rel="noopener">EPE - Empresa de Pesquisa Energética</a>
+          </p>
+        </section>
+        <aside id="status-panel" class="map-ui-card" aria-live="polite">
+          <h2>Status Window</h2>
+          <ul id="status-list"></ul>
+        </aside>
+        <aside id="map-ui-left" class="map-ui-column" aria-label="Left layer controls"></aside>
+        <aside id="map-ui-right" class="map-ui-column" aria-label="Right layer controls"></aside>
+      </main>
+    </div>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.7.0/dist/leaflet.polylineDecorator.min.js"></script>
+    <script src="https://unpkg.com/shpjs@6.2.0/dist/shp.js"></script>
+    <script type="module" src="./js/main.js"></script>
+  </body>
+</html>
