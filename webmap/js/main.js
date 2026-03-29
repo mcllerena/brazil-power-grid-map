@@ -22,6 +22,42 @@ const map = L.map("map", {
 
 L.control.zoom({ position: "bottomleft" }).addTo(map);
 
+function recenterMapToDefault() {
+  map.fitBounds(BRAZIL_BOUNDS, {
+    paddingTopLeft: [20, 20],
+    paddingBottomRight: [20, 20],
+    maxZoom: 5.5,
+  });
+}
+
+function addRecenterControlButton() {
+  const zoomControl = document.querySelector(".leaflet-control-zoom");
+  if (!zoomControl) {
+    return;
+  }
+
+  if (zoomControl.querySelector(".leaflet-control-recenter")) {
+    return;
+  }
+
+  const button = document.createElement("a");
+  button.className = "leaflet-control-zoom-in leaflet-control-recenter";
+  button.href = "#";
+  button.role = "button";
+  button.setAttribute("aria-label", "Re-center map");
+  button.setAttribute("title", "Re-center");
+  button.textContent = "RE-CENTER";
+
+  button.addEventListener("click", (event) => {
+    event.preventDefault();
+    recenterMapToDefault();
+  });
+
+  zoomControl.appendChild(button);
+}
+
+addRecenterControlButton();
+
 const lightTileLayer = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
   attribution:
     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
@@ -167,6 +203,15 @@ let activeBaseLayer = null;
 let activeHoverPopupLayer = null;
 let flowArrowsEnabled = false;
 let flowToggleButton = null;
+let generationShareToggleButton = null;
+let generationShareCard = null;
+let generationShareResizeObserver = null;
+
+const GENERATION_SHARE_CARD_ID = "section-generation-share";
+
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
 
 function getInitialTheme() {
   const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
@@ -302,6 +347,15 @@ function enableCardDrag(card, handle = card) {
         placeholder = document.createElement("div");
         placeholder.className = "card-placeholder";
         placeholder.style.height = `${cardRect.height}px`;
+        placeholder.style.flex = "0 0 auto";
+
+        // Preserve flex ordering (e.g., right-column cards use CSS `order`).
+        // Without this, the placeholder defaults to order=0 and can jump ahead of ordered siblings.
+        const computedOrder = window.getComputedStyle(card).order;
+        if (computedOrder) {
+          placeholder.style.order = computedOrder;
+        }
+
         originalParent.insertBefore(placeholder, card.nextSibling);
       }
       mapShellEl.appendChild(card);
@@ -456,6 +510,7 @@ for (const group of LAYER_GROUPS) {
   runtime.set(group.id, {
     dataLayer: null,
     dataBoundsLayer: null,
+    featureCollection: null,
     loaded: false,
     loading: false,
     checkbox: null,
@@ -1157,6 +1212,27 @@ function getOrCreateSectionCard(sectionName) {
 
   card.appendChild(header);
   card.appendChild(body);
+
+  if (sectionName === "Power plants") {
+    const footer = document.createElement("div");
+    footer.className = "section-card-footer";
+
+    const actionButton = document.createElement("button");
+    actionButton.type = "button";
+    actionButton.className = "section-toggle-btn section-action-btn";
+    actionButton.textContent = "Show Generation Share";
+    actionButton.setAttribute("aria-expanded", "false");
+    actionButton.setAttribute("title", "Show generation share for existing power plants");
+    generationShareToggleButton = actionButton;
+
+    actionButton.addEventListener("click", async () => {
+      await toggleGenerationShareCard();
+    });
+
+    footer.appendChild(actionButton);
+    card.appendChild(footer);
+  }
+
   host.appendChild(card);
 
 
@@ -1172,6 +1248,351 @@ function getOrCreateSectionCard(sectionName) {
 
   sectionCards.set(sectionNodeId, record);
   return record;
+}
+
+function getExistingPowerPlantGroups() {
+  return LAYER_GROUPS.filter(
+    (group) => group.section === "Power plants" && !String(group.id || "").includes("-planned")
+  );
+}
+
+function getOrCreateGenerationShareCard() {
+  if (generationShareCard) {
+    return generationShareCard;
+  }
+
+  const card = document.createElement("section");
+  card.id = GENERATION_SHARE_CARD_ID;
+  card.className = "section-card";
+
+  const header = document.createElement("div");
+  header.className = "section-card-header";
+
+  const title = document.createElement("h2");
+  title.className = "section-card-title";
+  title.textContent = "Generation share";
+
+  header.appendChild(title);
+  card.appendChild(header);
+
+  const body = document.createElement("div");
+  body.className = "section-card-body";
+  body.innerHTML = `
+    <div class="generation-share-layout">
+      <div class="generation-share-chart-wrap">
+        <canvas class="generation-share-chart" aria-label="Generation share chart" role="img"></canvas>
+      </div>
+      <div class="generation-share-legend" aria-label="Generation share legend"></div>
+    </div>
+    <p class="generation-share-footnote">
+      Share calculated from <strong>existing</strong> power-plant installed capacity (MW).
+    </p>
+  `;
+  card.appendChild(body);
+
+  if (!mapShellEl) {
+    return null;
+  }
+
+  // Make it independent: mount as a floating card inside the map shell.
+  card.classList.add("is-floating");
+  mapShellEl.appendChild(card);
+
+  const shellRect = mapShellEl.getBoundingClientRect();
+  const anchor = document.getElementById(makeSectionNodeId("Power plants"));
+  const anchorRect = anchor ? anchor.getBoundingClientRect() : null;
+
+  const defaultWidth = Math.min(680, Math.max(560, Math.round(anchorRect?.width || 620)));
+  card.style.width = `${defaultWidth}px`;
+
+  // Position just below the Power plants card, aligned to its right edge.
+  const desiredRight = (anchorRect?.right ?? (shellRect.right - 12)) - shellRect.left;
+  const desiredLeft = desiredRight - defaultWidth;
+  const desiredTop = (anchorRect?.bottom ?? (shellRect.top + 180)) - shellRect.top + 10;
+
+  card.style.left = `${clamp(desiredLeft, 0, Math.max(0, shellRect.width - defaultWidth))}px`;
+  card.style.top = `${clamp(desiredTop, 0, Math.max(0, shellRect.height - 140))}px`;
+
+  enableCardDrag(card, header);
+
+  const canvas = body.querySelector(".generation-share-chart");
+  const legend = body.querySelector(".generation-share-legend");
+
+  generationShareCard = {
+    card,
+    body,
+    canvas,
+    legend,
+    slices: null,
+  };
+
+  if (typeof window.ResizeObserver === "function" && canvas) {
+    generationShareResizeObserver = new ResizeObserver(() => {
+      if (!generationShareCard?.slices) {
+        return;
+      }
+      drawDoughnutChart(canvas, generationShareCard.slices);
+    });
+    generationShareResizeObserver.observe(card);
+  }
+
+  return generationShareCard;
+}
+
+function destroyGenerationShareCard() {
+  if (!generationShareCard) {
+    return;
+  }
+
+  if (generationShareResizeObserver) {
+    generationShareResizeObserver.disconnect();
+    generationShareResizeObserver = null;
+  }
+
+  generationShareCard.card.remove();
+  generationShareCard = null;
+}
+
+function formatPercent(value) {
+  if (!Number.isFinite(value)) {
+    return "-";
+  }
+  return `${value.toFixed(1)}%`;
+}
+
+function formatMW(value) {
+  if (!Number.isFinite(value)) {
+    return "-";
+  }
+  return `${value.toLocaleString(undefined, { maximumFractionDigits: 0 })} MW`;
+}
+
+function getCssColorValue(variableName, fallback) {
+  const value = getComputedStyle(document.body).getPropertyValue(variableName).trim();
+  return value || fallback;
+}
+
+function drawDoughnutChart(canvas, slices) {
+  if (!(canvas instanceof HTMLCanvasElement)) {
+    return;
+  }
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    return;
+  }
+
+  const dpr = window.devicePixelRatio || 1;
+  const cssWidth = canvas.clientWidth || canvas.width;
+  const cssHeight = canvas.clientHeight || canvas.height;
+  canvas.width = Math.round(cssWidth * dpr);
+  canvas.height = Math.round(cssHeight * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  ctx.clearRect(0, 0, cssWidth, cssHeight);
+
+  const cx = cssWidth / 2;
+  const cy = cssHeight / 2;
+  const radius = Math.min(cssWidth, cssHeight) * 0.46;
+  const innerRadius = radius * 0.64;
+  const borderColor = getCssColorValue("--ui-border", "rgba(0,0,0,0.25)");
+
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+  ctx.arc(cx, cy, innerRadius, 0, Math.PI * 2, true);
+  ctx.closePath();
+  ctx.fillStyle = "transparent";
+
+  let startAngle = -Math.PI / 2;
+  const gap = 0.012;
+
+  for (const slice of slices) {
+    const angle = Math.max(0, slice.fraction) * Math.PI * 2;
+    if (angle <= 0) {
+      continue;
+    }
+
+    const from = startAngle + gap;
+    const to = startAngle + angle - gap;
+    if (to <= from) {
+      startAngle += angle;
+      continue;
+    }
+
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, radius, from, to);
+    ctx.closePath();
+
+    ctx.fillStyle = slice.color;
+    ctx.fill();
+
+    startAngle += angle;
+  }
+
+  ctx.globalCompositeOperation = "destination-out";
+  ctx.beginPath();
+  ctx.arc(cx, cy, innerRadius, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.globalCompositeOperation = "source-over";
+
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+  ctx.arc(cx, cy, innerRadius, 0, Math.PI * 2, true);
+  ctx.closePath();
+  ctx.strokeStyle = borderColor;
+  ctx.lineWidth = 1;
+  ctx.stroke();
+}
+
+const GENERATION_SHARE_LABEL_OVERRIDES = {
+  Hydroelectric: "Hydro",
+  Wind: "Wind",
+  "Fossil thermoelectric": "Fossil",
+  "Solar photovoltaic": "Solar",
+  Biomass: "Biomass",
+  "Small hydro": "Small Hydro",
+  "Nuclear thermoelectric": "Nuclear",
+  "Micro hydro": "Micro Hydro",
+};
+
+function getGenerationShareLabel(label) {
+  const key = String(label || "").trim();
+  return GENERATION_SHARE_LABEL_OVERRIDES[key] || label;
+}
+
+async function computeGenerationShare() {
+  const groups = getExistingPowerPlantGroups();
+  const totalsByGroup = [];
+
+  for (const group of groups) {
+    const state = runtime.get(group.id);
+    if (!state) {
+      continue;
+    }
+
+    if (!state.loaded) {
+      await loadLayerGroup(group);
+    }
+
+    const collection = state.featureCollection;
+    const features = Array.isArray(collection?.features) ? collection.features : [];
+
+    let totalMW = 0;
+    let counted = 0;
+    for (const feature of features) {
+      const powerMW = getPowerValueMW(feature);
+      if (!Number.isFinite(powerMW) || powerMW <= 0) {
+        continue;
+      }
+      totalMW += powerMW;
+      counted += 1;
+    }
+
+    if (totalMW > 0) {
+      totalsByGroup.push({
+        id: group.id,
+        label: getGenerationShareLabel(group.label),
+        color: getPowerPlantToneColor(group.color, group),
+        mw: totalMW,
+        featureCount: counted,
+      });
+    }
+  }
+
+  totalsByGroup.sort((a, b) => b.mw - a.mw);
+  const totalMW = totalsByGroup.reduce((sum, entry) => sum + entry.mw, 0);
+
+  return { totalMW, totalsByGroup };
+}
+
+function renderGenerationShareLegend(container, totalMW, totalsByGroup) {
+  if (!(container instanceof HTMLElement)) {
+    return;
+  }
+
+  container.innerHTML = "";
+
+  const totalRow = document.createElement("div");
+  totalRow.className = "generation-share-total";
+  totalRow.textContent = `Total: ${formatMW(totalMW)}`;
+  container.appendChild(totalRow);
+
+  for (const entry of totalsByGroup) {
+    const pct = totalMW > 0 ? (entry.mw / totalMW) * 100 : 0;
+
+    const row = document.createElement("div");
+    row.className = "generation-share-row";
+
+    const swatch = document.createElement("span");
+    swatch.className = "generation-share-swatch";
+    swatch.style.backgroundColor = entry.color;
+
+    const label = document.createElement("span");
+    label.className = "generation-share-label";
+    label.textContent = entry.label;
+
+    const value = document.createElement("span");
+    value.className = "generation-share-value";
+    value.textContent = `${formatPercent(pct)} · ${formatMW(entry.mw)}`;
+
+    row.appendChild(swatch);
+    row.appendChild(label);
+    row.appendChild(value);
+    container.appendChild(row);
+  }
+}
+
+async function renderGenerationShareCard() {
+  const cardRecord = getOrCreateGenerationShareCard();
+  if (!cardRecord) {
+    return;
+  }
+
+  const canvas = cardRecord.canvas;
+  const legend = cardRecord.legend;
+  if (!canvas || !legend) {
+    return;
+  }
+
+  legend.textContent = "Loading generation share…";
+
+  const { totalMW, totalsByGroup } = await computeGenerationShare();
+  if (!Number.isFinite(totalMW) || totalMW <= 0 || totalsByGroup.length === 0) {
+    legend.textContent = "No capacity values available to compute share.";
+    drawDoughnutChart(canvas, []);
+    return;
+  }
+
+  const slices = totalsByGroup.map((entry) => ({
+    label: entry.label,
+    color: entry.color,
+    fraction: entry.mw / totalMW,
+  }));
+
+  cardRecord.slices = slices;
+  drawDoughnutChart(canvas, slices);
+  renderGenerationShareLegend(legend, totalMW, totalsByGroup);
+}
+
+async function toggleGenerationShareCard() {
+  const isOpen = Boolean(generationShareCard);
+  if (isOpen) {
+    destroyGenerationShareCard();
+    if (generationShareToggleButton) {
+      generationShareToggleButton.textContent = "Show Generation Share";
+      generationShareToggleButton.setAttribute("aria-expanded", "false");
+    }
+    return;
+  }
+
+  getOrCreateGenerationShareCard();
+  if (generationShareToggleButton) {
+    generationShareToggleButton.textContent = "Hide Generation Share";
+    generationShareToggleButton.setAttribute("aria-expanded", "true");
+  }
+
+  await renderGenerationShareCard();
 }
 
 function updateSubgroupMaster(subgroupControl) {
@@ -1564,6 +1985,7 @@ async function loadLayerGroup(group) {
     type: "FeatureCollection",
     features: loadedCollections.flatMap((collection) => collection.features),
   };
+  state.featureCollection = merged;
   const thematicValues = getUniqueThematicValues(merged, group);
 
   if (isVoltageGroupedGroup(group)) {
