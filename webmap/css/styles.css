@@ -247,16 +247,54 @@ body[data-theme="dark"] .theme-icon-sun {
 
 #map-title-card {
   position: absolute;
-  top: 14px;
+  top: 66px;
   left: 14px;
   z-index: 820;
   width: min(450px, calc(100vw - 28px));
 }
 
+.country-switcher {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 821;
+  display: inline-flex;
+  gap: 6px;
+  padding: 6px;
+  border: 1px solid var(--toggle-border);
+  border-radius: 14px;
+  background: var(--toggle-bg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+}
+
+.country-switcher-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  text-decoration: none;
+  color: var(--toggle-text);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.country-switcher-btn:hover {
+  filter: brightness(1.05);
+}
+
+.country-switcher-btn.is-active {
+  border-color: var(--toggle-border);
+}
+
 #status-panel {
   position: absolute;
-  right: 700px;
-  bottom: 50px;
+  right: 12px;
+  bottom: 12px;
   z-index: 820;
   width: min(360px, calc(100vw - 28px));
   max-height: 34vh;
@@ -329,10 +367,12 @@ body[data-theme="dark"] .theme-icon-sun {
 #map-ui-left {
   left: 12px;
   top: 520px;
-  width: 460px;
+  width: 520px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  max-height: none;
+  overflow-y: visible;
 }
 
 #map-ui-left #section-substations {
@@ -661,11 +701,31 @@ body[data-theme="dark"] .theme-icon-sun {
 }
 
 .voltage-filter-container {
-  margin: -2px 0 10px 22px;
+  display: flex;
+  flex-direction: column;
+  margin: 0 0 10px;
   padding: 8px 8px 5px;
   border-left: 2px solid var(--voltage-filter-border);
   background: var(--voltage-filter-bg);
   border-radius: 8px;
+}
+
+.voltage-filter-container.is-multi-column {
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+}
+
+.voltage-filter-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(9, minmax(22px, auto));
+  grid-auto-columns: minmax(160px, max-content);
+  gap: 6px 14px;
+  align-items: start;
+  width: max-content;
+  min-width: 100%;
 }
 
 .voltage-filter-title {
@@ -680,10 +740,112 @@ body[data-theme="dark"] .theme-icon-sun {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 6px;
+  margin-bottom: 0;
   font-size: 0.84rem;
   color: var(--voltage-filter-text);
   cursor: pointer;
+}
+
+#section-us-transmission {
+  width: min(360px, calc(100vw - 28px));
+  max-height: calc(48vh - 12px);
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+#section-us-substations {
+  width: min(250px, calc(50vw - 24px));
+  max-height: calc(40vh - 12px);
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+#section-us-taps {
+  width: min(250px, calc(50vw - 24px));
+  max-height: calc(40vh - 12px);
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+#section-us-power-plants {
+  width: min(320px, calc(100vw - 28px));
+}
+
+#section-us-pca {
+  width: min(320px, calc(100vw - 28px));
+}
+
+#section-us-substations-other-range,
+#section-us-taps-other-range,
+#section-us-transmission-other-levels {
+  width: min(420px, calc(100vw - 28px));
+  max-height: calc(34vh - 8px);
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+#section-us-transmission .section-card-body,
+#section-us-substations .section-card-body,
+#section-us-power-plants .section-card-body {
+  display: block;
+}
+
+.section-inline-actions {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.is-hidden-card {
+  display: none;
+}
+
+.us-left-top-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.floating-popup-card {
+  position: absolute;
+  z-index: 845;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+  scrollbar-color: #000000 rgba(0, 0, 0, 0.22);
+}
+
+.floating-popup-card::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.floating-popup-card::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.floating-popup-card::-webkit-scrollbar-thumb {
+  background: #000000;
+  border-radius: 10px;
+}
+
+.floating-popup-card .voltage-filter-container.is-multi-column {
+  scrollbar-color: #000000 rgba(0, 0, 0, 0.22);
+}
+
+.floating-popup-card .voltage-filter-container.is-multi-column::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.floating-popup-card .voltage-filter-container.is-multi-column::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.floating-popup-card .voltage-filter-container.is-multi-column::-webkit-scrollbar-thumb {
+  background: #000000;
+  border-radius: 10px;
 }
 
 .layer-swatch {

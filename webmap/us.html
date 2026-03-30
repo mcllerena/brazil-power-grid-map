@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Brazilian Power Grid Map</title>
+    <title>US Power Grid Map</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="icon" type="image/png" href="./assets/world-icon.png" />
@@ -22,31 +22,43 @@
   <body>
     <div id="app-shell">
       <main id="map-shell">
-        <div id="loading-overlay" class="loading-overlay" role="status" aria-live="polite" aria-label="Loading Brazilian Power Grid map" aria-hidden="false">
+        <div
+          id="loading-overlay"
+          class="loading-overlay"
+          role="status"
+          aria-live="polite"
+          aria-label="Loading US power grid map"
+          aria-hidden="false"
+        >
           <div class="loading-overlay-inner">
             <div class="loading-gears" aria-hidden="true">
               <span class="gear gear-lg">⚙</span>
               <span class="gear gear-md">⚙</span>
               <span class="gear gear-sm">⚙</span>
             </div>
-            <div class="loading-title">Booting the Brazilian Power Grid</div>
-            <div class="loading-subtitle">Calibrating substations • Routing transmission • Syncing generators</div>
+            <div class="loading-title">Booting the US Power Grid</div>
+            <div class="loading-subtitle">Staging layers • Checking sources • Warming tiles</div>
           </div>
         </div>
+
         <div id="map"></div>
+
         <button id="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
           <span class="theme-icon theme-icon-sun" aria-hidden="true">☀</span>
           <span class="theme-icon theme-icon-moon" aria-hidden="true">☾</span>
         </button>
+
         <nav id="country-switcher" class="country-switcher" aria-label="Select map country">
-          <a class="country-switcher-btn is-active" href="./" aria-current="page">Brazil</a>
-          <a class="country-switcher-btn" href="./us.html">US</a>
+          <a class="country-switcher-btn" href="./">Brazil</a>
+          <a class="country-switcher-btn is-active" href="./us.html" aria-current="page">US</a>
         </nav>
+
         <section id="map-title-card" class="map-ui-card">
-          <h1>Brazilian Power Grid</h1>
-          <p class="subtitle">Interactive map for substations, transmission lines, regions, and power plants</p>
+          <h1>US Power Grid</h1>
+          <p class="subtitle">Interactive map for US transmission lines</p>
           <p class="footnote">
-            Data source: <a href="https://www.epe.gov.br/en/publications/publications/webmap-epe" target="_blank" rel="noopener">EPE - Empresa de Pesquisa Energética</a>
+            Data source:
+            <a href="https://mapyourgrid.org/global-grid-data/" target="_blank" rel="noopener">MapYourGrid - Global Grid Data</a>
           </p>
           <p class="footnote source-code-footnote">
             <span class="source-code-label">Source code:</span>
@@ -58,10 +70,12 @@
             </a>
           </p>
         </section>
+
         <aside id="status-panel" class="map-ui-card" aria-live="polite">
           <h2>Status Window</h2>
           <ul id="status-list"></ul>
         </aside>
+
         <aside id="map-ui-left" class="map-ui-column" aria-label="Left layer controls"></aside>
         <aside id="map-ui-right" class="map-ui-column" aria-label="Right layer controls"></aside>
       </main>
@@ -72,8 +86,7 @@
       integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
       crossorigin=""
     ></script>
-    <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.7.0/dist/leaflet.polylineDecorator.min.js"></script>
     <script src="https://unpkg.com/shpjs@6.2.0/dist/shp.js"></script>
-    <script type="module" src="./js/main.js"></script>
+    <script type="module" src="./js/main-us.js"></script>
   </body>
 </html>
