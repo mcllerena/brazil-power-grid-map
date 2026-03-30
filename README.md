@@ -1,4 +1,4 @@
-# Power System Web Maps (Brazil + US)
+# Power System Web Maps (Brazil & US)
 
 Lightweight browser maps using Leaflet + shapefile parsing in the client.
 
