@@ -1,3 +1,22 @@
+
+@media (max-width: 700px) {
+  .section-card,
+  .floating-popup-card {
+    max-width: 98vw !important;
+    width: 98vw !important;
+    left: 1vw !important;
+    right: 1vw !important;
+    min-width: unset !important;
+    border-radius: 12px;
+  }
+  #map-ui-left, #map-ui-right {
+    width: 98vw !important;
+    max-width: 98vw !important;
+    left: 1vw !important;
+    right: 1vw !important;
+    padding: 0 !important;
+  }
+}
 :root {
   --bg: #f2f6f5;
   --page-gradient: radial-gradient(circle at 10% 10%, #e8f5f2 0%, #d6ebe9 35%, #cadfdd 100%);

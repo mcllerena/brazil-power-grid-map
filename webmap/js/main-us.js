@@ -467,8 +467,20 @@ function positionPopupCardNearAnchor(card, anchorElement) {
   }
 
   let top = anchorRect.top - shellRect.top;
-  left = Math.max(8, Math.min(left, Math.max(8, shellRect.width - cardWidth - 8)));
-  top = Math.max(8, Math.min(top, Math.max(8, shellRect.height - cardHeight - 8)));
+  // Clamp left/top so card stays in viewport
+  left = Math.max(8, Math.min(left, shellRect.width - cardWidth - 8));
+  top = Math.max(8, Math.min(top, shellRect.height - cardHeight - 8));
+
+  // On small screens, force card fully visible
+  if (window.innerWidth < cardWidth + 16) {
+    left = 8;
+    card.style.width = `calc(100vw - 16px)`;
+  }
+  if (window.innerHeight < cardHeight + 16) {
+    top = 8;
+    card.style.maxHeight = `calc(100vh - 16px)`;
+    card.style.overflow = 'auto';
+  }
 
   card.style.left = `${left}px`;
   card.style.top = `${top}px`;
