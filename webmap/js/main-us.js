@@ -59,6 +59,7 @@ const US_POWER_PLANT_CATEGORY_COLORS = {
   "Not Available": "#6b7280",
 };
 
+
 const map = L.map("map", {
   zoomControl: false,
   minZoom: 2.5,
@@ -67,6 +68,7 @@ const map = L.map("map", {
   zoomDelta: 0.25,
   wheelPxPerZoomLevel: 180,
   wheelDebounceTime: 90,
+  tap: false, // Fixes Safari map panning bug
 }).setView(US_DEFAULT_CENTER, US_DEFAULT_ZOOM);
 
 L.control.zoom({ position: "bottomleft" }).addTo(map);
