@@ -132,6 +132,24 @@ function setLoadingOverlayVisible(visible) {
   loadingOverlayEl.classList.toggle("is-hidden", !show);
   loadingOverlayEl.setAttribute("aria-hidden", String(!show));
 }
+
+function initializeCountrySwitcherNavigation() {
+  const switchLinks = document.querySelectorAll("#country-switcher a.country-switcher-btn");
+  for (const link of switchLinks) {
+    link.addEventListener("click", (event) => {
+      const href = link.getAttribute("href");
+      if (!href || link.classList.contains("is-active")) {
+        return;
+      }
+
+      event.preventDefault();
+      setLoadingOverlayVisible(true);
+      window.setTimeout(() => {
+        window.location.href = href;
+      }, 120);
+    });
+  }
+}
 const DEFAULT_FIELD_UNITS = {
   Tensao: "kV",
   potencia: "kW",
@@ -2219,6 +2237,7 @@ async function initialize() {
 
 setLoadingOverlayVisible(true);
 const loadingOverlayStartMs = performance.now();
+initializeCountrySwitcherNavigation();
 
 initialize()
   .catch((error) => {
@@ -2235,11 +2254,7 @@ initialize()
   console.error(message, error);
 })
   .finally(() => {
-    const elapsedMs = performance.now() - loadingOverlayStartMs;
-    const remainingMs = Math.max(0, 3000 - elapsedMs);
-    window.setTimeout(() => {
-      setLoadingOverlayVisible(false);
-    }, remainingMs);
+    setLoadingOverlayVisible(false);
   });
 
 initializeThemeToggle();

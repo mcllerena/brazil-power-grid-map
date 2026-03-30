@@ -1,0 +1,2201 @@
+const US_BOUNDS = [
+  [24.4, -125.0],
+  [49.6, -66.8],
+];
+const US_DEFAULT_CENTER = [39.5, -98.35];
+const US_DEFAULT_ZOOM = 4.25;
+
+const THEME_STORAGE_KEY = "webmap-theme";
+const US_DATA_ROOT = "../geoinfo/us-data";
+const US_TRANSMISSION_BASENAME = "Electric_Power_Transmission_Lines_A";
+const US_PCA_BASENAME = "US_PCA";
+const US_SUBSTATIONS_FILENAME = "Substations.csv";
+const US_POWER_PLANTS_FILENAME = "Power_Plants.csv";
+const US_VOLTAGE_PALETTE = [
+  "#2563eb",
+  "#0891b2",
+  "#10b981",
+  "#84cc16",
+  "#eab308",
+  "#f97316",
+  "#ef4444",
+  "#db2777",
+  "#7c3aed",
+  "#0f766e",
+  "#52525b",
+];
+const US_ALLOWED_VOLTAGE_LEVELS = ["765", "500", "345", "230", "161", "138", "115", "69", "34.5"];
+const US_DEFAULT_VISIBLE_TRANSMISSION_LEVELS = new Set(["169", "115", "69"]);
+const US_DEFAULT_VISIBLE_SUBSTATION_LEVELS = new Set();
+const US_TRANSMISSION_PRIMARY_LEVELS = new Set(["1000", "765", "500", "450", "400", "348", "169", "115", "69"]);
+const US_SUBSTATION_PRIMARY_LEVELS = new Set(["1000", "765", "500", "450", "400", "348", "169", "115", "69"]);
+const US_PRIMARY_LEVEL_SORT_ORDER = ["1000", "765", "500", "450", "400", "348", "345", "230", "169", "161", "138", "115", "69", "34.5"];
+const US_TYPE_PALETTE = [
+  "#e67e22",
+  "#1d7db8",
+  "#2a9d8f",
+  "#9b5f3f",
+  "#845ec2",
+  "#f2b705",
+  "#27ae60",
+  "#e07a5f",
+  "#6d597a",
+  "#ef476f",
+  "#0ea5e9",
+  "#84cc16",
+];
+const US_POWER_PLANT_CATEGORY_COLORS = {
+  Wind: "#38bdf8",
+  Solar: "#facc15",
+  Hydroelectric: "#2563eb",
+  "Small Hydro": "#3b82f6",
+  Biomass: "#22c55e",
+  "Fossil Fuel": "#9a3412",
+  Nuclear: "#a855f7",
+  Geothermal: "#f97316",
+  Batteries: "#14b8a6",
+  "Flywheel (MES)": "#0ea5a4",
+  Other: "#64748b",
+  "Not Available": "#6b7280",
+};
+
+const map = L.map("map", {
+  zoomControl: false,
+  minZoom: 2.5,
+  maxZoom: 17,
+  zoomSnap: 0.25,
+  zoomDelta: 0.25,
+  wheelPxPerZoomLevel: 180,
+  wheelDebounceTime: 90,
+}).setView(US_DEFAULT_CENTER, US_DEFAULT_ZOOM);
+
+L.control.zoom({ position: "bottomleft" }).addTo(map);
+
+function recenterMapToDefault() {
+  map.setView(US_DEFAULT_CENTER, US_DEFAULT_ZOOM);
+}
+
+function addRecenterControlButton() {
+  const zoomControl = document.querySelector(".leaflet-control-zoom");
+  if (!zoomControl || zoomControl.querySelector(".leaflet-control-recenter")) {
+    return;
+  }
+
+  const button = document.createElement("a");
+  button.className = "leaflet-control-zoom-in leaflet-control-recenter";
+  button.href = "#";
+  button.role = "button";
+  button.setAttribute("aria-label", "Re-center map");
+  button.setAttribute("title", "Re-center");
+  button.textContent = "RE-CENTER";
+
+  button.addEventListener("click", (event) => {
+    event.preventDefault();
+    recenterMapToDefault();
+  });
+
+  zoomControl.appendChild(button);
+}
+
+addRecenterControlButton();
+
+const lightTileLayer = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+  attribution:
+    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+  subdomains: "abcd",
+  maxZoom: 20,
+});
+
+const darkTileLayer = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+  attribution:
+    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+  subdomains: "abcd",
+  maxZoom: 20,
+});
+
+let activeBaseLayer = null;
+let activeHoverPopupLayer = null;
+let usTransmissionLayer = null;
+let usTransmissionVoltageLayers = new Map();
+let usTransmissionMasterCheckbox = null;
+let usTransmissionVoltageContainer = null;
+let usTransmissionOtherVoltageContainer = null;
+let usTransmissionOtherVoltageCard = null;
+let usSubstationLayer = null;
+let usSubstationVoltageLayers = new Map();
+let usSubstationMasterCheckbox = null;
+let usSubstationVoltageContainer = null;
+let usSubstationOtherVoltageContainer = null;
+let usSubstationOtherVoltageCard = null;
+let usTapLayer = null;
+let usTapVoltageLayers = new Map();
+let usTapVoltageContainer = null;
+let usTapOtherVoltageContainer = null;
+let usTapOtherVoltageCard = null;
+let usPowerPlantLayer = null;
+let usPowerPlantTypeLayers = new Map();
+let usPowerPlantMasterCheckbox = null;
+let usPowerPlantTypeContainer = null;
+let usPcaLayer = null;
+let usPcaFeatureCollection = null;
+let usPcaVisible = false;
+let usPcaLoaded = false;
+let usStatusTrackingActive = false;
+
+const mapShellEl = document.getElementById("map-shell");
+const mapUiLeftEl = document.getElementById("map-ui-left");
+const mapUiRightEl = document.getElementById("map-ui-right");
+const statusListEl = document.getElementById("status-list");
+const statusPanelEl = document.getElementById("status-panel");
+const mapTitleCardEl = document.getElementById("map-title-card");
+
+map.getContainer().addEventListener("mouseleave", () => {
+  if (activeHoverPopupLayer) {
+    activeHoverPopupLayer.closePopup();
+    activeHoverPopupLayer = null;
+  }
+});
+
+function getInitialTheme() {
+  const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+  if (storedTheme === "light" || storedTheme === "dark") {
+    return storedTheme;
+  }
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
+function setActiveBaseLayer(theme) {
+  const targetLayer = theme === "dark" ? darkTileLayer : lightTileLayer;
+  if (activeBaseLayer === targetLayer) {
+    return;
+  }
+  if (activeBaseLayer) {
+    map.removeLayer(activeBaseLayer);
+  }
+  activeBaseLayer = targetLayer;
+  activeBaseLayer.addTo(map);
+}
+
+function applyTheme(theme) {
+  document.body.dataset.theme = theme;
+  setActiveBaseLayer(theme);
+
+  const themeToggleEl = document.getElementById("theme-toggle");
+  if (!themeToggleEl) {
+    return;
+  }
+
+  if (theme === "dark") {
+    themeToggleEl.setAttribute("aria-label", "Switch to light mode");
+    themeToggleEl.setAttribute("title", "Switch to light mode");
+    themeToggleEl.setAttribute("aria-pressed", "true");
+  } else {
+    themeToggleEl.setAttribute("aria-label", "Switch to dark mode");
+    themeToggleEl.setAttribute("title", "Switch to dark mode");
+    themeToggleEl.setAttribute("aria-pressed", "false");
+  }
+}
+
+function initializeThemeToggle() {
+  const themeToggleEl = document.getElementById("theme-toggle");
+  const theme = getInitialTheme();
+  applyTheme(theme);
+
+  if (!themeToggleEl) {
+    return;
+  }
+
+  themeToggleEl.addEventListener("click", () => {
+    const currentTheme = document.body.dataset.theme === "dark" ? "dark" : "light";
+    const nextTheme = currentTheme === "dark" ? "light" : "dark";
+    applyTheme(nextTheme);
+    localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+  });
+}
+
+const loadingOverlayEl = document.getElementById("loading-overlay");
+
+function setLoadingOverlayVisible(visible) {
+  if (!loadingOverlayEl) {
+    return;
+  }
+  const show = Boolean(visible);
+  loadingOverlayEl.classList.toggle("is-hidden", !show);
+  loadingOverlayEl.setAttribute("aria-hidden", String(!show));
+}
+
+function initializeCountrySwitcherNavigation() {
+  const switchLinks = document.querySelectorAll("#country-switcher a.country-switcher-btn");
+  for (const link of switchLinks) {
+    link.addEventListener("click", (event) => {
+      const href = link.getAttribute("href");
+      if (!href || link.classList.contains("is-active")) {
+        return;
+      }
+
+      event.preventDefault();
+      setLoadingOverlayVisible(true);
+      window.setTimeout(() => {
+        window.location.href = href;
+      }, 120);
+    });
+  }
+}
+
+function setStatus(statusId, kind, message) {
+  if (!statusListEl) {
+    return;
+  }
+
+  let li = statusListEl.querySelector(`[data-status-id='${statusId}']`);
+  if (!li) {
+    li = document.createElement("li");
+    li.dataset.statusId = statusId;
+    statusListEl.appendChild(li);
+  }
+
+  li.className = kind;
+  li.textContent = message;
+}
+
+function setStatusById(statusId, kind, message) {
+  setStatus(statusId, kind, message);
+}
+
+function clearStatusWindow() {
+  if (!statusListEl) {
+    return;
+  }
+  statusListEl.innerHTML = "";
+}
+
+function countVisibleElements(entryMap) {
+  if (!entryMap || !entryMap.size) {
+    return 0;
+  }
+  let count = 0;
+  for (const entry of entryMap.values()) {
+    if (entry?.visible) {
+      count += Number(entry?.elementCount || 0);
+    }
+  }
+  return count;
+}
+
+function formatCountLabel(count, singular, plural) {
+  return `${count} ${count === 1 ? singular : plural}`;
+}
+
+function appendVisibleEntryStatuses(addItem, options) {
+  const { entryMap, idPrefix, nounSingular, nounPlural } = options;
+  if (!entryMap || !entryMap.size) {
+    return;
+  }
+
+  for (const [entryKey, entry] of entryMap.entries()) {
+    if (!entry?.visible) {
+      continue;
+    }
+
+    const label = String(entry.displayLabel || entryKey || "Unknown").trim() || "Unknown";
+    const count = Number(entry.elementCount || 0);
+    addItem(`${idPrefix}-${label}`, `${label}: ${formatCountLabel(count, nounSingular, nounPlural)}`);
+  }
+}
+
+function refreshStatusFromVisibility() {
+  if (!statusListEl) {
+    return;
+  }
+
+  statusListEl.innerHTML = "";
+  if (!usStatusTrackingActive) {
+    return;
+  }
+
+  const addItem = (id, text) => {
+    const li = document.createElement("li");
+    li.dataset.statusId = id;
+    li.className = "ok";
+    li.textContent = text;
+    statusListEl.appendChild(li);
+  };
+
+  const pcaVisible = Boolean(usPcaVisible && usPcaLayer && map.hasLayer(usPcaLayer));
+  if (pcaVisible) {
+    const pcaFeatureCount = (usPcaFeatureCollection?.features || []).length;
+    addItem("us-pca", `PCA areas: ${pcaFeatureCount} feature(s) visible`);
+  }
+
+  appendVisibleEntryStatuses(addItem, {
+    entryMap: usTransmissionVoltageLayers,
+    idPrefix: "us-transmission",
+    nounSingular: "line",
+    nounPlural: "lines",
+  });
+
+  appendVisibleEntryStatuses(addItem, {
+    entryMap: usSubstationVoltageLayers,
+    idPrefix: "us-substations",
+    nounSingular: "substation",
+    nounPlural: "substations",
+  });
+
+  appendVisibleEntryStatuses(addItem, {
+    entryMap: usTapVoltageLayers,
+    idPrefix: "us-taps",
+    nounSingular: "tap",
+    nounPlural: "taps",
+  });
+
+  appendVisibleEntryStatuses(addItem, {
+    entryMap: usPowerPlantTypeLayers,
+    idPrefix: "us-power-plants",
+    nounSingular: "generator",
+    nounPlural: "generators",
+  });
+}
+
+function activateStatusTracking() {
+  usStatusTrackingActive = true;
+  refreshStatusFromVisibility();
+}
+
+function normalizeVoltageValueLabel(raw) {
+  const text = String(raw || "").trim();
+  if (!text) {
+    return null;
+  }
+
+  const match = text.match(/-?\d+(?:\.\d+)?/);
+  if (!match) {
+    return null;
+  }
+
+  const numeric = Number(match[0]);
+  if (!Number.isFinite(numeric)) {
+    return null;
+  }
+
+  if (Number.isInteger(numeric)) {
+    return String(numeric);
+  }
+
+  return String(Number(numeric.toFixed(3))).replace(/\.0+$/, "");
+}
+
+function getVoltClassValue(properties) {
+  const props = properties || {};
+  const direct = props.VOLT_CLASS ?? props.volt_class ?? props.Volt_Class;
+  if (direct !== null && direct !== undefined) {
+    const text = String(direct).trim().toUpperCase();
+    if (text) {
+      return text;
+    }
+  }
+
+  for (const [key, value] of Object.entries(props)) {
+    if (!/volt.*class/i.test(key)) {
+      continue;
+    }
+
+    const text = String(value ?? "").trim().toUpperCase();
+    if (text) {
+      return text;
+    }
+  }
+
+  return "";
+}
+
+function getCurrentTypeFromVoltClass(properties) {
+  const voltClass = getVoltClassValue(properties);
+  return /\bDC\b/.test(voltClass) ? "DC" : "AC";
+}
+
+function getPrimaryVoltageSortRank(voltageLabel) {
+  const index = US_PRIMARY_LEVEL_SORT_ORDER.indexOf(voltageLabel);
+  if (index >= 0) {
+    return index;
+  }
+
+  const value = Number(voltageLabel);
+  if (Number.isFinite(value)) {
+    return 1000 - value;
+  }
+
+  return Number.POSITIVE_INFINITY;
+}
+
+function formatTransmissionVoltageDisplayLabel(voltageLabel, currentType) {
+  if (!voltageLabel || voltageLabel === "Unknown") {
+    return "Unknown";
+  }
+  return `${voltageLabel} kV ${currentType}`;
+}
+
+function formatSubstationVoltageDisplayLabel(voltageLabel) {
+  if (!voltageLabel || voltageLabel === "Unknown") {
+    return "Unknown";
+  }
+
+  const currentType = voltageLabel === "348" || voltageLabel === "1000" ? "DC" : "AC";
+  return `${voltageLabel} kV ${currentType}`;
+}
+
+function setCardVisibility(card, visible) {
+  if (!card) {
+    return;
+  }
+
+  card.classList.toggle("is-hidden-card", !visible);
+}
+
+function positionPopupCardNearAnchor(card, anchorElement) {
+  if (!card || !anchorElement || !mapShellEl) {
+    return;
+  }
+
+  const shellRect = mapShellEl.getBoundingClientRect();
+  const anchorRect = anchorElement.getBoundingClientRect();
+  const cardWidth = card.offsetWidth || 360;
+  const cardHeight = card.offsetHeight || 260;
+
+  let left = anchorRect.right - shellRect.left + 10;
+  if (left + cardWidth > shellRect.width - 8) {
+    left = anchorRect.left - shellRect.left - cardWidth - 10;
+  }
+
+  let top = anchorRect.top - shellRect.top;
+  left = Math.max(8, Math.min(left, Math.max(8, shellRect.width - cardWidth - 8)));
+  top = Math.max(8, Math.min(top, Math.max(8, shellRect.height - cardHeight - 8)));
+
+  card.style.left = `${left}px`;
+  card.style.top = `${top}px`;
+}
+
+function togglePopupCard(card, anchorElement) {
+  if (!card) {
+    return;
+  }
+
+  const shouldShow = card.classList.contains("is-hidden-card");
+  setCardVisibility(card, shouldShow);
+  if (shouldShow) {
+    positionPopupCardNearAnchor(card, anchorElement);
+  }
+}
+
+function isTapRecord(record) {
+  const type = String(record?.TYPE || "").trim().toUpperCase();
+  return type.includes("TAP");
+}
+
+function enableCardDrag(card, handle = card) {
+  if (!card || !handle || !mapShellEl) {
+    return;
+  }
+
+  let pointerId = null;
+  let offsetX = 0;
+  let offsetY = 0;
+  let shellRect = null;
+  let placeholder = null;
+  let originalParent = null;
+
+  const onPointerMove = (event) => {
+    if (pointerId !== event.pointerId || !shellRect) {
+      return;
+    }
+
+    event.preventDefault();
+    const maxX = shellRect.width - card.offsetWidth;
+    const maxY = shellRect.height - card.offsetHeight;
+    const nextX = event.clientX - shellRect.left - offsetX;
+    const nextY = event.clientY - shellRect.top - offsetY;
+    card.style.left = `${Math.min(Math.max(0, nextX), Math.max(0, maxX))}px`;
+    card.style.top = `${Math.min(Math.max(0, nextY), Math.max(0, maxY))}px`;
+  };
+
+  const onPointerUp = (event) => {
+    if (pointerId !== event.pointerId) {
+      return;
+    }
+
+    card.classList.remove("is-dragging");
+    card.releasePointerCapture(pointerId);
+    pointerId = null;
+    shellRect = null;
+    window.removeEventListener("pointermove", onPointerMove);
+    window.removeEventListener("pointerup", onPointerUp);
+  };
+
+  handle.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0 || event.target instanceof Element && event.target.closest("button, input, a, label")) {
+      return;
+    }
+
+    const cardRect = card.getBoundingClientRect();
+    shellRect = mapShellEl.getBoundingClientRect();
+    offsetX = event.clientX - cardRect.left;
+    offsetY = event.clientY - cardRect.top;
+    pointerId = event.pointerId;
+
+    const isAlreadyFloating = card.classList.contains("is-floating");
+    card.classList.add("draggable-card", "is-dragging");
+
+    if (!isAlreadyFloating) {
+      card.classList.add("is-floating");
+      card.style.width = `${cardRect.width}px`;
+
+      originalParent = card.parentElement;
+      if (originalParent && originalParent !== mapShellEl && !placeholder) {
+        placeholder = document.createElement("div");
+        placeholder.className = "card-placeholder";
+        placeholder.style.width = `${cardRect.width}px`;
+        placeholder.style.height = `${cardRect.height}px`;
+        placeholder.style.flex = "0 0 auto";
+
+        const computedOrder = window.getComputedStyle(card).order;
+        if (computedOrder) {
+          placeholder.style.order = computedOrder;
+        }
+
+        originalParent.insertBefore(placeholder, card.nextSibling);
+      }
+
+      mapShellEl.appendChild(card);
+    }
+
+    card.style.left = `${cardRect.left - shellRect.left}px`;
+    card.style.top = `${cardRect.top - shellRect.top}px`;
+    card.setPointerCapture(pointerId);
+
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerup", onPointerUp);
+  });
+}
+
+function enableSectionCardDrag(card) {
+  if (!card) {
+    return;
+  }
+
+  const header = card.querySelector(".section-card-header");
+  enableCardDrag(card, header || card);
+}
+
+function makeAbsoluteUrl(path) {
+  return new URL(path, window.location.href).href;
+}
+
+async function fetchArrayBuffer(url) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status} for ${url}`);
+  }
+  return response.arrayBuffer();
+}
+
+async function fetchOptionalText(url) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    return null;
+  }
+  return response.text();
+}
+
+async function fetchText(url) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status} for ${url}`);
+  }
+  return response.text();
+}
+
+function getShpParser() {
+  const parser = window.shp || window.shpjs;
+  if (typeof parser !== "function") {
+    throw new Error("shpjs parser is unavailable (window.shp)");
+  }
+  return parser;
+}
+
+function toFeatureCollection(parsedData, sourceName) {
+  if (Array.isArray(parsedData)) {
+    const features = parsedData.flatMap((item) => item?.features || []);
+    return {
+      type: "FeatureCollection",
+      features: features.map((feature) => ({
+        ...feature,
+        properties: {
+          ...(feature?.properties || {}),
+          source_file: sourceName,
+        },
+      })),
+    };
+  }
+
+  if (parsedData?.type === "FeatureCollection") {
+    return {
+      type: "FeatureCollection",
+      features: (parsedData.features || []).map((feature) => ({
+        ...feature,
+        properties: {
+          ...(feature?.properties || {}),
+          source_file: sourceName,
+        },
+      })),
+    };
+  }
+
+  return { type: "FeatureCollection", features: [] };
+}
+
+function escapeHtml(text) {
+  return String(text)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function buildPopupHTML(feature) {
+  const properties = feature?.properties || {};
+  const keys = Object.keys(properties).slice(0, 20);
+  if (!keys.length) {
+    return "No attributes available.";
+  }
+
+  const rows = keys
+    .map((key) => `<tr><th>${escapeHtml(key)}</th><td>${escapeHtml(properties[key] ?? "-")}</td></tr>`)
+    .join("");
+  return `<table>${rows}</table>`;
+}
+
+function bindHoverPersistentPopup(layer, popupHtml) {
+  layer.bindPopup(popupHtml, {
+    closeButton: true,
+    autoClose: true,
+    closeOnClick: false,
+    closeOnEscapeKey: true,
+  });
+
+  layer.on("mouseover", () => {
+    if (activeHoverPopupLayer && activeHoverPopupLayer !== layer) {
+      activeHoverPopupLayer.closePopup();
+    }
+
+    layer.openPopup();
+    activeHoverPopupLayer = layer;
+  });
+
+  layer.on("popupclose", () => {
+    if (activeHoverPopupLayer === layer) {
+      activeHoverPopupLayer = null;
+    }
+  });
+}
+
+function buildSubstationPopupHTML(properties) {
+  const fields = [
+    ["NAME", properties.NAME],
+    ["CITY", properties.CITY],
+    ["STATE", properties.STATE],
+    ["ZIP", properties.ZIP],
+    ["TYPE", properties.TYPE],
+    ["STATUS", properties.STATUS],
+    ["COUNTY", properties.COUNTY],
+    ["MAX_VOLT", properties.MAX_VOLT],
+    ["MIN_VOLT", properties.MIN_VOLT],
+  ];
+
+  const rows = fields
+    .map(([key, value]) => `<tr><th>${escapeHtml(key)}</th><td>${escapeHtml(value ?? "-")}</td></tr>`)
+    .join("");
+
+  return `<table>${rows}</table>`;
+}
+
+function buildPowerPlantPopupHTML(properties) {
+  const category = resolvePowerPlantCategoryLabel(properties, null);
+  const fields = [
+    ["NAME", properties.NAME],
+    ["ADDRESS", properties.ADDRESS],
+    ["CITY", properties.CITY],
+    ["STATE", properties.STATE],
+    ["ZIP", properties.ZIP],
+    ["CATEGORY", category],
+    ["NAICS_DESC", properties.NAICS_DESC],
+    ["TYPE", properties.TYPE],
+    ["STATUS", properties.STATUS],
+    ["COUNTY", properties.COUNTY],
+    ["CAP_FACTOR", properties.CAP_FACTOR],
+    ["SUB_1", properties.SUB_1],
+    ["SUB_2", properties.SUB_2],
+  ];
+
+  const rows = fields
+    .map(([key, value]) => `<tr><th>${escapeHtml(key)}</th><td>${escapeHtml(value ?? "-")}</td></tr>`)
+    .join("");
+
+  return `<table>${rows}</table>`;
+}
+
+function parseCsvLine(line) {
+  const values = [];
+  let current = "";
+  let inQuotes = false;
+
+  for (let i = 0; i < line.length; i += 1) {
+    const ch = line[i];
+
+    if (ch === '"') {
+      const next = line[i + 1];
+      if (inQuotes && next === '"') {
+        current += '"';
+        i += 1;
+      } else {
+        inQuotes = !inQuotes;
+      }
+      continue;
+    }
+
+    if (ch === "," && !inQuotes) {
+      values.push(current);
+      current = "";
+      continue;
+    }
+
+    current += ch;
+  }
+
+  values.push(current);
+  return values;
+}
+
+function parseCsvText(csvText) {
+  const lines = String(csvText || "")
+    .replace(/^\uFEFF/, "")
+    .split(/\r?\n/)
+    .filter((line) => line.trim().length > 0);
+
+  if (!lines.length) {
+    return [];
+  }
+
+  const headers = parseCsvLine(lines[0]).map((header) => String(header).trim());
+  const records = [];
+
+  for (let i = 1; i < lines.length; i += 1) {
+    const values = parseCsvLine(lines[i]);
+    const row = {};
+    headers.forEach((header, index) => {
+      row[header] = values[index] ?? "";
+    });
+    records.push(row);
+  }
+
+  return records;
+}
+
+function parseNumericValue(value) {
+  if (value === null || value === undefined) {
+    return null;
+  }
+
+  const text = String(value).trim();
+  if (!text) {
+    return null;
+  }
+
+  const numeric = Number(text);
+  return Number.isFinite(numeric) ? numeric : null;
+}
+
+function parseLooseNumericValue(value) {
+  if (value === null || value === undefined) {
+    return null;
+  }
+
+  const text = String(value).trim();
+  if (!text) {
+    return null;
+  }
+
+  const cleaned = text.replaceAll(",", "");
+  const direct = Number(cleaned);
+  if (Number.isFinite(direct)) {
+    return direct;
+  }
+
+  const match = cleaned.match(/-?\d+(?:\.\d+)?/);
+  if (!match) {
+    return null;
+  }
+
+  const numeric = Number(match[0]);
+  return Number.isFinite(numeric) ? numeric : null;
+}
+
+function extractPowerPlantCapacityMw(record) {
+  const preferredFields = ["OPER_CAP", "SUMMER_CAP", "WINTER_CAP", "PLAN_CAP", "RETIRE_CAP", "NET_GEN"];
+  for (const field of preferredFields) {
+    const value = parseLooseNumericValue(record?.[field]);
+    if (Number.isFinite(value) && value >= 0) {
+      return value;
+    }
+  }
+
+  for (const [field, rawValue] of Object.entries(record || {})) {
+    if (!/(?:\bmw\b|\bcap\b|capacity|nameplate)/i.test(field)) {
+      continue;
+    }
+
+    const value = parseLooseNumericValue(rawValue);
+    if (Number.isFinite(value) && value >= 0) {
+      return value;
+    }
+  }
+
+  return null;
+}
+
+function getPowerPlantRadiusForMw(capacityMw, minCapacityMw, maxCapacityMw) {
+  const minRadius = 3.2;
+  const maxRadius = 10.5;
+
+  if (!Number.isFinite(capacityMw) || !Number.isFinite(minCapacityMw) || !Number.isFinite(maxCapacityMw)) {
+    return 4.8;
+  }
+
+  if (maxCapacityMw <= minCapacityMw) {
+    return (minRadius + maxRadius) / 2;
+  }
+
+  // Use sqrt scaling so very large plants do not dominate marker size.
+  const safeValue = Math.max(0, capacityMw);
+  const t = (Math.sqrt(safeValue) - Math.sqrt(minCapacityMw)) / (Math.sqrt(maxCapacityMw) - Math.sqrt(minCapacityMw));
+  const clamped = Math.max(0, Math.min(1, t));
+  return minRadius + clamped * (maxRadius - minRadius);
+}
+
+function toTitleCase(text) {
+  return String(text || "")
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function cleanNaicsLabel(raw) {
+  const text = String(raw || "").trim();
+  if (!text) {
+    return null;
+  }
+
+  let normalized = text.toUpperCase();
+  normalized = normalized.replace(/\bELECTRIC POWER GENERATION\b/g, "");
+  normalized = normalized.replace(/\bPOWER GENERATION\b/g, "");
+  normalized = normalized.replace(/\s+/g, " ").trim();
+
+  if (!normalized) {
+    return null;
+  }
+
+  return toTitleCase(normalized);
+}
+
+function cleanTypeLabel(raw) {
+  const text = String(raw || "").trim();
+  if (!text) {
+    return "Unknown";
+  }
+  return toTitleCase(text);
+}
+
+function normalizeTypeKey(raw) {
+  return String(raw || "").trim().toUpperCase();
+}
+
+function isOtherNaics(raw) {
+  const text = String(raw || "").trim().toUpperCase();
+  if (!text) {
+    return false;
+  }
+
+  return text.startsWith("OTHER") || /\bOTHER\b/.test(text);
+}
+
+function isNotAvailableNaics(raw) {
+  const text = String(raw || "").trim().toUpperCase();
+  if (!text) {
+    return false;
+  }
+
+  return (
+    text.includes("NOT AVAILABLE") ||
+    text === "N/A" ||
+    text === "NA" ||
+    text === "UNKNOWN"
+  );
+}
+
+function isNotAvailableType(raw) {
+  const text = String(raw || "").trim().toUpperCase();
+  if (!text) {
+    return true;
+  }
+
+  return (
+    text.includes("NOT AVAILABLE") ||
+    text === "N/A" ||
+    text === "NA" ||
+    text === "UNKNOWN" ||
+    text === "UNK"
+  );
+}
+
+function inferCategoryFromTypeWhenNaicsIsOther(typeKey) {
+  const key = String(typeKey || "").trim().toUpperCase();
+  if (!key) {
+    return null;
+  }
+
+  if (key.includes("BATTERIES") || key.includes("BATTERY")) {
+    return "Batteries";
+  }
+
+  if (key.includes("FLYWHEEL")) {
+    return "Flywheel (MES)";
+  }
+
+  if (key.includes("SOLAR PHOTOVOLTAIC") || key.includes("SOLAR")) {
+    return "Solar";
+  }
+
+  if (key.includes("NATURAL GAS FIRED COMBINED CYCLE")) {
+    return "Fossil Fuel";
+  }
+
+  if (key.includes("HYDRO")) {
+    return "Hydroelectric";
+  }
+
+  if (key.includes("NUCLEAR")) {
+    return "Nuclear";
+  }
+
+  if (key.includes("WIND")) {
+    return "Wind";
+  }
+
+  if (
+    key.includes("NATURAL GAS") ||
+    key.includes("COAL") ||
+    key.includes("PETROLEUM") ||
+    key.includes("OIL") ||
+    key.includes("DIESEL") ||
+    key.includes("COMBUSTION TURBINE") ||
+    key.includes("STEAM")
+  ) {
+    return "Fossil Fuel";
+  }
+
+  if (key.includes("GEOTHERMAL")) {
+    return "Geothermal";
+  }
+
+  if (key.includes("BIOMASS") || key.includes("WOOD") || key.includes("WASTE")) {
+    return "Biomass";
+  }
+
+  return null;
+}
+
+function resolvePowerPlantCategoryLabel(record, fallbackByType) {
+  const naicsRaw = record?.NAICS_DESC;
+  const fromNaics = cleanNaicsLabel(naicsRaw);
+  const typeKey = normalizeTypeKey(record?.TYPE);
+  const naicsUnavailable = isNotAvailableNaics(naicsRaw) || fromNaics === "Not Available";
+  const typeUnavailable = isNotAvailableType(record?.TYPE);
+
+  // Special handling: when NAICS is OTHER*/NOT AVAILABLE*, infer from TYPE.
+  if (isOtherNaics(naicsRaw) || naicsUnavailable || fromNaics === "Other") {
+    if (naicsUnavailable && typeUnavailable) {
+      return "Not Available";
+    }
+
+    const inferredFromType = inferCategoryFromTypeWhenNaicsIsOther(typeKey);
+    if (inferredFromType) {
+      return inferredFromType;
+    }
+
+    if (fallbackByType && typeKey && fallbackByType.has(typeKey)) {
+      const fallbackLabel = fallbackByType.get(typeKey);
+      if (fallbackLabel && fallbackLabel !== "Other") {
+        return fallbackLabel;
+      }
+    }
+
+    return naicsUnavailable ? "Not Available" : "Other";
+  }
+
+  if (fromNaics) {
+    return fromNaics;
+  }
+
+  const inferredFromType = inferCategoryFromTypeWhenNaicsIsOther(typeKey);
+  if (inferredFromType) {
+    return inferredFromType;
+  }
+
+  if (fallbackByType && typeKey && fallbackByType.has(typeKey)) {
+    return fallbackByType.get(typeKey);
+  }
+
+  return cleanTypeLabel(record?.TYPE);
+}
+
+function normalizeVoltageLabel(feature) {
+  const properties = feature?.properties || {};
+  const exact = properties.VOLTAGE ?? properties.Voltage ?? properties.voltage;
+  if (exact !== null && exact !== undefined && String(exact).trim()) {
+    return String(exact).trim();
+  }
+
+  for (const [key, value] of Object.entries(properties)) {
+    if (!/voltage/i.test(key)) {
+      continue;
+    }
+    if (value === null || value === undefined) {
+      continue;
+    }
+    const text = String(value).trim();
+    if (text) {
+      return text;
+    }
+  }
+
+  return "Unknown";
+}
+
+function voltageSortValue(label) {
+  if (label === "Unknown") {
+    return -1;
+  }
+
+  const match = String(label).match(/\d+(?:\.\d+)?/);
+  if (!match) {
+    return -1;
+  }
+  return Number(match[0]);
+}
+
+function getVoltageColorByIndex(index) {
+  if (index < US_VOLTAGE_PALETTE.length) {
+    return US_VOLTAGE_PALETTE[index];
+  }
+
+  const hue = Math.round((index * 137.508) % 360);
+  return `hsl(${hue}, 70%, 50%)`;
+}
+
+function getVoltageColorForLabel(label) {
+  const transmissionEntry = usTransmissionVoltageLayers.get(label);
+  if (transmissionEntry?.color) {
+    return transmissionEntry.color;
+  }
+
+  const index = US_ALLOWED_VOLTAGE_LEVELS.indexOf(label);
+  return getVoltageColorByIndex(index >= 0 ? index : 0);
+}
+
+function normalizeTypeLabel(value) {
+  const text = String(value || "").trim();
+  return text || "Unknown";
+}
+
+function getTypeColorByIndex(index) {
+  if (index < US_TYPE_PALETTE.length) {
+    return US_TYPE_PALETTE[index];
+  }
+  const hue = Math.round((index * 137.508) % 360);
+  return `hsl(${hue}, 68%, 52%)`;
+}
+
+function hashString(value) {
+  let hash = 0;
+  const text = String(value || "");
+  for (let i = 0; i < text.length; i += 1) {
+    hash = (hash << 5) - hash + text.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+}
+
+function getPcaStateKey(properties) {
+  const props = properties || {};
+  return String(props.st ?? props.ST ?? props.rb ?? props.RB ?? "Unknown").trim() || "Unknown";
+}
+
+function getPcaColorForStateKey(stateKey) {
+  const hue = hashString(stateKey) % 360;
+  return `hsl(${hue}, 60%, 50%)`;
+}
+
+function rebuildUsPcaLayer() {
+  if (!usPcaFeatureCollection) {
+    return;
+  }
+
+  if (usPcaLayer && map.hasLayer(usPcaLayer)) {
+    map.removeLayer(usPcaLayer);
+  }
+
+  const colorByStateKey = new Map();
+  for (const feature of usPcaFeatureCollection.features || []) {
+    const key = getPcaStateKey(feature?.properties || {});
+    if (!colorByStateKey.has(key)) {
+      colorByStateKey.set(key, getPcaColorForStateKey(key));
+    }
+  }
+
+  usPcaLayer = L.geoJSON(usPcaFeatureCollection, {
+    style: (feature) => {
+      const stateKey = getPcaStateKey(feature?.properties || {});
+      return {
+      color: "#1f2937",
+      weight: 0.7,
+      fillColor: colorByStateKey.get(stateKey) || "#4f46e5",
+      fillOpacity: 0.28,
+      };
+    },
+    onEachFeature: (feature, featureLayer) => {
+      bindHoverPersistentPopup(featureLayer, buildPopupHTML(feature));
+    },
+  });
+
+  if (usPcaVisible) {
+    usPcaLayer.addTo(map);
+  }
+}
+
+function buildUsPcaControl() {
+  if (!mapUiRightEl) {
+    return;
+  }
+
+  const card = document.createElement("section");
+  card.id = "section-us-pca";
+  card.className = "section-card";
+
+  const header = document.createElement("div");
+  header.className = "section-card-header";
+  const title = document.createElement("h2");
+  title.className = "section-card-title";
+  title.textContent = "PCA Areas";
+  header.appendChild(title);
+  card.appendChild(header);
+
+  const body = document.createElement("div");
+  body.className = "section-card-body";
+
+  const showRow = document.createElement("label");
+  showRow.className = "voltage-filter-row";
+  const showCheckbox = document.createElement("input");
+  showCheckbox.type = "checkbox";
+  showCheckbox.checked = usPcaVisible;
+  const showText = document.createElement("span");
+  showText.textContent = "Show PCA areas";
+  showRow.appendChild(showCheckbox);
+  showRow.appendChild(showText);
+  body.appendChild(showRow);
+  card.appendChild(body);
+
+  if (mapUiRightEl.firstChild) {
+    mapUiRightEl.insertBefore(card, mapUiRightEl.firstChild);
+  } else {
+    mapUiRightEl.appendChild(card);
+  }
+
+  enableSectionCardDrag(card);
+
+  showCheckbox.addEventListener("change", () => {
+    const applyToggle = async () => {
+      usPcaVisible = showCheckbox.checked;
+
+      if (usPcaVisible && !usPcaLoaded) {
+        try {
+          await loadUsPcaLayer();
+        } catch (pcaError) {
+          setStatusById("us-pca", "warn", `US PCA load skipped: ${pcaError?.message || "unknown error"}`);
+          console.warn("US PCA load skipped", pcaError);
+          usPcaVisible = false;
+          showCheckbox.checked = false;
+          activateStatusTracking();
+          return;
+        }
+      }
+
+      if (!usPcaLayer) {
+        activateStatusTracking();
+        return;
+      }
+
+      if (usPcaVisible) {
+        usPcaLayer.addTo(map);
+      } else if (map.hasLayer(usPcaLayer)) {
+        map.removeLayer(usPcaLayer);
+      }
+
+      activateStatusTracking();
+    };
+
+    applyToggle();
+  });
+
+}
+
+async function loadUsPcaLayer() {
+  const parser = getShpParser();
+  const basePath = `${US_DATA_ROOT}/${encodeURIComponent(US_PCA_BASENAME)}`;
+  const shpUrl = makeAbsoluteUrl(`${basePath}.shp`);
+  const dbfUrl = makeAbsoluteUrl(`${basePath}.dbf`);
+  const prjUrl = makeAbsoluteUrl(`${basePath}.prj`);
+  const cpgUrl = makeAbsoluteUrl(`${basePath}.cpg`);
+
+  const [shpBuffer, dbfBuffer, prjText, cpgText] = await Promise.all([
+    fetchArrayBuffer(shpUrl),
+    fetchArrayBuffer(dbfUrl),
+    fetchOptionalText(prjUrl),
+    fetchOptionalText(cpgUrl),
+  ]);
+
+  const payload = { shp: shpBuffer, dbf: dbfBuffer };
+  if (prjText) {
+    payload.prj = prjText;
+  }
+  if (cpgText) {
+    payload.cpg = cpgText;
+  }
+
+  const parsed = await parser(payload);
+  usPcaFeatureCollection = toFeatureCollection(parsed, US_PCA_BASENAME);
+  usPcaLoaded = true;
+  rebuildUsPcaLayer();
+}
+
+function getPowerPlantCategoryColor(categoryLabel, index) {
+  const key = String(categoryLabel || "").trim();
+  if (key && US_POWER_PLANT_CATEGORY_COLORS[key]) {
+    return US_POWER_PLANT_CATEGORY_COLORS[key];
+  }
+
+  return getTypeColorByIndex(index);
+}
+
+function updateUsTransmissionMasterCheckbox() {
+  if (!usTransmissionMasterCheckbox || !usTransmissionVoltageLayers.size) {
+    return;
+  }
+
+  const values = [...usTransmissionVoltageLayers.values()];
+  const visibleCount = values.filter((entry) => entry.visible).length;
+  usTransmissionMasterCheckbox.indeterminate = visibleCount > 0 && visibleCount < values.length;
+  usTransmissionMasterCheckbox.checked = visibleCount > 0;
+}
+
+function renderUsVoltageControls() {
+  if (!usTransmissionVoltageContainer) {
+    return;
+  }
+
+  const renderContainer = (container, titleText, filterGroup, multiColumn) => {
+    if (!container) {
+      return;
+    }
+
+    container.innerHTML = "";
+    container.classList.toggle("is-multi-column", multiColumn);
+
+    const title = document.createElement("div");
+    title.className = "voltage-filter-title";
+    title.textContent = titleText;
+    container.appendChild(title);
+
+    const target = multiColumn ? document.createElement("div") : container;
+    if (multiColumn) {
+      target.className = "voltage-filter-grid";
+      container.appendChild(target);
+    }
+
+    for (const [, voltageState] of usTransmissionVoltageLayers.entries()) {
+      if (voltageState.group !== filterGroup) {
+        continue;
+      }
+
+      const row = document.createElement("label");
+      row.className = "voltage-filter-row";
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = voltageState.visible;
+
+      const swatch = document.createElement("span");
+      swatch.className = "layer-swatch";
+      swatch.style.backgroundColor = voltageState.color;
+
+      const text = document.createElement("span");
+      text.textContent = voltageState.displayLabel;
+
+      checkbox.addEventListener("change", () => {
+        voltageState.visible = checkbox.checked;
+        if (!usTransmissionLayer) {
+          return;
+        }
+
+        if (checkbox.checked) {
+          usTransmissionLayer.addLayer(voltageState.layer);
+        } else {
+          usTransmissionLayer.removeLayer(voltageState.layer);
+        }
+
+        updateUsTransmissionMasterCheckbox();
+        activateStatusTracking();
+      });
+
+      row.appendChild(checkbox);
+      row.appendChild(swatch);
+      row.appendChild(text);
+      target.appendChild(row);
+    }
+  };
+
+  renderContainer(usTransmissionVoltageContainer, "Main Voltage Levels:", "primary", false);
+  renderContainer(usTransmissionOtherVoltageContainer, "Other Voltage Levels:", "other-levels", true);
+}
+
+function updateUsSubstationMasterCheckbox() {
+  if (!usSubstationMasterCheckbox || !usSubstationVoltageLayers.size) {
+    return;
+  }
+
+  const values = [...usSubstationVoltageLayers.values()];
+  const visibleCount = values.filter((entry) => entry.visible).length;
+  usSubstationMasterCheckbox.indeterminate = visibleCount > 0 && visibleCount < values.length;
+  usSubstationMasterCheckbox.checked = visibleCount > 0;
+}
+
+function renderUsSubstationVoltageControls() {
+  if (!usSubstationVoltageContainer) {
+    return;
+  }
+
+  const renderContainer = (container, titleText, filterGroup, multiColumn) => {
+    if (!container) {
+      return;
+    }
+
+    container.innerHTML = "";
+    container.classList.toggle("is-multi-column", multiColumn);
+    const title = document.createElement("div");
+    title.className = "voltage-filter-title";
+    title.textContent = titleText;
+    container.appendChild(title);
+
+    const target = multiColumn ? document.createElement("div") : container;
+    if (multiColumn) {
+      target.className = "voltage-filter-grid";
+      container.appendChild(target);
+    }
+
+    for (const [, voltageState] of usSubstationVoltageLayers.entries()) {
+      if (voltageState.group !== filterGroup) {
+        continue;
+      }
+
+      const row = document.createElement("label");
+      row.className = "voltage-filter-row";
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = voltageState.visible;
+
+      const swatch = document.createElement("span");
+      swatch.className = "layer-swatch";
+      swatch.style.backgroundColor = voltageState.color;
+
+      const text = document.createElement("span");
+      text.textContent = voltageState.displayLabel;
+
+      checkbox.addEventListener("change", () => {
+        voltageState.visible = checkbox.checked;
+        if (!usSubstationLayer) {
+          return;
+        }
+
+        if (checkbox.checked) {
+          usSubstationLayer.addLayer(voltageState.layer);
+        } else {
+          usSubstationLayer.removeLayer(voltageState.layer);
+        }
+
+        updateUsSubstationMasterCheckbox();
+        activateStatusTracking();
+      });
+
+      row.appendChild(checkbox);
+      row.appendChild(swatch);
+      row.appendChild(text);
+      target.appendChild(row);
+    }
+  };
+
+  renderContainer(usSubstationVoltageContainer, "Main Voltage Levels:", "primary", false);
+  renderContainer(usSubstationOtherVoltageContainer, "Other Voltage Range:", "other-range", true);
+}
+
+function renderUsTapVoltageControls() {
+  if (!usTapVoltageContainer) {
+    return;
+  }
+
+  const renderContainer = (container, titleText, filterGroup, multiColumn) => {
+    if (!container) {
+      return;
+    }
+
+    container.innerHTML = "";
+    container.classList.toggle("is-multi-column", multiColumn);
+
+    const title = document.createElement("div");
+    title.className = "voltage-filter-title";
+    title.textContent = titleText;
+    container.appendChild(title);
+
+    const target = multiColumn ? document.createElement("div") : container;
+    if (multiColumn) {
+      target.className = "voltage-filter-grid";
+      container.appendChild(target);
+    }
+
+    for (const [, voltageState] of usTapVoltageLayers.entries()) {
+      if (voltageState.group !== filterGroup) {
+        continue;
+      }
+
+      const row = document.createElement("label");
+      row.className = "voltage-filter-row";
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = voltageState.visible;
+
+      const swatch = document.createElement("span");
+      swatch.className = "layer-swatch";
+      swatch.style.backgroundColor = voltageState.color;
+
+      const text = document.createElement("span");
+      text.textContent = voltageState.displayLabel;
+
+      checkbox.addEventListener("change", () => {
+        voltageState.visible = checkbox.checked;
+        if (!usTapLayer) {
+          return;
+        }
+
+        if (checkbox.checked) {
+          usTapLayer.addLayer(voltageState.layer);
+        } else {
+          usTapLayer.removeLayer(voltageState.layer);
+        }
+
+        activateStatusTracking();
+      });
+
+      row.appendChild(checkbox);
+      row.appendChild(swatch);
+      row.appendChild(text);
+      target.appendChild(row);
+    }
+  };
+
+  renderContainer(usTapVoltageContainer, "Main Voltage Levels:", "primary", false);
+  renderContainer(usTapOtherVoltageContainer, "Other Voltage Range:", "other-range", true);
+}
+
+function updateUsPowerPlantMasterCheckbox() {
+  if (!usPowerPlantMasterCheckbox || !usPowerPlantTypeLayers.size) {
+    return;
+  }
+
+  const values = [...usPowerPlantTypeLayers.values()];
+  const visibleCount = values.filter((entry) => entry.visible).length;
+  usPowerPlantMasterCheckbox.indeterminate = visibleCount > 0 && visibleCount < values.length;
+  usPowerPlantMasterCheckbox.checked = visibleCount > 0;
+}
+
+function renderUsPowerPlantTypeControls() {
+  if (!usPowerPlantTypeContainer) {
+    return;
+  }
+
+  usPowerPlantTypeContainer.innerHTML = "";
+
+  const title = document.createElement("div");
+  title.className = "voltage-filter-title";
+  title.textContent = "By TYPE:";
+  usPowerPlantTypeContainer.appendChild(title);
+
+  for (const [typeLabel, typeState] of usPowerPlantTypeLayers.entries()) {
+    const row = document.createElement("label");
+    row.className = "voltage-filter-row";
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = typeState.visible;
+
+      const swatch = document.createElement("span");
+      swatch.className = "layer-swatch";
+      swatch.style.backgroundColor = typeState.color;
+
+    const text = document.createElement("span");
+    text.textContent = typeLabel;
+
+    checkbox.addEventListener("change", () => {
+      typeState.visible = checkbox.checked;
+      if (!usPowerPlantLayer) {
+        return;
+      }
+
+      if (checkbox.checked) {
+        usPowerPlantLayer.addLayer(typeState.layer);
+      } else {
+        usPowerPlantLayer.removeLayer(typeState.layer);
+      }
+
+      updateUsPowerPlantMasterCheckbox();
+      activateStatusTracking();
+    });
+
+    row.appendChild(checkbox);
+    row.appendChild(swatch);
+    row.appendChild(text);
+    usPowerPlantTypeContainer.appendChild(row);
+  }
+}
+
+function buildUsTransmissionControl() {
+  if (!mapUiLeftEl) {
+    return;
+  }
+
+  const card = document.createElement("section");
+  card.id = "section-us-transmission";
+  card.className = "section-card";
+
+  const header = document.createElement("div");
+  header.className = "section-card-header";
+
+  const title = document.createElement("h2");
+  title.className = "section-card-title";
+  title.textContent = "Transmission lines";
+
+  header.appendChild(title);
+  card.appendChild(header);
+
+  const body = document.createElement("div");
+  body.className = "section-card-body";
+
+  const voltageContainer = document.createElement("div");
+  voltageContainer.className = "voltage-filter-container";
+  body.appendChild(voltageContainer);
+
+  const actions = document.createElement("div");
+  actions.className = "section-inline-actions";
+
+  const otherLevelsButton = document.createElement("button");
+  otherLevelsButton.type = "button";
+  otherLevelsButton.className = "section-toggle-btn";
+  otherLevelsButton.textContent = "Other Voltage Levels";
+  actions.appendChild(otherLevelsButton);
+  body.appendChild(actions);
+
+  card.appendChild(body);
+  mapUiLeftEl.appendChild(card);
+  enableSectionCardDrag(card);
+
+  const otherLevelsCard = document.createElement("section");
+  otherLevelsCard.id = "section-us-transmission-other-levels";
+  otherLevelsCard.className = "section-card floating-popup-card is-hidden-card";
+
+  const otherLevelsHeader = document.createElement("div");
+  otherLevelsHeader.className = "section-card-header";
+  const otherLevelsTitle = document.createElement("h2");
+  otherLevelsTitle.className = "section-card-title";
+  otherLevelsTitle.textContent = "Transmission - Other Voltage Levels";
+  otherLevelsHeader.appendChild(otherLevelsTitle);
+  otherLevelsCard.appendChild(otherLevelsHeader);
+
+  const otherLevelsBody = document.createElement("div");
+  otherLevelsBody.className = "section-card-body";
+  const otherLevelsContainer = document.createElement("div");
+  otherLevelsContainer.className = "voltage-filter-container is-multi-column";
+  otherLevelsBody.appendChild(otherLevelsContainer);
+  otherLevelsCard.appendChild(otherLevelsBody);
+  mapShellEl?.appendChild(otherLevelsCard);
+  enableSectionCardDrag(otherLevelsCard);
+
+  usTransmissionVoltageContainer = voltageContainer;
+  usTransmissionOtherVoltageContainer = otherLevelsContainer;
+  usTransmissionOtherVoltageCard = otherLevelsCard;
+
+  otherLevelsButton.addEventListener("click", () => {
+    togglePopupCard(usTransmissionOtherVoltageCard, otherLevelsButton);
+  });
+}
+
+function buildUsSubstationControl() {
+  if (!mapUiLeftEl) {
+    return;
+  }
+
+  const topRow = document.createElement("div");
+  topRow.className = "us-left-top-row";
+
+  const card = document.createElement("section");
+  card.id = "section-us-substations";
+  card.className = "section-card";
+
+  const header = document.createElement("div");
+  header.className = "section-card-header";
+
+  const title = document.createElement("h2");
+  title.className = "section-card-title";
+  title.textContent = "Substations";
+
+  header.appendChild(title);
+  card.appendChild(header);
+
+  const body = document.createElement("div");
+  body.className = "section-card-body";
+
+  const voltageContainer = document.createElement("div");
+  voltageContainer.className = "voltage-filter-container";
+  body.appendChild(voltageContainer);
+
+  const actions = document.createElement("div");
+  actions.className = "section-inline-actions";
+
+  const otherRangeButton = document.createElement("button");
+  otherRangeButton.type = "button";
+  otherRangeButton.className = "section-toggle-btn";
+  otherRangeButton.textContent = "Other Voltage Range";
+  actions.appendChild(otherRangeButton);
+  body.appendChild(actions);
+
+  card.appendChild(body);
+  topRow.appendChild(card);
+  enableSectionCardDrag(card);
+
+  const tapCard = document.createElement("section");
+  tapCard.id = "section-us-taps";
+  tapCard.className = "section-card";
+
+  const tapHeader = document.createElement("div");
+  tapHeader.className = "section-card-header";
+
+  const tapTitle = document.createElement("h2");
+  tapTitle.className = "section-card-title";
+  tapTitle.textContent = "US TAPs";
+  tapHeader.appendChild(tapTitle);
+  tapCard.appendChild(tapHeader);
+
+  const tapBody = document.createElement("div");
+  tapBody.className = "section-card-body";
+
+  const tapVoltageContainer = document.createElement("div");
+  tapVoltageContainer.className = "voltage-filter-container";
+  tapBody.appendChild(tapVoltageContainer);
+
+  const tapActions = document.createElement("div");
+  tapActions.className = "section-inline-actions";
+
+  const tapOtherRangeButton = document.createElement("button");
+  tapOtherRangeButton.type = "button";
+  tapOtherRangeButton.className = "section-toggle-btn";
+  tapOtherRangeButton.textContent = "Other Voltage Range";
+  tapActions.appendChild(tapOtherRangeButton);
+  tapBody.appendChild(tapActions);
+
+  tapCard.appendChild(tapBody);
+  topRow.appendChild(tapCard);
+  enableSectionCardDrag(tapCard);
+  mapUiLeftEl.appendChild(topRow);
+
+  const otherRangeCard = document.createElement("section");
+  otherRangeCard.id = "section-us-substations-other-range";
+  otherRangeCard.className = "section-card floating-popup-card is-hidden-card";
+
+  const otherHeader = document.createElement("div");
+  otherHeader.className = "section-card-header";
+  const otherTitle = document.createElement("h2");
+  otherTitle.className = "section-card-title";
+  otherTitle.textContent = "Substations - Other Voltage Range";
+  otherHeader.appendChild(otherTitle);
+  otherRangeCard.appendChild(otherHeader);
+
+  const otherBody = document.createElement("div");
+  otherBody.className = "section-card-body";
+  const otherContainer = document.createElement("div");
+  otherContainer.className = "voltage-filter-container is-multi-column";
+  otherBody.appendChild(otherContainer);
+  otherRangeCard.appendChild(otherBody);
+  mapShellEl?.appendChild(otherRangeCard);
+  enableSectionCardDrag(otherRangeCard);
+
+  const tapOtherRangeCard = document.createElement("section");
+  tapOtherRangeCard.id = "section-us-taps-other-range";
+  tapOtherRangeCard.className = "section-card floating-popup-card is-hidden-card";
+
+  const tapOtherHeader = document.createElement("div");
+  tapOtherHeader.className = "section-card-header";
+  const tapOtherTitle = document.createElement("h2");
+  tapOtherTitle.className = "section-card-title";
+  tapOtherTitle.textContent = "US TAPs - Other Voltage Range";
+  tapOtherHeader.appendChild(tapOtherTitle);
+  tapOtherRangeCard.appendChild(tapOtherHeader);
+
+  const tapOtherBody = document.createElement("div");
+  tapOtherBody.className = "section-card-body";
+  const tapOtherContainer = document.createElement("div");
+  tapOtherContainer.className = "voltage-filter-container is-multi-column";
+  tapOtherBody.appendChild(tapOtherContainer);
+  tapOtherRangeCard.appendChild(tapOtherBody);
+  mapShellEl?.appendChild(tapOtherRangeCard);
+  enableSectionCardDrag(tapOtherRangeCard);
+
+  usSubstationVoltageContainer = voltageContainer;
+  usSubstationOtherVoltageContainer = otherContainer;
+  usSubstationOtherVoltageCard = otherRangeCard;
+  usTapVoltageContainer = tapVoltageContainer;
+  usTapOtherVoltageContainer = tapOtherContainer;
+  usTapOtherVoltageCard = tapOtherRangeCard;
+
+  otherRangeButton.addEventListener("click", () => {
+    togglePopupCard(usSubstationOtherVoltageCard, otherRangeButton);
+  });
+
+  tapOtherRangeButton.addEventListener("click", () => {
+    togglePopupCard(usTapOtherVoltageCard, tapOtherRangeButton);
+  });
+}
+
+function buildUsPowerPlantControl() {
+  if (!mapUiRightEl) {
+    return;
+  }
+
+  const card = document.createElement("section");
+  card.id = "section-us-power-plants";
+  card.className = "section-card";
+
+  const header = document.createElement("div");
+  header.className = "section-card-header";
+
+  const title = document.createElement("h2");
+  title.className = "section-card-title";
+  title.textContent = "Power plants";
+
+  header.appendChild(title);
+  card.appendChild(header);
+
+  const body = document.createElement("div");
+  body.className = "section-card-body";
+
+  const typeContainer = document.createElement("div");
+  typeContainer.className = "voltage-filter-container";
+  body.appendChild(typeContainer);
+
+  card.appendChild(body);
+  mapUiRightEl.appendChild(card);
+  enableSectionCardDrag(card);
+
+  usPowerPlantTypeContainer = typeContainer;
+}
+
+async function loadUsTransmissionLayer() {
+  const parser = getShpParser();
+  const zipUrl = makeAbsoluteUrl(`${US_DATA_ROOT}/${encodeURIComponent(US_TRANSMISSION_BASENAME)}.zip`);
+  const zipBuffer = await fetchArrayBuffer(zipUrl);
+  const parsed = await parser(zipBuffer);
+  const collection = toFeatureCollection(parsed, US_TRANSMISSION_BASENAME);
+
+  const featuresByVoltage = new Map();
+  for (const feature of collection.features || []) {
+    const rawVoltageLabel = normalizeVoltageLabel(feature);
+    const normalizedVoltage = normalizeVoltageValueLabel(rawVoltageLabel);
+    const currentType = getCurrentTypeFromVoltClass(feature?.properties || {});
+
+    let group = "other-levels";
+    let displayLabel = String(rawVoltageLabel || "Unknown").trim() || "Unknown";
+    let sortVoltage = -1;
+    let sortPrimaryRank = Number.POSITIVE_INFINITY;
+
+    if (normalizedVoltage && normalizedVoltage !== "-99999") {
+      const isPrimary = US_TRANSMISSION_PRIMARY_LEVELS.has(normalizedVoltage);
+      group = isPrimary ? "primary" : "other-levels";
+      displayLabel = formatTransmissionVoltageDisplayLabel(normalizedVoltage, currentType);
+      sortVoltage = Number(normalizedVoltage);
+      sortPrimaryRank = getPrimaryVoltageSortRank(normalizedVoltage);
+    } else if (normalizedVoltage === "-99999") {
+      group = "other-levels";
+      displayLabel = "-99999";
+    }
+
+    const key = `${displayLabel}||${group}`;
+    if (!featuresByVoltage.has(key)) {
+      featuresByVoltage.set(key, {
+        features: [],
+        displayLabel,
+        group,
+        sortVoltage,
+        sortPrimaryRank,
+      });
+    }
+
+    featuresByVoltage.get(key).features.push(feature);
+  }
+
+  const groupOrder = { primary: 0, "other-levels": 1 };
+  const sortedEntries = [...featuresByVoltage.values()].sort((a, b) => {
+    const groupDelta = (groupOrder[a.group] ?? 99) - (groupOrder[b.group] ?? 99);
+    if (groupDelta !== 0) {
+      return groupDelta;
+    }
+
+    if (a.group === "primary" && b.group === "primary") {
+      if (a.sortPrimaryRank !== b.sortPrimaryRank) {
+        return a.sortPrimaryRank - b.sortPrimaryRank;
+      }
+    }
+
+    if (a.sortVoltage !== b.sortVoltage) {
+      return b.sortVoltage - a.sortVoltage;
+    }
+
+    return a.displayLabel.localeCompare(b.displayLabel);
+  });
+
+  usTransmissionLayer = L.layerGroup();
+  usTransmissionVoltageLayers = new Map();
+
+  sortedEntries.forEach((entry, index) => {
+    const color = getVoltageColorByIndex(index);
+    const defaultVoltageMatch = entry.displayLabel.match(/^-?\d+(?:\.\d+)?/);
+    const defaultVoltage = defaultVoltageMatch ? defaultVoltageMatch[0] : null;
+    const visibleByDefault = entry.group === "primary" && US_DEFAULT_VISIBLE_TRANSMISSION_LEVELS.has(defaultVoltage);
+    const layer = L.geoJSON(
+      {
+        type: "FeatureCollection",
+        features: entry.features,
+      },
+      {
+        style: () => ({
+          color,
+          weight: 1.2,
+          opacity: 0.88,
+        }),
+        onEachFeature: (feature, featureLayer) => {
+          bindHoverPersistentPopup(featureLayer, buildPopupHTML(feature));
+        },
+      }
+    );
+
+    if (visibleByDefault) {
+      usTransmissionLayer.addLayer(layer);
+    }
+      usTransmissionVoltageLayers.set(entry.displayLabel, {
+      layer,
+      visible: visibleByDefault,
+      color,
+        elementCount: entry.features.length,
+        displayLabel: entry.displayLabel,
+        group: entry.group,
+    });
+  });
+
+  usTransmissionLayer.addTo(map);
+  renderUsVoltageControls();
+  updateUsTransmissionMasterCheckbox();
+}
+
+async function loadUsSubstationLayer() {
+  const csvUrl = makeAbsoluteUrl(`${US_DATA_ROOT}/${encodeURIComponent(US_SUBSTATIONS_FILENAME)}`);
+  const csvText = await fetchText(csvUrl);
+  const records = parseCsvText(csvText);
+
+  const substationRecordsByVoltage = new Map();
+  const tapRecordsByVoltage = new Map();
+  let filteredOutCount = 0;
+
+  for (const record of records) {
+    const latitude = parseNumericValue(record.LATITUDE);
+    const longitude = parseNumericValue(record.LONGITUDE);
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+      filteredOutCount += 1;
+      continue;
+    }
+
+    const normalizedVoltage = normalizeVoltageValueLabel(record.MAX_VOLT);
+    let group = "other-range";
+    let displayLabel = String(record.MAX_VOLT || "Unknown").trim() || "Unknown";
+    let sortVoltage = -1;
+    let sortPrimaryRank = Number.POSITIVE_INFINITY;
+
+    if (normalizedVoltage && normalizedVoltage !== "-99999") {
+      group = US_SUBSTATION_PRIMARY_LEVELS.has(normalizedVoltage) ? "primary" : "other-range";
+      displayLabel = formatSubstationVoltageDisplayLabel(normalizedVoltage);
+      sortVoltage = Number(normalizedVoltage);
+      sortPrimaryRank = getPrimaryVoltageSortRank(normalizedVoltage);
+    } else if (normalizedVoltage === "-99999") {
+      displayLabel = "-99999";
+    }
+
+    const targetMap = isTapRecord(record) ? tapRecordsByVoltage : substationRecordsByVoltage;
+    const key = `${displayLabel}||${group}`;
+    if (!targetMap.has(key)) {
+      targetMap.set(key, {
+        rows: [],
+        displayLabel,
+        group,
+        sortVoltage,
+        sortPrimaryRank,
+      });
+    }
+
+    targetMap.get(key).rows.push({
+      ...record,
+      __lat: latitude,
+      __lon: longitude,
+      __voltage: normalizedVoltage,
+    });
+  }
+
+  usSubstationLayer = L.layerGroup();
+  usSubstationVoltageLayers = new Map();
+  usTapLayer = L.layerGroup();
+  usTapVoltageLayers = new Map();
+
+  const groupOrder = { primary: 0, "other-range": 1 };
+  const sortEntries = (inputMap) => [...inputMap.values()].sort((a, b) => {
+    const groupDelta = (groupOrder[a.group] ?? 99) - (groupOrder[b.group] ?? 99);
+    if (groupDelta !== 0) {
+      return groupDelta;
+    }
+
+    if (a.group === "primary" && b.group === "primary" && a.sortPrimaryRank !== b.sortPrimaryRank) {
+      return a.sortPrimaryRank - b.sortPrimaryRank;
+    }
+
+    if (a.sortVoltage !== b.sortVoltage) {
+      return b.sortVoltage - a.sortVoltage;
+    }
+
+    return a.displayLabel.localeCompare(b.displayLabel);
+  });
+
+  const sortedSubstationEntries = sortEntries(substationRecordsByVoltage);
+  const sortedTapEntries = sortEntries(tapRecordsByVoltage);
+
+  const buildLayerEntries = (entries, targetLayer, targetMap) => {
+    entries.forEach((entry, index) => {
+      const levelRecords = entry.rows || [];
+      const color = getVoltageColorByIndex(index);
+      const defaultVoltageMatch = entry.displayLabel.match(/^-?\d+(?:\.\d+)?/);
+      const defaultVoltage = defaultVoltageMatch ? defaultVoltageMatch[0] : null;
+      const visibleByDefault = entry.group === "primary" && US_DEFAULT_VISIBLE_SUBSTATION_LEVELS.has(defaultVoltage);
+      const levelLayer = L.layerGroup();
+
+      for (const row of levelRecords) {
+        const marker = L.circleMarker([row.__lat, row.__lon], {
+          radius: 2.8,
+          color,
+          weight: 1.1,
+          fillColor: color,
+          fillOpacity: 0.88,
+        });
+
+        bindHoverPersistentPopup(marker, buildSubstationPopupHTML(row));
+
+        levelLayer.addLayer(marker);
+      }
+
+      if (visibleByDefault) {
+        targetLayer.addLayer(levelLayer);
+      }
+
+      targetMap.set(entry.displayLabel, {
+        layer: levelLayer,
+        visible: visibleByDefault,
+        color,
+        elementCount: levelRecords.length,
+        displayLabel: entry.displayLabel,
+        group: entry.group,
+      });
+    });
+  };
+
+  buildLayerEntries(sortedSubstationEntries, usSubstationLayer, usSubstationVoltageLayers);
+  buildLayerEntries(sortedTapEntries, usTapLayer, usTapVoltageLayers);
+
+  usSubstationLayer.addTo(map);
+  usTapLayer.addTo(map);
+  renderUsSubstationVoltageControls();
+  renderUsTapVoltageControls();
+  updateUsSubstationMasterCheckbox();
+}
+
+async function loadUsPowerPlantLayer() {
+  const csvUrl = makeAbsoluteUrl(`${US_DATA_ROOT}/${encodeURIComponent(US_POWER_PLANTS_FILENAME)}`);
+  const csvText = await fetchText(csvUrl);
+  const records = parseCsvText(csvText);
+
+  const preferredCategoryByType = new Map();
+  const categoryCountByType = new Map();
+
+  for (const record of records) {
+    const typeKey = normalizeTypeKey(record.TYPE);
+    const category = cleanNaicsLabel(record.NAICS_DESC);
+    if (!typeKey || !category || category === "Other" || category === "Not Available") {
+      continue;
+    }
+
+    if (!categoryCountByType.has(typeKey)) {
+      categoryCountByType.set(typeKey, new Map());
+    }
+    const counts = categoryCountByType.get(typeKey);
+    counts.set(category, (counts.get(category) || 0) + 1);
+  }
+
+  for (const [typeKey, counts] of categoryCountByType.entries()) {
+    const preferred = [...counts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0];
+    if (preferred) {
+      preferredCategoryByType.set(typeKey, preferred);
+    }
+  }
+
+  const recordsByCategory = new Map();
+  const capacityValuesMw = [];
+  let filteredOutCount = 0;
+
+  for (const record of records) {
+    const latitude = parseNumericValue(record.LATITUDE);
+    const longitude = parseNumericValue(record.LONGITUDE);
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+      filteredOutCount += 1;
+      continue;
+    }
+
+    const categoryLabel = resolvePowerPlantCategoryLabel(record, preferredCategoryByType);
+    const capacityMw = extractPowerPlantCapacityMw(record);
+    if (Number.isFinite(capacityMw)) {
+      capacityValuesMw.push(capacityMw);
+    }
+
+    if (!recordsByCategory.has(categoryLabel)) {
+      recordsByCategory.set(categoryLabel, []);
+    }
+
+    recordsByCategory.get(categoryLabel).push({
+      ...record,
+      __lat: latitude,
+      __lon: longitude,
+      __category: categoryLabel,
+      __capacityMw: capacityMw,
+    });
+  }
+
+  const minCapacityMw = capacityValuesMw.length ? Math.min(...capacityValuesMw) : null;
+  const maxCapacityMw = capacityValuesMw.length ? Math.max(...capacityValuesMw) : null;
+
+  const sortedTypes = [...recordsByCategory.keys()].sort((a, b) => a.localeCompare(b));
+  usPowerPlantLayer = L.layerGroup();
+  usPowerPlantTypeLayers = new Map();
+
+  sortedTypes.forEach((typeLabel, index) => {
+    const typeRows = recordsByCategory.get(typeLabel) || [];
+    const color = getPowerPlantCategoryColor(typeLabel, index);
+    const visibleByDefault = false;
+    const typeLayer = L.layerGroup();
+
+    for (const row of typeRows) {
+      const markerRadius = getPowerPlantRadiusForMw(row.__capacityMw, minCapacityMw, maxCapacityMw);
+      const marker = L.circleMarker([row.__lat, row.__lon], {
+        radius: markerRadius,
+        color,
+        weight: 1.1,
+        fillColor: color,
+        fillOpacity: 0.9,
+      });
+
+      bindHoverPersistentPopup(marker, buildPowerPlantPopupHTML(row));
+
+      typeLayer.addLayer(marker);
+    }
+
+    if (visibleByDefault) {
+      usPowerPlantLayer.addLayer(typeLayer);
+    }
+
+    usPowerPlantTypeLayers.set(typeLabel, {
+      layer: typeLayer,
+      visible: visibleByDefault,
+      color,
+      count: typeRows.length,
+      elementCount: typeRows.length,
+    });
+  });
+
+  usPowerPlantLayer.addTo(map);
+  renderUsPowerPlantTypeControls();
+  updateUsPowerPlantMasterCheckbox();
+}
+
+async function initializeUsMap() {
+  initializeThemeToggle();
+  initializeCountrySwitcherNavigation();
+  buildUsSubstationControl();
+  buildUsTransmissionControl();
+  buildUsPcaControl();
+  buildUsPowerPlantControl();
+  enableCardDrag(mapTitleCardEl);
+  enableCardDrag(statusPanelEl);
+  clearStatusWindow();
+
+  setLoadingOverlayVisible(true);
+
+  try {
+    // Load the default-visible layers first so the map becomes interactive sooner.
+    await Promise.all([loadUsTransmissionLayer(), loadUsSubstationLayer()]);
+  } catch (error) {
+    setStatus("us-map", "error", `US data load failed: ${error?.message || "unknown error"}`);
+    console.error("US data load failed", error);
+  } finally {
+    setLoadingOverlayVisible(false);
+    if (!usStatusTrackingActive) {
+      clearStatusWindow();
+    }
+  }
+
+  // Load heavy, non-default content after first paint.
+  loadUsPowerPlantLayer().catch((error) => {
+    setStatus("us-power-plants", "warn", `US power plants load delayed/failed: ${error?.message || "unknown error"}`);
+    console.warn("US power plants load delayed/failed", error);
+  });
+}
+
+initializeUsMap();

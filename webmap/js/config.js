@@ -1,4 +1,4 @@
-export const DATA_ROOT = "../geoinfo";
+export const DATA_ROOT = "../geoinfo/brazil-data";
 
 export const LAYER_GROUPS = [
   {
