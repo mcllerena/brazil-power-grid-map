@@ -7,7 +7,7 @@ const US_DEFAULT_ZOOM = 4.25;
 
 const THEME_STORAGE_KEY = "webmap-theme";
 const US_DATA_ROOT = "../geoinfo/us-data";
-const US_TRANSMISSION_BASENAME = "Electric_Power_Transmission_Lines_A";
+const US_TRANSMISSION_BASENAME = "Electric_Power_Transmission_Lines";
 const US_PCA_BASENAME = "US_PCA";
 const US_SUBSTATIONS_FILENAME = "Substations.csv";
 const US_POWER_PLANTS_FILENAME = "Power_Plants.csv";
