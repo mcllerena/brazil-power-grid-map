@@ -814,6 +814,73 @@ function parseNumericValue(value) {
   return Number.isFinite(numeric) ? numeric : null;
 }
 
+function parseLooseNumericValue(value) {
+  if (value === null || value === undefined) {
+    return null;
+  }
+
+  const text = String(value).trim();
+  if (!text) {
+    return null;
+  }
+
+  const cleaned = text.replaceAll(",", "");
+  const direct = Number(cleaned);
+  if (Number.isFinite(direct)) {
+    return direct;
+  }
+
+  const match = cleaned.match(/-?\d+(?:\.\d+)?/);
+  if (!match) {
+    return null;
+  }
+
+  const numeric = Number(match[0]);
+  return Number.isFinite(numeric) ? numeric : null;
+}
+
+function extractPowerPlantCapacityMw(record) {
+  const preferredFields = ["OPER_CAP", "SUMMER_CAP", "WINTER_CAP", "PLAN_CAP", "RETIRE_CAP", "NET_GEN"];
+  for (const field of preferredFields) {
+    const value = parseLooseNumericValue(record?.[field]);
+    if (Number.isFinite(value) && value >= 0) {
+      return value;
+    }
+  }
+
+  for (const [field, rawValue] of Object.entries(record || {})) {
+    if (!/(?:\bmw\b|\bcap\b|capacity|nameplate)/i.test(field)) {
+      continue;
+    }
+
+    const value = parseLooseNumericValue(rawValue);
+    if (Number.isFinite(value) && value >= 0) {
+      return value;
+    }
+  }
+
+  return null;
+}
+
+function getPowerPlantRadiusForMw(capacityMw, minCapacityMw, maxCapacityMw) {
+  const minRadius = 3.2;
+  const maxRadius = 10.5;
+
+  if (!Number.isFinite(capacityMw) || !Number.isFinite(minCapacityMw) || !Number.isFinite(maxCapacityMw)) {
+    return 4.8;
+  }
+
+  if (maxCapacityMw <= minCapacityMw) {
+    return (minRadius + maxRadius) / 2;
+  }
+
+  // Use sqrt scaling so very large plants do not dominate marker size.
+  const safeValue = Math.max(0, capacityMw);
+  const t = (Math.sqrt(safeValue) - Math.sqrt(minCapacityMw)) / (Math.sqrt(maxCapacityMw) - Math.sqrt(minCapacityMw));
+  const clamped = Math.max(0, Math.min(1, t));
+  return minRadius + clamped * (maxRadius - minRadius);
+}
+
 function toTitleCase(text) {
   return String(text || "")
     .toLowerCase()
@@ -2022,6 +2089,7 @@ async function loadUsPowerPlantLayer() {
   }
 
   const recordsByCategory = new Map();
+  const capacityValuesMw = [];
   let filteredOutCount = 0;
 
   for (const record of records) {
@@ -2033,6 +2101,11 @@ async function loadUsPowerPlantLayer() {
     }
 
     const categoryLabel = resolvePowerPlantCategoryLabel(record, preferredCategoryByType);
+    const capacityMw = extractPowerPlantCapacityMw(record);
+    if (Number.isFinite(capacityMw)) {
+      capacityValuesMw.push(capacityMw);
+    }
+
     if (!recordsByCategory.has(categoryLabel)) {
       recordsByCategory.set(categoryLabel, []);
     }
@@ -2042,8 +2115,12 @@ async function loadUsPowerPlantLayer() {
       __lat: latitude,
       __lon: longitude,
       __category: categoryLabel,
+      __capacityMw: capacityMw,
     });
   }
+
+  const minCapacityMw = capacityValuesMw.length ? Math.min(...capacityValuesMw) : null;
+  const maxCapacityMw = capacityValuesMw.length ? Math.max(...capacityValuesMw) : null;
 
   const sortedTypes = [...recordsByCategory.keys()].sort((a, b) => a.localeCompare(b));
   usPowerPlantLayer = L.layerGroup();
@@ -2056,8 +2133,9 @@ async function loadUsPowerPlantLayer() {
     const typeLayer = L.layerGroup();
 
     for (const row of typeRows) {
+      const markerRadius = getPowerPlantRadiusForMw(row.__capacityMw, minCapacityMw, maxCapacityMw);
       const marker = L.circleMarker([row.__lat, row.__lon], {
-        radius: 4.8,
+        radius: markerRadius,
         color,
         weight: 1.1,
         fillColor: color,
