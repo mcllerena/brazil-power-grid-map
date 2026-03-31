@@ -154,7 +154,7 @@ const US_VOLTAGE_PALETTE = [
   "#52525b",
 ];
 const US_ALLOWED_VOLTAGE_LEVELS = ["765", "500", "345", "230", "161", "138", "115", "69", "34.5"];
-const US_DEFAULT_VISIBLE_TRANSMISSION_LEVELS = new Set(["169", "115", "69"]);
+const US_DEFAULT_VISIBLE_TRANSMISSION_LEVELS = new Set();
 const US_DEFAULT_VISIBLE_SUBSTATION_LEVELS = new Set();
 const US_TRANSMISSION_PRIMARY_LEVELS = new Set(["1000", "765", "500", "450", "400", "348", "169", "115", "69"]);
 const US_SUBSTATION_PRIMARY_LEVELS = new Set(["1000", "765", "500", "450", "400", "348", "169", "115", "69"]);
@@ -404,21 +404,19 @@ function positionUsStatusPanelNearSubstations() {
 
   const gap = 12;
   let left = substationRect.right - shellRect.left + gap;
-  let top = substationRect.top - shellRect.top;
+  const bottom = gap;
 
   const maxLeft = Math.max(0, shellRect.width - statusRect.width - gap);
-  const maxTop = Math.max(0, shellRect.height - statusRect.height - gap);
 
   if (left > maxLeft) {
     left = substationRect.left - shellRect.left;
-    top = substationRect.bottom - shellRect.top + gap;
   }
 
   statusPanelEl.classList.add("draggable-card", "is-floating");
   statusPanelEl.style.left = `${clamp(left, gap, maxLeft)}px`;
-  statusPanelEl.style.top = `${clamp(top, gap, maxTop)}px`;
+  statusPanelEl.style.top = "auto";
+  statusPanelEl.style.bottom = `${bottom}px`;
   statusPanelEl.style.right = "auto";
-  statusPanelEl.style.bottom = "auto";
   statusPanelEl.style.width = `${statusRect.width}px`;
   storeCardRelativePosition(statusPanelEl);
 }
@@ -1757,6 +1755,7 @@ function buildUsReconductoringControl() {
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
+    checkbox.checked = Boolean(iso.enabled);
     checkbox.disabled = !iso.enabled;
 
     const text = document.createElement("span");
@@ -2655,8 +2654,13 @@ async function initializeUsMap() {
   setLoadingOverlayVisible(true);
 
   try {
-    // Load the default-visible layers first so the map becomes interactive sooner.
-    await Promise.all([loadUsTransmissionLayer(), loadUsSubstationLayer()]);
+    // Start with no default regular layers visible; reconductoring regions are visible by default.
+    const defaultReconductoringKeys = ISO_RECONDUCTORING_CONFIG.filter((entry) => entry.enabled).map((entry) => entry.key);
+    await Promise.all([
+      loadUsTransmissionLayer(),
+      loadUsSubstationLayer(),
+      ...defaultReconductoringKeys.map((isoKey) => syncUsReconductoringLayer(isoKey, true)),
+    ]);
   } catch (error) {
     setStatus("us-map", "error", `US data load failed: ${error?.message || "unknown error"}`);
     console.error("US data load failed", error);

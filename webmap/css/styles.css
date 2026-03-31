@@ -375,21 +375,33 @@ body[data-theme="dark"] .theme-icon-sun {
 
 #map-ui-left {
   left: 12px;
-  top: clamp(360px, 50vh, 520px);
-  width: clamp(300px, 40vw, 520px);
+  top: clamp(240px, 34vh, 380px);
+  width: clamp(250px, 28vw, 360px);
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-height: calc(100% - clamp(372px, 50vh + 12px, 532px));
-  overflow: visible;
+  bottom: 12px;
+  max-height: none;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  padding-right: 4px;
+  padding-bottom: 12px;
+  scrollbar-width: thin;
 }
 
 #map-ui-left #section-substations {
   order: 1;
+  width: 100%;
+  max-width: 360px;
+  align-self: flex-start;
 }
 
 #map-ui-left #section-transmission-lines {
   order: 2;
+  width: 100%;
+  max-width: 360px;
+  align-self: flex-start;
 }
 
 #map-ui-right {
@@ -522,16 +534,15 @@ body[data-theme="dark"] .theme-icon-sun {
 
 #map-ui-left #section-substations,
 #map-ui-left #section-transmission-lines {
-  max-height: min(34vh, 320px);
-  overflow: hidden;
+  max-height: none;
+  overflow: visible;
 }
 
 #map-ui-left #section-substations .section-card-body,
 #map-ui-left #section-transmission-lines .section-card-body {
-  max-height: calc(min(34vh, 320px) - 56px);
-  overflow-y: auto;
-  padding-right: 6px;
-  scrollbar-width: thin;
+  max-height: none;
+  overflow-y: visible;
+  padding-right: 0;
 }
 
 #map-ui-left #section-substations .section-card-body::-webkit-scrollbar,
@@ -675,7 +686,14 @@ body[data-theme="dark"] .theme-icon-sun {
 }
 
 #section-substations .section-card-body,
-#section-transmission-lines .section-card-body,
+#section-transmission-lines .section-card-body {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(110px, 165px));
+  gap: 10px;
+  justify-content: start;
+  align-items: start;
+}
+
 #section-power-plants .section-card-body {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -684,7 +702,24 @@ body[data-theme="dark"] .theme-icon-sun {
 }
 
 #section-substations .power-plant-subgroup,
-#section-transmission-lines .power-plant-subgroup,
+#section-transmission-lines .power-plant-subgroup {
+  width: 100%;
+  max-width: 165px;
+  margin-bottom: 0;
+}
+
+@media (max-height: 860px) {
+  #map-ui-left {
+    top: clamp(220px, 30vh, 320px);
+  }
+}
+
+@media (max-height: 740px) {
+  #map-ui-left {
+    top: clamp(190px, 26vh, 260px);
+  }
+}
+
 #section-power-plants .power-plant-subgroup {
   margin-bottom: 0;
 }
@@ -1074,7 +1109,8 @@ body[data-theme="dark"] .theme-icon-sun {
   #map-ui-left {
     display: flex;
     flex-direction: column;
-    bottom: 196px;
+    bottom: 224px;
+    max-height: calc(100% - 238px);
     overflow-y: auto;
   }
 

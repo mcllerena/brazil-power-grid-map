@@ -1282,6 +1282,14 @@ function normalizeLabelText(value) {
   return String(value || "").trim().toLowerCase();
 }
 
+function suppressMapGesturesOnElement(element) {
+  if (!element || !L?.DomEvent) {
+    return;
+  }
+  L.DomEvent.disableScrollPropagation(element);
+  L.DomEvent.disableClickPropagation(element);
+}
+
 function getOrCreateSectionCard(sectionName) {
   const sectionNodeId = makeSectionNodeId(sectionName);
   const cached = sectionCards.get(sectionNodeId);
@@ -1331,6 +1339,9 @@ function getOrCreateSectionCard(sectionName) {
 
   card.appendChild(header);
   card.appendChild(body);
+
+  suppressMapGesturesOnElement(card);
+  suppressMapGesturesOnElement(body);
 
   if (sectionName === "Power plants") {
     const footer = document.createElement("div");
@@ -2350,6 +2361,9 @@ initialize()
 
 initializeThemeToggle();
 initializeStatusPanelToggle();
+suppressMapGesturesOnElement(mapUiLeftEl);
+suppressMapGesturesOnElement(mapUiRightEl);
+suppressMapGesturesOnElement(statusPanelEl);
 enableCardDrag(mapTitleCardEl);
 enableCardDrag(statusPanelEl);
 window.addEventListener("resize", refreshResponsiveCardLayout);
