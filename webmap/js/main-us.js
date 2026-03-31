@@ -349,6 +349,80 @@ function initializeThemeToggle() {
   });
 }
 
+function initializeStatusPanelToggle() {
+  if (!statusPanelEl) {
+    return;
+  }
+
+  const heading = statusPanelEl.querySelector("h2");
+  const statusList = statusPanelEl.querySelector("#status-list");
+  if (!(heading instanceof HTMLElement) || !(statusList instanceof HTMLElement) || statusPanelEl.querySelector(".section-toggle-btn")) {
+    return;
+  }
+
+  let body = statusPanelEl.querySelector(".section-card-body");
+  if (!body) {
+    body = document.createElement("div");
+    body.className = "section-card-body";
+    statusList.parentNode?.insertBefore(body, statusList);
+    body.appendChild(statusList);
+  }
+
+  const header = document.createElement("div");
+  header.className = "section-card-header";
+  heading.parentNode?.insertBefore(header, heading);
+  header.appendChild(heading);
+
+  const toggleButton = document.createElement("button");
+  toggleButton.type = "button";
+  toggleButton.className = "section-toggle-btn";
+  toggleButton.textContent = "Hide";
+  toggleButton.setAttribute("aria-expanded", "true");
+  toggleButton.setAttribute("title", "Hide Status Window");
+  toggleButton.addEventListener("click", () => {
+    const collapsed = statusPanelEl.classList.toggle("is-collapsed");
+    toggleButton.textContent = collapsed ? "Show" : "Hide";
+    toggleButton.setAttribute("aria-expanded", String(!collapsed));
+    toggleButton.setAttribute("title", `${collapsed ? "Show" : "Hide"} Status Window`);
+  });
+  header.appendChild(toggleButton);
+}
+
+function positionUsStatusPanelNearSubstations() {
+  if (!statusPanelEl || !mapShellEl) {
+    return;
+  }
+
+  const substationCard = document.getElementById("section-us-substations");
+  if (!substationCard) {
+    return;
+  }
+
+  const shellRect = mapShellEl.getBoundingClientRect();
+  const substationRect = substationCard.getBoundingClientRect();
+  const statusRect = statusPanelEl.getBoundingClientRect();
+
+  const gap = 12;
+  let left = substationRect.right - shellRect.left + gap;
+  let top = substationRect.top - shellRect.top;
+
+  const maxLeft = Math.max(0, shellRect.width - statusRect.width - gap);
+  const maxTop = Math.max(0, shellRect.height - statusRect.height - gap);
+
+  if (left > maxLeft) {
+    left = substationRect.left - shellRect.left;
+    top = substationRect.bottom - shellRect.top + gap;
+  }
+
+  statusPanelEl.classList.add("draggable-card", "is-floating");
+  statusPanelEl.style.left = `${clamp(left, gap, maxLeft)}px`;
+  statusPanelEl.style.top = `${clamp(top, gap, maxTop)}px`;
+  statusPanelEl.style.right = "auto";
+  statusPanelEl.style.bottom = "auto";
+  statusPanelEl.style.width = `${statusRect.width}px`;
+  storeCardRelativePosition(statusPanelEl);
+}
+
 const loadingOverlayEl = document.getElementById("loading-overlay");
 
 function setLoadingOverlayVisible(visible) {
@@ -522,7 +596,7 @@ function buildReconductoringStatusText(dataset) {
     return "Reconductoring dataset ready";
   }
 
-  return `${dataset.label}: ${summary.existingSegmentCount} existing segment(s), ${summary.newSegmentCount} new segment(s), ${summary.states.join(", ")} highlighted`;
+  return `${dataset.label}: ${summary.existingSegmentCount} existing segment(s)`;
 }
 
 function renderUsReconductoringSummary(messageHtml = null) {
@@ -878,6 +952,9 @@ function enableCardDrag(card, handle = card) {
   if (!card || !handle || !mapShellEl) {
     return;
   }
+
+  card.classList.add("draggable-card");
+  handle.classList.add("draggable-handle");
 
   let pointerId = null;
   let offsetX = 0;
@@ -2560,12 +2637,16 @@ async function loadUsPowerPlantLayer() {
 
 async function initializeUsMap() {
   initializeThemeToggle();
+  initializeStatusPanelToggle();
   initializeCountrySwitcherNavigation();
   buildUsSubstationControl();
   buildUsTransmissionControl();
   buildUsPcaControl();
   buildUsReconductoringControl();
   buildUsPowerPlantControl();
+  requestAnimationFrame(() => {
+    positionUsStatusPanelNearSubstations();
+  });
   enableCardDrag(mapTitleCardEl);
   enableCardDrag(statusPanelEl);
   window.addEventListener("resize", refreshResponsiveCardLayout);

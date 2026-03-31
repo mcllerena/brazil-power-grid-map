@@ -233,6 +233,39 @@ const ISO_RECONDUCTORING_CONFIG = [
     ],
   },
   {
+    key: "sertp",
+    label: "SERTP",
+    states: [],
+    enabled: true,
+    regionStyle: {
+      color: "#0f766e",
+      fillColor: "#34d399",
+    },
+    substationPairs: [],
+  },
+  {
+    key: "frcc",
+    label: "FRCC",
+    states: [],
+    enabled: true,
+    regionStyle: {
+      color: "#9d174d",
+      fillColor: "#f472b6",
+    },
+    substationPairs: [],
+  },
+  {
+    key: "northerngrid",
+    label: "NorthernGrid",
+    states: [],
+    enabled: true,
+    regionStyle: {
+      color: "#155e75",
+      fillColor: "#67e8f9",
+    },
+    substationPairs: [],
+  },
+  {
     key: "nyiso",
     label: "NYISO",
     states: ["NY"],
@@ -1025,6 +1058,54 @@ function getIsoStates(isoConfig, reedsZones) {
   return [...states];
 }
 
+function getTransmissionRegionColumn(hierarchyRows) {
+  if (!Array.isArray(hierarchyRows) || !hierarchyRows.length) {
+    return null;
+  }
+
+  const candidates = ["transfreg", "transreg"];
+  for (const column of candidates) {
+    if (hierarchyRows.some((row) => String(row?.[column] || "").trim())) {
+      return column;
+    }
+  }
+
+  return null;
+}
+
+function normalizeRegionName(value) {
+  return String(value || "")
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, "");
+}
+
+function getIsoTransmissionGroups(isoConfig, reedsZones) {
+  const hierarchyRows = reedsZones?.hierarchyRows || [];
+  const regionColumn = getTransmissionRegionColumn(hierarchyRows);
+  if (!regionColumn) {
+    return { regionColumn: null, groups: [] };
+  }
+
+  const isoRegionAliases = new Set([normalizeRegionName(isoConfig.label), normalizeRegionName(isoConfig.key)]);
+  const groups = new Set();
+  for (const row of hierarchyRows) {
+    const transmissionRegion = String(row?.[regionColumn] || "").trim();
+    if (!isoRegionAliases.has(normalizeRegionName(transmissionRegion))) {
+      continue;
+    }
+    const transmissionGroup = String(row?.transgrp || transmissionRegion).trim();
+    if (transmissionGroup) {
+      groups.add(transmissionGroup);
+    }
+  }
+
+  return {
+    regionColumn,
+    groups: [...groups],
+  };
+}
+
 function featureMatchesDirectMatcher(feature, matcher) {
   const sub1 = normalizeContainsValue(feature?.properties?.SUB_1);
   const sub2 = normalizeContainsValue(feature?.properties?.SUB_2);
@@ -1088,19 +1169,28 @@ async function buildIsoReconductoringDataset(options) {
   if (!transmissionCollection?.features?.length) {
     throw new Error("Transmission feature collection is not loaded.");
   }
-  if (!reedsZones?.levels?.get("st")) {
-    throw new Error("ReEDS state hierarchy is not available.");
+  if (!reedsZones?.levels?.get("transgrp")) {
+    throw new Error("ReEDS transmission-group hierarchy is not available.");
   }
 
-  const stateLevel = reedsZones.levels.get("st");
-  const isoStates = getIsoStates(isoConfig, reedsZones);
-  const regionFeatures = isoStates
-    .map((state) => stateLevel.get(state))
-    .filter(Boolean)
-    .map(cloneFeature);
+  const transgrpLevel = reedsZones.levels.get("transgrp");
+  const { regionColumn, groups: isoTransmissionGroups } = getIsoTransmissionGroups(isoConfig, reedsZones);
+  let regionFeatures = isoTransmissionGroups.map((group) => transgrpLevel.get(group)).filter(Boolean).map(cloneFeature);
+  let regionSelectionMode = "transmission-group";
+  let isoStates = [];
+
+  if (!regionFeatures.length && reedsZones?.levels?.get("st")) {
+    // Backward-compatible fallback when a region has no transgrp/transreg mapping.
+    const stateLevel = reedsZones.levels.get("st");
+    isoStates = getIsoStates(isoConfig, reedsZones);
+    regionFeatures = isoStates.map((state) => stateLevel.get(state)).filter(Boolean).map(cloneFeature);
+    regionSelectionMode = "state-fallback";
+  }
 
   if (!regionFeatures.length) {
-    throw new Error(`No PCA state geometry found for ${isoConfig.label}.`);
+    throw new Error(
+      `No PCA transmission-group geometry found for ${isoConfig.label}${regionColumn ? ` via ${regionColumn}` : ""}.`
+    );
   }
 
   const transmissionIndex = buildTransmissionIndex(transmissionCollection.features);
@@ -1144,6 +1234,9 @@ async function buildIsoReconductoringDataset(options) {
     existingFeatures,
     newLineFeatures,
     summary: {
+      regionSelectionMode,
+      transmissionRegionColumn: regionColumn,
+      transmissionGroups: isoTransmissionGroups,
       states: isoStates,
       candidateLineCount: regionalTransmissionIndex.features.length,
       existingSegmentCount: existingFeatures.length,

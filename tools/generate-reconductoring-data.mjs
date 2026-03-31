@@ -405,6 +405,36 @@ function getIsoStates(isoConfig, hierarchyRows) {
   return [...states];
 }
 
+function getTransmissionRegionColumn(hierarchyRows) {
+  if (!Array.isArray(hierarchyRows) || !hierarchyRows.length) return null;
+  for (const column of ["transfreg", "transreg"]) {
+    if (hierarchyRows.some((row) => String(row?.[column] || "").trim())) return column;
+  }
+  return null;
+}
+
+function normalizeRegionName(value) {
+  return String(value || "")
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, "");
+}
+
+function getIsoTransmissionGroups(isoConfig, hierarchyRows) {
+  const regionColumn = getTransmissionRegionColumn(hierarchyRows);
+  if (!regionColumn) return { regionColumn: null, groups: [] };
+
+  const isoRegionAliases = new Set([normalizeRegionName(isoConfig.label), normalizeRegionName(isoConfig.key)]);
+  const groups = new Set();
+  for (const row of hierarchyRows) {
+    const transmissionRegion = String(row?.[regionColumn] || "").trim();
+    if (!isoRegionAliases.has(normalizeRegionName(transmissionRegion))) continue;
+    const transmissionGroup = String(row?.transgrp || transmissionRegion).trim();
+    if (transmissionGroup) groups.add(transmissionGroup);
+  }
+  return { regionColumn, groups: [...groups] };
+}
+
 function aggregateFeatureGroup(groupKey, features) {
   const multipolygon = [];
   for (const feature of features) {
@@ -439,22 +469,23 @@ async function loadHierarchyRows() {
     .filter((row) => row.r && String(row.country || "").trim().toLowerCase() === "usa");
 }
 
-function buildStateRegionFeatures(pcaCollection, hierarchyRows) {
+function buildHierarchyRegionFeatures(pcaCollection, hierarchyRows, column) {
   const hierarchyByZone = new Map(hierarchyRows.map((row) => [row.r, row]));
-  const featuresByState = new Map();
+  const featuresByKey = new Map();
   for (const feature of pcaCollection.features || []) {
     const zoneId = getFeatureProperty(feature.properties, ["rb", "RB", "ba", "BA", "r"]);
     const hierarchy = hierarchyByZone.get(zoneId);
-    const state = String(hierarchy?.st || "").trim().toUpperCase();
-    if (!state) continue;
-    if (!featuresByState.has(state)) featuresByState.set(state, []);
-    featuresByState.get(state).push(feature);
+    const value = String(hierarchy?.[column] || "").trim();
+    const key = column === "st" ? value.toUpperCase() : value;
+    if (!key) continue;
+    if (!featuresByKey.has(key)) featuresByKey.set(key, []);
+    featuresByKey.get(key).push(feature);
   }
-  const stateMap = new Map();
-  for (const [state, features] of featuresByState.entries()) {
-    stateMap.set(state, aggregateFeatureGroup(state, features));
+  const byKeyMap = new Map();
+  for (const [key, features] of featuresByKey.entries()) {
+    byKeyMap.set(key, aggregateFeatureGroup(key, features));
   }
-  return stateMap;
+  return byKeyMap;
 }
 
 async function generate() {
@@ -466,11 +497,21 @@ async function generate() {
   ]);
 
   const transmissionIndex = buildTransmissionIndex(transmissionCollection.features);
-  const stateMap = buildStateRegionFeatures(pcaCollection, hierarchyRows);
+  const stateMap = buildHierarchyRegionFeatures(pcaCollection, hierarchyRows, "st");
+  const transgrpMap = buildHierarchyRegionFeatures(pcaCollection, hierarchyRows, "transgrp");
 
   for (const isoConfig of ISO_RECONDUCTORING_CONFIG.filter((entry) => entry.enabled)) {
-    const isoStates = getIsoStates(isoConfig, hierarchyRows);
-    const regionFeatures = isoStates.map((state) => stateMap.get(state)).filter(Boolean).map(cloneFeature);
+    const { regionColumn, groups: isoTransmissionGroups } = getIsoTransmissionGroups(isoConfig, hierarchyRows);
+    let regionFeatures = isoTransmissionGroups.map((group) => transgrpMap.get(group)).filter(Boolean).map(cloneFeature);
+    let regionSelectionMode = "transmission-group";
+    let isoStates = [];
+
+    if (!regionFeatures.length) {
+      isoStates = getIsoStates(isoConfig, hierarchyRows);
+      regionFeatures = isoStates.map((state) => stateMap.get(state)).filter(Boolean).map(cloneFeature);
+      regionSelectionMode = "state-fallback";
+    }
+
     const regionIndex = buildRegionIndex(regionFeatures);
     const regionalFeatures = transmissionIndex.features.filter((feature) => featureIntersectsAnyRegion(feature, regionIndex));
     const regionalIndex = buildTransmissionIndex(regionalFeatures.map((feature) => cloneFeature(feature)));
@@ -503,6 +544,9 @@ async function generate() {
       existingFeatures,
       newLineFeatures,
       summary: {
+        regionSelectionMode,
+        transmissionRegionColumn: regionColumn,
+        transmissionGroups: isoTransmissionGroups,
         states: isoStates,
         candidateLineCount: regionalIndex.features.length,
         existingSegmentCount: existingFeatures.length,
