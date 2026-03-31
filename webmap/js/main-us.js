@@ -510,6 +510,58 @@ function normalizeVoltageValueLabel(raw) {
   return String(Number(numeric.toFixed(3))).replace(/\.0+$/, "");
 }
 
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
+
+function storeCardRelativePosition(card) {
+  if (!card || !mapShellEl || !card.classList.contains("is-floating")) {
+    return;
+  }
+
+  const shellRect = mapShellEl.getBoundingClientRect();
+  const cardRect = card.getBoundingClientRect();
+  const left = Number.parseFloat(card.style.left);
+  const top = Number.parseFloat(card.style.top);
+  const resolvedLeft = Number.isFinite(left) ? left : cardRect.left - shellRect.left;
+  const resolvedTop = Number.isFinite(top) ? top : cardRect.top - shellRect.top;
+  const maxLeft = Math.max(0, shellRect.width - cardRect.width);
+  const maxTop = Math.max(0, shellRect.height - cardRect.height);
+
+  card.dataset.floatLeftRatio = String(maxLeft > 0 ? resolvedLeft / maxLeft : 0);
+  card.dataset.floatTopRatio = String(maxTop > 0 ? resolvedTop / maxTop : 0);
+}
+
+function clampCardPositionToShell(card) {
+  if (!card || !mapShellEl || !card.classList.contains("is-floating")) {
+    return;
+  }
+
+  const shellRect = mapShellEl.getBoundingClientRect();
+  const cardRect = card.getBoundingClientRect();
+  const currentLeft = Number.parseFloat(card.style.left);
+  const currentTop = Number.parseFloat(card.style.top);
+  const maxLeft = Math.max(0, shellRect.width - cardRect.width);
+  const maxTop = Math.max(0, shellRect.height - cardRect.height);
+  const leftRatio = Number.parseFloat(card.dataset.floatLeftRatio);
+  const topRatio = Number.parseFloat(card.dataset.floatTopRatio);
+  const fallbackLeft = Number.isFinite(currentLeft) ? currentLeft : cardRect.left - shellRect.left;
+  const fallbackTop = Number.isFinite(currentTop) ? currentTop : cardRect.top - shellRect.top;
+  const nextLeft = Number.isFinite(leftRatio) ? leftRatio * maxLeft : fallbackLeft;
+  const nextTop = Number.isFinite(topRatio) ? topRatio * maxTop : fallbackTop;
+
+  card.style.left = `${clamp(nextLeft, 0, maxLeft)}px`;
+  card.style.top = `${clamp(nextTop, 0, maxTop)}px`;
+  storeCardRelativePosition(card);
+}
+
+function refreshResponsiveCardLayout() {
+  map.invalidateSize(false);
+
+  const floatingCards = mapShellEl?.querySelectorAll(".draggable-card.is-floating, .section-card.is-floating");
+  floatingCards?.forEach((card) => clampCardPositionToShell(card));
+}
+
 function getVoltClassValue(properties) {
   const props = properties || {};
   const direct = props.VOLT_CLASS ?? props.volt_class ?? props.Volt_Class;
@@ -610,6 +662,7 @@ function positionPopupCardNearAnchor(card, anchorElement) {
 
   card.style.left = `${left}px`;
   card.style.top = `${top}px`;
+  storeCardRelativePosition(card);
 }
 
 function togglePopupCard(card, anchorElement) {
@@ -653,6 +706,7 @@ function enableCardDrag(card, handle = card) {
     const nextY = event.clientY - shellRect.top - offsetY;
     card.style.left = `${Math.min(Math.max(0, nextX), Math.max(0, maxX))}px`;
     card.style.top = `${Math.min(Math.max(0, nextY), Math.max(0, maxY))}px`;
+    storeCardRelativePosition(card);
   };
 
   const onPointerUp = (event) => {
@@ -707,6 +761,8 @@ function enableCardDrag(card, handle = card) {
 
     card.style.left = `${cardRect.left - shellRect.left}px`;
     card.style.top = `${cardRect.top - shellRect.top}px`;
+    storeCardRelativePosition(card);
+    clampCardPositionToShell(card);
     card.setPointerCapture(pointerId);
 
     window.addEventListener("pointermove", onPointerMove);
@@ -2250,6 +2306,7 @@ async function initializeUsMap() {
   buildUsPowerPlantControl();
   enableCardDrag(mapTitleCardEl);
   enableCardDrag(statusPanelEl);
+  window.addEventListener("resize", refreshResponsiveCardLayout);
   clearStatusWindow();
 
   setLoadingOverlayVisible(true);

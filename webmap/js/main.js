@@ -242,6 +242,54 @@ function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
+function storeCardRelativePosition(card) {
+  if (!card || !mapShellEl || !card.classList.contains("is-floating")) {
+    return;
+  }
+
+  const shellRect = mapShellEl.getBoundingClientRect();
+  const cardRect = card.getBoundingClientRect();
+  const left = Number.parseFloat(card.style.left);
+  const top = Number.parseFloat(card.style.top);
+  const resolvedLeft = Number.isFinite(left) ? left : cardRect.left - shellRect.left;
+  const resolvedTop = Number.isFinite(top) ? top : cardRect.top - shellRect.top;
+  const maxLeft = Math.max(0, shellRect.width - cardRect.width);
+  const maxTop = Math.max(0, shellRect.height - cardRect.height);
+
+  card.dataset.floatLeftRatio = String(maxLeft > 0 ? resolvedLeft / maxLeft : 0);
+  card.dataset.floatTopRatio = String(maxTop > 0 ? resolvedTop / maxTop : 0);
+}
+
+function clampCardPositionToShell(card) {
+  if (!card || !mapShellEl || !card.classList.contains("is-floating")) {
+    return;
+  }
+
+  const shellRect = mapShellEl.getBoundingClientRect();
+  const cardRect = card.getBoundingClientRect();
+  const currentLeft = Number.parseFloat(card.style.left);
+  const currentTop = Number.parseFloat(card.style.top);
+  const maxLeft = Math.max(0, shellRect.width - cardRect.width);
+  const maxTop = Math.max(0, shellRect.height - cardRect.height);
+  const leftRatio = Number.parseFloat(card.dataset.floatLeftRatio);
+  const topRatio = Number.parseFloat(card.dataset.floatTopRatio);
+  const fallbackLeft = Number.isFinite(currentLeft) ? currentLeft : cardRect.left - shellRect.left;
+  const fallbackTop = Number.isFinite(currentTop) ? currentTop : cardRect.top - shellRect.top;
+  const nextLeft = Number.isFinite(leftRatio) ? leftRatio * maxLeft : fallbackLeft;
+  const nextTop = Number.isFinite(topRatio) ? topRatio * maxTop : fallbackTop;
+
+  card.style.left = `${clamp(nextLeft, 0, maxLeft)}px`;
+  card.style.top = `${clamp(nextTop, 0, maxTop)}px`;
+  storeCardRelativePosition(card);
+}
+
+function refreshResponsiveCardLayout() {
+  map.invalidateSize(false);
+
+  const floatingCards = mapShellEl?.querySelectorAll(".draggable-card.is-floating, .section-card.is-floating");
+  floatingCards?.forEach((card) => clampCardPositionToShell(card));
+}
+
 function getInitialTheme() {
   const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
   if (storedTheme === "light" || storedTheme === "dark") {
@@ -338,6 +386,7 @@ function enableCardDrag(card, handle = card) {
 
     card.style.left = `${clampedX}px`;
     card.style.top = `${clampedY}px`;
+    storeCardRelativePosition(card);
   };
 
   const onPointerUp = (event) => {
@@ -390,6 +439,8 @@ function enableCardDrag(card, handle = card) {
       mapShellEl.appendChild(card);
       card.style.left = `${cardRect.left - shellRect.left}px`;
       card.style.top = `${cardRect.top - shellRect.top}px`;
+      storeCardRelativePosition(card);
+      clampCardPositionToShell(card);
     }
 
     card.classList.add("is-dragging");
@@ -1341,6 +1392,7 @@ function getOrCreateGenerationShareCard() {
 
   card.style.left = `${clamp(desiredLeft, 0, Math.max(0, shellRect.width - defaultWidth))}px`;
   card.style.top = `${clamp(desiredTop, 0, Math.max(0, shellRect.height - 140))}px`;
+  storeCardRelativePosition(card);
 
   enableCardDrag(card, header);
 
@@ -2260,3 +2312,4 @@ initialize()
 initializeThemeToggle();
 enableCardDrag(mapTitleCardEl);
 enableCardDrag(statusPanelEl);
+window.addEventListener("resize", refreshResponsiveCardLayout);
