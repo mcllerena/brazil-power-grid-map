@@ -828,6 +828,11 @@ body[data-theme="dark"] .theme-icon-sun {
   align-self: flex-end;
 }
 
+#section-us-reconductoring {
+  width: min(320px, calc(100% - 28px));
+  align-self: flex-end;
+}
+
 #section-us-substations-other-range,
 #section-us-taps-other-range,
 #section-us-transmission-other-levels {
@@ -1092,7 +1097,8 @@ body[data-theme="dark"] .theme-icon-sun {
   #map-ui-right #section-regions,
   #section-us-power-plants,
   #section-us-pca,
-  #section-us-taps {
+  #section-us-taps,
+  #section-us-reconductoring {
     align-self: stretch;
   }
 

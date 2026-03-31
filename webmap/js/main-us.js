@@ -1,3 +1,8 @@
+import {
+  ISO_RECONDUCTORING_CONFIG,
+  buildReconductoringPopupHtml,
+} from "./reconductoring-us.js";
+
 // Load and render US substations and TAPs from CSV
 async function loadUsSubstationLayer() {
   // Load the substations CSV file
@@ -242,6 +247,7 @@ const darkTileLayer = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z
 let activeBaseLayer = null;
 let activeHoverPopupLayer = null;
 let usTransmissionLayer = null;
+let usTransmissionFeatureCollection = null;
 let usTransmissionVoltageLayers = new Map();
 let usTransmissionMasterCheckbox = null;
 let usTransmissionVoltageContainer = null;
@@ -266,6 +272,10 @@ let usPcaLayer = null;
 let usPcaFeatureCollection = null;
 let usPcaVisible = false;
 let usPcaLoaded = false;
+const usReconductoringDatasets = new Map();
+const usReconductoringLayers = new Map();
+const usReconductoringCheckboxes = new Map();
+const usActiveReconductoringIsos = new Set();
 let usStatusTrackingActive = false;
 
 const mapShellEl = document.getElementById("map-shell");
@@ -388,6 +398,17 @@ function setStatusById(statusId, kind, message) {
   setStatus(statusId, kind, message);
 }
 
+function removeStatus(statusId) {
+  if (!statusListEl) {
+    return;
+  }
+
+  const li = statusListEl.querySelector(`[data-status-id='${statusId}']`);
+  if (li) {
+    li.remove();
+  }
+}
+
 function clearStatusWindow() {
   if (!statusListEl) {
     return;
@@ -480,11 +501,182 @@ function refreshStatusFromVisibility() {
     nounSingular: "generator",
     nounPlural: "generators",
   });
+
+  for (const isoKey of usActiveReconductoringIsos) {
+    const dataset = usReconductoringDatasets.get(isoKey);
+    if (!dataset) {
+      continue;
+    }
+    addItem(`us-reconductoring-${isoKey}`, buildReconductoringStatusText(dataset));
+  }
 }
 
 function activateStatusTracking() {
   usStatusTrackingActive = true;
   refreshStatusFromVisibility();
+}
+
+function buildReconductoringStatusText(dataset) {
+  const summary = dataset?.summary;
+  if (!summary) {
+    return "Reconductoring dataset ready";
+  }
+
+  return `${dataset.label}: ${summary.existingSegmentCount} existing segment(s), ${summary.newSegmentCount} new segment(s), ${summary.states.join(", ")} highlighted`;
+}
+
+function renderUsReconductoringSummary(messageHtml = null) {
+  void messageHtml;
+}
+
+function buildUsReconductoringLeafletLayer(dataset) {
+  const layerGroup = L.layerGroup();
+
+  const bindPopup = (featureLayer, feature) => {
+    bindHoverPersistentPopup(featureLayer, buildReconductoringPopupHtml(feature));
+  };
+
+  if (dataset.regionFeatures?.length) {
+    const regionLayer = L.geoJSON(
+      {
+        type: "FeatureCollection",
+        features: dataset.regionFeatures,
+      },
+      {
+        style: {
+          color: dataset.regionStyle?.color || "#9a6700",
+          weight: 1.1,
+          fillColor: dataset.regionStyle?.fillColor || "#fbbf24",
+          fillOpacity: 0.14,
+          dashArray: "6 4",
+        },
+      }
+    );
+    layerGroup.addLayer(regionLayer);
+  }
+
+  if (dataset.existingFeatures?.length) {
+    const existingLayer = L.geoJSON(
+      {
+        type: "FeatureCollection",
+        features: dataset.existingFeatures,
+      },
+      {
+        style: {
+          color: "#dc2626",
+          weight: 3,
+          opacity: 0.95,
+        },
+        onEachFeature: (feature, featureLayer) => bindPopup(featureLayer, feature),
+      }
+    );
+    layerGroup.addLayer(existingLayer);
+  }
+
+  if (dataset.newLineFeatures?.length) {
+    const newLayer = L.geoJSON(
+      {
+        type: "FeatureCollection",
+        features: dataset.newLineFeatures,
+      },
+      {
+        style: {
+          color: "#7c3aed",
+          weight: 3.2,
+          opacity: 0.96,
+        },
+        onEachFeature: (feature, featureLayer) => bindPopup(featureLayer, feature),
+      }
+    );
+    layerGroup.addLayer(newLayer);
+  }
+
+  return layerGroup;
+}
+
+async function ensureUsReconductoringDataset(isoKey) {
+  if (usReconductoringDatasets.has(isoKey)) {
+    return usReconductoringDatasets.get(isoKey);
+  }
+
+  const datasetUrl = makeAbsoluteUrl(`./data/reconductoring-us/${encodeURIComponent(isoKey)}.json`);
+  const response = await fetch(datasetUrl);
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status} for ${datasetUrl}`);
+  }
+  const dataset = await response.json();
+  usReconductoringDatasets.set(isoKey, dataset);
+  return dataset;
+}
+
+async function ensureUsReconductoringLayerPrepared(isoKey) {
+  if (usReconductoringLayers.has(isoKey)) {
+    return usReconductoringLayers.get(isoKey);
+  }
+
+  const dataset = await ensureUsReconductoringDataset(isoKey);
+  const layer = buildUsReconductoringLeafletLayer(dataset);
+  usReconductoringLayers.set(isoKey, layer);
+  return layer;
+}
+
+async function syncUsReconductoringLayer(isoKey, shouldShow) {
+  const statusId = `us-reconductoring-${isoKey}`;
+  const checkbox = usReconductoringCheckboxes.get(isoKey);
+
+  if (!shouldShow) {
+    const existingLayer = usReconductoringLayers.get(isoKey);
+    if (existingLayer && map.hasLayer(existingLayer)) {
+      map.removeLayer(existingLayer);
+    }
+    usActiveReconductoringIsos.delete(isoKey);
+    removeStatus(statusId);
+    renderUsReconductoringSummary();
+    activateStatusTracking();
+    return;
+  }
+
+  try {
+    if (checkbox) {
+      checkbox.disabled = true;
+    }
+    renderUsReconductoringSummary(`
+      <strong>${isoKey.toUpperCase()}</strong><br />
+      Preparing reconductoring dataset...
+    `);
+    const dataset = await ensureUsReconductoringDataset(isoKey);
+    const layer = await ensureUsReconductoringLayerPrepared(isoKey);
+
+    if (!map.hasLayer(layer)) {
+      layer.addTo(map);
+    }
+
+    usActiveReconductoringIsos.add(isoKey);
+    setStatusById(statusId, "ok", buildReconductoringStatusText(dataset));
+    renderUsReconductoringSummary(`
+      <strong>${dataset.label}</strong><br />
+      States: ${dataset.summary.states.join(", ")}<br />
+      ReEDS candidate lines in region: ${dataset.summary.candidateLineCount}<br />
+      Existing reconductoring segments: ${dataset.summary.existingSegmentCount}<br />
+      New direct reconductoring links: ${dataset.summary.newSegmentCount}<br />
+      Substation pairs tracked: ${dataset.summary.substationPairCount}
+    `);
+    activateStatusTracking();
+  } catch (error) {
+    if (checkbox) {
+      checkbox.checked = false;
+    }
+    usActiveReconductoringIsos.delete(isoKey);
+    setStatusById(statusId, "warn", `${isoKey.toUpperCase()} reconductoring unavailable: ${error?.message || "unknown error"}`);
+    renderUsReconductoringSummary(`
+      <strong>${isoKey.toUpperCase()} reconductoring unavailable.</strong><br />
+      ${error?.message || "Unknown error"}
+    `);
+  } finally {
+    if (checkbox && ISO_RECONDUCTORING_CONFIG.find((entry) => entry.key === isoKey)?.enabled) {
+      checkbox.disabled = false;
+    }
+  }
 }
 
 function normalizeVoltageValueLabel(raw) {
@@ -1453,6 +1645,74 @@ function buildUsPcaControl() {
 
 }
 
+function buildUsReconductoringControl() {
+  if (!mapUiRightEl) {
+    return;
+  }
+
+  const card = document.createElement("section");
+  card.id = "section-us-reconductoring";
+  card.className = "section-card";
+
+  const header = document.createElement("div");
+  header.className = "section-card-header";
+
+  const title = document.createElement("h2");
+  title.className = "section-card-title";
+  title.textContent = "Reconductoring projects";
+  header.appendChild(title);
+  card.appendChild(header);
+
+  const body = document.createElement("div");
+  body.className = "section-card-body";
+
+  const optionsWrap = document.createElement("div");
+  optionsWrap.className = "voltage-filter-container";
+
+  const optionsTitle = document.createElement("div");
+  optionsTitle.className = "voltage-filter-title";
+  optionsTitle.textContent = "ISO regions:";
+  optionsWrap.appendChild(optionsTitle);
+
+  for (const iso of ISO_RECONDUCTORING_CONFIG) {
+    const row = document.createElement("label");
+    row.className = "voltage-filter-row";
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.disabled = !iso.enabled;
+
+    const text = document.createElement("span");
+    text.textContent = iso.enabled ? iso.label : `${iso.label} (coming soon)`;
+
+    row.appendChild(checkbox);
+    row.appendChild(text);
+    optionsWrap.appendChild(row);
+    usReconductoringCheckboxes.set(iso.key, checkbox);
+
+    if (iso.enabled) {
+      checkbox.addEventListener("change", () => {
+        syncUsReconductoringLayer(iso.key, checkbox.checked);
+      });
+    } else {
+      row.title = `${iso.label} reconductoring is not implemented yet.`;
+    }
+  }
+
+  body.appendChild(optionsWrap);
+
+  card.appendChild(body);
+
+  const pcaCard = document.getElementById("section-us-pca");
+  if (pcaCard?.parentNode) {
+    pcaCard.parentNode.insertBefore(card, pcaCard.nextSibling);
+  } else {
+    mapUiRightEl.appendChild(card);
+  }
+
+  enableSectionCardDrag(card);
+}
+
 async function loadUsPcaLayer() {
   const parser = getShpParser();
   const basePath = `${US_DATA_ROOT}/${encodeURIComponent(US_PCA_BASENAME)}`;
@@ -2104,6 +2364,7 @@ async function loadUsTransmissionLayer() {
   const zipBuffer = await fetchArrayBuffer(zipUrl);
   const parsed = await parser(zipBuffer);
   const collection = toFeatureCollection(parsed, US_TRANSMISSION_BASENAME);
+  usTransmissionFeatureCollection = collection;
 
   // Group features by voltage
   const featuresByVoltage = new Map();
@@ -2303,6 +2564,7 @@ async function initializeUsMap() {
   buildUsSubstationControl();
   buildUsTransmissionControl();
   buildUsPcaControl();
+  buildUsReconductoringControl();
   buildUsPowerPlantControl();
   enableCardDrag(mapTitleCardEl);
   enableCardDrag(statusPanelEl);
