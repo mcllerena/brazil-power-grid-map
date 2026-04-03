@@ -191,6 +191,7 @@ const US_POWER_PLANT_CATEGORY_COLORS = {
 
 const map = L.map("map", {
   zoomControl: false,
+  preferCanvas: true,
   minZoom: 2.5,
   maxZoom: 17,
   zoomSnap: 0.25,
@@ -247,7 +248,6 @@ const darkTileLayer = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z
 let activeBaseLayer = null;
 let activeHoverPopupLayer = null;
 let usTransmissionLayer = null;
-let usTransmissionFeatureCollection = null;
 let usTransmissionVoltageLayers = new Map();
 let usTransmissionMasterCheckbox = null;
 let usTransmissionVoltageContainer = null;
@@ -272,9 +272,9 @@ let usPcaLayer = null;
 let usPcaFeatureCollection = null;
 let usPcaVisible = false;
 let usPcaLoaded = false;
-const usReconductoringDatasets = new Map();
 const usReconductoringLayers = new Map();
 const usReconductoringCheckboxes = new Map();
+const usReconductoringSummaries = new Map();
 const usActiveReconductoringIsos = new Set();
 let usStatusTrackingActive = false;
 
@@ -575,11 +575,11 @@ function refreshStatusFromVisibility() {
   });
 
   for (const isoKey of usActiveReconductoringIsos) {
-    const dataset = usReconductoringDatasets.get(isoKey);
-    if (!dataset) {
+    const summary = usReconductoringSummaries.get(isoKey);
+    if (!summary) {
       continue;
     }
-    addItem(`us-reconductoring-${isoKey}`, buildReconductoringStatusText(dataset));
+    addItem(`us-reconductoring-${isoKey}`, buildReconductoringStatusText({ label: summary.label, summary }));
   }
 }
 
@@ -667,18 +667,12 @@ function buildUsReconductoringLeafletLayer(dataset) {
 }
 
 async function ensureUsReconductoringDataset(isoKey) {
-  if (usReconductoringDatasets.has(isoKey)) {
-    return usReconductoringDatasets.get(isoKey);
-  }
-
   const datasetUrl = makeAbsoluteUrl(`./data/reconductoring-us/${encodeURIComponent(isoKey)}.json`);
   const response = await fetch(datasetUrl);
   if (!response.ok) {
     throw new Error(`HTTP ${response.status} for ${datasetUrl}`);
   }
-  const dataset = await response.json();
-  usReconductoringDatasets.set(isoKey, dataset);
-  return dataset;
+  return response.json();
 }
 
 async function ensureUsReconductoringLayerPrepared(isoKey) {
@@ -701,6 +695,8 @@ async function syncUsReconductoringLayer(isoKey, shouldShow) {
     if (existingLayer && map.hasLayer(existingLayer)) {
       map.removeLayer(existingLayer);
     }
+    usReconductoringLayers.delete(isoKey);
+    usReconductoringSummaries.delete(isoKey);
     usActiveReconductoringIsos.delete(isoKey);
     removeStatus(statusId);
     renderUsReconductoringSummary();
@@ -724,6 +720,10 @@ async function syncUsReconductoringLayer(isoKey, shouldShow) {
     }
 
     usActiveReconductoringIsos.add(isoKey);
+    usReconductoringSummaries.set(isoKey, {
+      ...dataset.summary,
+      label: dataset.label,
+    });
     setStatusById(statusId, "ok", buildReconductoringStatusText(dataset));
     renderUsReconductoringSummary(`
       <strong>${dataset.label}</strong><br />
@@ -2440,7 +2440,6 @@ async function loadUsTransmissionLayer() {
   const zipBuffer = await fetchArrayBuffer(zipUrl);
   const parsed = await parser(zipBuffer);
   const collection = toFeatureCollection(parsed, US_TRANSMISSION_BASENAME);
-  usTransmissionFeatureCollection = collection;
 
   // Group features by voltage
   const featuresByVoltage = new Map();

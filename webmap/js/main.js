@@ -8,6 +8,7 @@ const THEME_STORAGE_KEY = "webmap-theme";
 
 const map = L.map("map", {
   zoomControl: false,
+  preferCanvas: true,
   minZoom: 3,
   maxZoom: 17,
   zoomSnap: 0.25,
@@ -2124,6 +2125,9 @@ async function loadLayerGroup(group) {
   } else {
     state.dataLayer = createLeafletLayer(group, merged);
     state.dataBoundsLayer = state.dataLayer;
+  }
+  if (group.section !== "Power plants") {
+    state.featureCollection = null;
   }
   state.loaded = true;
   state.loading = false;
