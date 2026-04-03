@@ -17,37 +17,38 @@ const ISO_RECONDUCTORING_CONFIG = [
       ["GWF 2", "KINGSBURG"],
       ["EAGLE ROCK", "FULTON"],
       ["FULTON", "SILVERADO"],
-      ["CLEAR LAKE", "EAGLE ROCK"],
-      ["CORTINA", "WILLIAMS ST"],
-      ["EL DORADO", "MISSOURI CITY"],
-      ["MORAGA", "SAN LEANDRO U"],
-      ["MORAGA", "OAKLAND X"],
-      ["OAKLAND X", "SAN LEANDRO U"],
       ["SAN JOSE STA. A", "EL PATIO"],
       ["SAN JOSE STA. B", "TRIMBLE"],
       ["KIFER", "FMC"],
       ["MOUNTAIN VIEW", "MONTA VISTA"],
       ["WHISMAN", "MONTA VISTA"],
       ["PIERCY", "METCALF 2"],
-      ["WARNERVILLE", "BELLOTA"],
-      ["WILSON", "LE GRAND"],
-      ["BORDEN CO", "STORY"],
-      ["CHRISTIE", "SOBRANTE"],
-      ["HERNDON", "BULLARD"],
-      ["MANTECA", "RIPON"],
-      ["RIPON", "RIVERBANK"],
-      ["RIVERBANK", "MELONES"],
-      ["MIDWAY", "KERN"],
-      ["MIDWAY", "TEMBLOR"],
-      ["RIO OSO", "LINCOLN"],
-      ["RIO OSO", "WEST SACRAMENTO"],
       ["TESLA", "NEWARK"],
       ["TULUCAY", "NAPA"],
+      ["MESA", "TALEGA"],
+      ["RIO OSO", "WEST SACRAMENTO"],
+      ["RIO OSO", "LINCOLN"],
       ["VACAVILLE", "PLAINFIELD"],
       ["WILSON", "ORO LOMA"],
-      ["MESA", "TALEGA"],
       ["NORTH DUBLIN", "VINEYARD"],
       ["VICTOR", "KRAMER"],
+      // ["CLEAR LAKE", "EAGLE ROCK"],
+      // ["CORTINA", "WILLIAMS ST"],
+      // ["EL DORADO", "MISSOURI CITY"],
+      // ["MORAGA", "SAN LEANDRO U"],
+      // ["MORAGA", "OAKLAND X"],
+      // ["OAKLAND X", "SAN LEANDRO U"],
+      
+      // ["WARNERVILLE", "BELLOTA"],
+      // ["WILSON", "LE GRAND"],
+      // ["BORDEN CO", "STORY"],
+      // ["CHRISTIE", "SOBRANTE"],
+      // ["HERNDON", "BULLARD"],
+      // ["MANTECA", "RIPON"],
+      // ["RIPON", "RIVERBANK"],
+      // ["RIVERBANK", "MELONES"],
+      // ["MIDWAY", "KERN"],
+      // ["MIDWAY", "TEMBLOR"],
     ],
   },
   {
@@ -1001,14 +1002,40 @@ function featureIntersectsAnyRegion(feature, regionIndex) {
 
 function buildPopupProperties(feature) {
   const props = feature?.properties || {};
+  const projectRecords = Array.isArray(props.project_records) ? props.project_records : [];
+  const primaryProject = projectRecords[0] || null;
+  const projectNames = projectRecords
+    .map((row) => String(row?.["Project Name"] || "").trim())
+    .filter(Boolean);
   const rows = [
     ["Region", props.iso_region || "-"],
     ["Project", props.project_type === "new-reconductoring" ? "New reconductoring" : "Existing reconductoring"],
     ["Substation pair", props.substation_pair || "-"],
     ["SUB_1", props.SUB_1 || "-"],
     ["SUB_2", props.SUB_2 || "-"],
-    ["Voltage", props.reconductoring_voltage || props.VOLTAGE || "-"],
+    [
+      "Voltage",
+      primaryProject?.["Voltage (kV)"] || primaryProject?.Voltage || props.reconductoring_voltage || props.VOLTAGE || "-",
+    ],
   ];
+
+  if (projectRecords.length > 1) {
+    rows.push(["Matched workbook projects", String(projectRecords.length)]);
+    rows.push(["Workbook project names", projectNames.join(" | ") || "-"]);
+  } else if (primaryProject) {
+    rows.push(["Project name", primaryProject["Project Name"] || "-"]);
+  }
+
+  if (primaryProject) {
+    rows.push(["Utility", primaryProject.Utility || "-"]);
+    rows.push(["Project type", primaryProject["Project Type"] || "-"]);
+    rows.push(["Distance (mi)", primaryProject["Distance (mi)"] || "-"]);
+    rows.push(["Rating", primaryProject.Rating || "-"]);
+    rows.push(["Cost ($ M)", primaryProject["Cost ($ M)"] || "-"]);
+    rows.push(["Status", primaryProject.Status || "-"]);
+    rows.push(["Planned year", primaryProject["Planned Year"] || "-"]);
+    rows.push(["Description", primaryProject.Description || "-"]);
+  }
 
   return rows;
 }

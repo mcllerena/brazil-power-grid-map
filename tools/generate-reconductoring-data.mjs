@@ -8,6 +8,7 @@ globalThis.self = globalThis;
 const ROOT = process.cwd();
 const US_DATA_DIR = path.join(ROOT, "geoinfo", "us-data");
 const OUTPUT_DIR = path.join(ROOT, "webmap", "data", "reconductoring-us");
+const RECONDUCTORING_PROJECTS_JSON = path.join(ROOT, "reference", "us_reconductoring_projects.json");
 
 function parseCsvLine(line) {
   const values = [];
@@ -270,6 +271,12 @@ function normalizeContainsValue(value) {
   return String(value || "").trim().toUpperCase();
 }
 
+function buildCanonicalPairLabel(sub1, sub2) {
+  const left = normalizeName(sub1);
+  const right = normalizeName(sub2);
+  return [left, right].sort().join("||");
+}
+
 function buildTransmissionGraph(features) {
   const adjacency = new Map();
   const addEdge = (from, to, lineId) => {
@@ -391,6 +398,76 @@ function deriveSubstationPairsFromMatchers(features, matchers) {
   return [...uniquePairs.values()];
 }
 
+function dedupeSubstationPairs(pairs) {
+  const uniquePairs = new Map();
+  for (const pair of pairs || []) {
+    if (!Array.isArray(pair) || pair.length < 2) {
+      continue;
+    }
+    const sub1 = String(pair[0] || "").trim();
+    const sub2 = String(pair[1] || "").trim();
+    if (!sub1 || !sub2) {
+      continue;
+    }
+    const key = buildCanonicalPairLabel(sub1, sub2);
+    if (!uniquePairs.has(key)) {
+      uniquePairs.set(key, [sub1, sub2]);
+    }
+  }
+  return [...uniquePairs.values()];
+}
+
+async function loadWorkbookProjectsByIso() {
+  try {
+    const text = await fs.readFile(RECONDUCTORING_PROJECTS_JSON, "utf8");
+    const parsed = JSON.parse(String(text || "{}"));
+    if (parsed && typeof parsed === "object") {
+      return parsed;
+    }
+    return {};
+  } catch (error) {
+    console.warn(`Workbook metadata unavailable at ${RECONDUCTORING_PROJECTS_JSON}: ${error?.message || "unknown error"}`);
+    return {};
+  }
+}
+
+function buildProjectsByPair(projectRows) {
+  const projectsByPair = new Map();
+  for (const row of projectRows || []) {
+    const sub1 = String(row?.SUB_1 || "").trim();
+    const sub2 = String(row?.SUB_2 || "").trim();
+    if (!sub1 || !sub2) {
+      continue;
+    }
+    const key = buildCanonicalPairLabel(sub1, sub2);
+    if (!projectsByPair.has(key)) {
+      projectsByPair.set(key, []);
+    }
+    projectsByPair.get(key).push(row);
+  }
+  return projectsByPair;
+}
+
+function dedupeProjectRows(rows) {
+  const seen = new Set();
+  const out = [];
+  for (const row of rows || []) {
+    const key = [
+      String(row?.["Project Name"] || "").trim(),
+      String(row?.SUB_1 || "").trim().toUpperCase(),
+      String(row?.SUB_2 || "").trim().toUpperCase(),
+      String(row?.Status || "").trim(),
+      String(row?.["Planned Year"] || "").trim(),
+    ].join("||");
+    if (seen.has(key)) {
+      continue;
+    }
+    seen.add(key);
+    out.push(row);
+  }
+  return out;
+}
+
 function getIsoStates(isoConfig, hierarchyRows) {
   const states = new Set(isoConfig.states || []);
   if (isoConfig.hierarchyStateFilter?.column && isoConfig.hierarchyStateFilter?.value) {
@@ -495,6 +572,7 @@ async function generate() {
     loadPcaCollection(),
     loadHierarchyRows(),
   ]);
+  const workbookProjectsByIso = await loadWorkbookProjectsByIso();
 
   const transmissionIndex = buildTransmissionIndex(transmissionCollection.features);
   const stateMap = buildHierarchyRegionFeatures(pcaCollection, hierarchyRows, "st");
@@ -516,23 +594,54 @@ async function generate() {
     const regionalFeatures = transmissionIndex.features.filter((feature) => featureIntersectsAnyRegion(feature, regionIndex));
     const regionalIndex = buildTransmissionIndex(regionalFeatures.map((feature) => cloneFeature(feature)));
     const derivedPairs = deriveSubstationPairsFromMatchers(regionalIndex.features, isoConfig.directMatchers);
-    const targetPairs = [...(isoConfig.substationPairs || []), ...derivedPairs];
+    const targetPairs = dedupeSubstationPairs([...(isoConfig.substationPairs || []), ...derivedPairs]);
+    const workbookRows = workbookProjectsByIso[isoConfig.key] || [];
+    const projectsByPair = buildProjectsByPair(workbookRows);
     const newLineFeatures = [];
     const existingLineIds = new Set();
+    const lineProjectsById = new Map();
+    const pairRowsMatchCount = new Set();
     for (const [sub1, sub2] of targetPairs) {
+      const pairKey = buildCanonicalPairLabel(sub1, sub2);
+      const projectRows = projectsByPair.get(pairKey) || [];
+      if (projectRows.length) {
+        pairRowsMatchCount.add(pairKey);
+      }
+      const beforeNewLineCount = newLineFeatures.length;
       const ids = processSubstationPair(regionalIndex, sub1, sub2, newLineFeatures, isoConfig.label);
-      for (const id of ids) existingLineIds.add(id);
+      for (const id of ids) {
+        existingLineIds.add(id);
+        if (projectRows.length) {
+          if (!lineProjectsById.has(id)) {
+            lineProjectsById.set(id, []);
+          }
+          lineProjectsById.get(id).push(...projectRows);
+        }
+      }
+      if (newLineFeatures.length > beforeNewLineCount && projectRows.length) {
+        const newest = newLineFeatures[newLineFeatures.length - 1];
+        newest.properties.project_records = projectRows;
+      }
     }
     const existingFeatures = regionalIndex.features
       .filter((feature) => existingLineIds.has(feature.properties.__featureIndex))
       .map((feature) => {
         const clone = cloneFeature(feature);
+        const lineId = feature.properties.__featureIndex;
+        const projectRows = dedupeProjectRows(lineProjectsById.get(lineId) || []);
         clone.properties.project_type = "existing-reconductoring";
         clone.properties.iso_region = isoConfig.label;
         clone.properties.substation_pair = `${feature.properties.SUB_1 || "-"} -> ${feature.properties.SUB_2 || "-"}`;
         clone.properties.reconductoring_voltage = getFeatureProperty(feature.properties, ["VOLTAGE", "Voltage", "voltage"]);
+        if (projectRows.length) {
+          clone.properties.project_records = projectRows;
+        }
         return clone;
       });
+    const projectsUnmatchedToPairs = (workbookRows || []).filter((row) => {
+      const key = buildCanonicalPairLabel(row?.SUB_1, row?.SUB_2);
+      return !pairRowsMatchCount.has(key);
+    });
     const dataset = {
       isoKey: isoConfig.key,
       label: isoConfig.label,
@@ -548,6 +657,9 @@ async function generate() {
         transmissionRegionColumn: regionColumn,
         transmissionGroups: isoTransmissionGroups,
         states: isoStates,
+        workbookProjectRowCount: workbookRows.length,
+        workbookMatchedPairCount: pairRowsMatchCount.size,
+        workbookUnmatchedRowCount: projectsUnmatchedToPairs.length,
         candidateLineCount: regionalIndex.features.length,
         existingSegmentCount: existingFeatures.length,
         newSegmentCount: newLineFeatures.length,
