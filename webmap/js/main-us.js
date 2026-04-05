@@ -601,6 +601,42 @@ function renderUsReconductoringSummary(messageHtml = null) {
   void messageHtml;
 }
 
+const US_RECONDUCTORING_STATUS_COLORS = {
+  planned: "#2563eb",
+  "in operation": "#16a34a",
+  "in flight": "#f59e0b",
+  initiating: "#7c3aed",
+  mixed: "#be185d",
+  unknown: "#dc2626",
+};
+
+function normalizeReconductoringStatus(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ");
+}
+
+function getReconductoringFeatureStatusKey(feature) {
+  const projectRecords = Array.isArray(feature?.properties?.project_records)
+    ? feature.properties.project_records
+    : [];
+  const statuses = [...new Set(projectRecords.map((row) => normalizeReconductoringStatus(row?.Status)).filter(Boolean))];
+  if (!statuses.length) {
+    const fallbackStatus = normalizeReconductoringStatus(feature?.properties?.Status);
+    return fallbackStatus || "unknown";
+  }
+  if (statuses.length > 1) {
+    return "mixed";
+  }
+  return statuses[0];
+}
+
+function getReconductoringStatusColor(feature) {
+  const statusKey = getReconductoringFeatureStatusKey(feature);
+  return US_RECONDUCTORING_STATUS_COLORS[statusKey] || US_RECONDUCTORING_STATUS_COLORS.unknown;
+}
+
 function buildUsReconductoringLeafletLayer(dataset) {
   const layerGroup = L.layerGroup();
 
@@ -634,11 +670,11 @@ function buildUsReconductoringLeafletLayer(dataset) {
         features: dataset.existingFeatures,
       },
       {
-        style: {
-          color: "#dc2626",
+        style: (feature) => ({
+          color: getReconductoringStatusColor(feature),
           weight: 3,
           opacity: 0.95,
-        },
+        }),
         onEachFeature: (feature, featureLayer) => bindPopup(featureLayer, feature),
       }
     );
@@ -652,11 +688,11 @@ function buildUsReconductoringLeafletLayer(dataset) {
         features: dataset.newLineFeatures,
       },
       {
-        style: {
-          color: "#7c3aed",
+        style: (feature) => ({
+          color: getReconductoringStatusColor(feature),
           weight: 3.2,
           opacity: 0.96,
-        },
+        }),
         onEachFeature: (feature, featureLayer) => bindPopup(featureLayer, feature),
       }
     );

@@ -448,6 +448,12 @@ function buildProjectsByPair(projectRows) {
   return projectsByPair;
 }
 
+function getPairsFromWorkbookRows(projectRows) {
+  return dedupeSubstationPairs(
+    (projectRows || []).map((row) => [String(row?.SUB_1 || "").trim(), String(row?.SUB_2 || "").trim()])
+  );
+}
+
 function dedupeProjectRows(rows) {
   const seen = new Set();
   const out = [];
@@ -466,6 +472,220 @@ function dedupeProjectRows(rows) {
     out.push(row);
   }
   return out;
+}
+
+function normalizeTextToken(value) {
+  return String(value || "")
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, "");
+}
+
+function getFeatureOwnerLabel(feature) {
+  return String(
+    feature?.properties?.OWNER ||
+      feature?.properties?.UTILITY ||
+      feature?.properties?.UTILNAME ||
+      ""
+  ).trim();
+}
+
+function getUtilityAliases(utilityValue) {
+  const utility = normalizeTextToken(utilityValue);
+  if (!utility) {
+    return [];
+  }
+  const aliases = new Set([utility]);
+  if (utility === "PGE") {
+    aliases.add("PACIFICGASELECTRIC");
+  }
+  if (utility === "SCE") {
+    aliases.add("SOUTHERNCALIFORNIAEDISON");
+  }
+  if (utility === "SDGE") {
+    aliases.add("SANDIEGOGASELECTRIC");
+  }
+  return [...aliases];
+}
+
+function parseDistanceMiles(value) {
+  const text = String(value || "").trim();
+  if (!text) {
+    return null;
+  }
+  const match = text.match(/-?\d+(\.\d+)?/);
+  if (!match) {
+    return null;
+  }
+  const parsed = Number(match[0]);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function toRadians(deg) {
+  return (deg * Math.PI) / 180;
+}
+
+function lineLengthMiles(geometry) {
+  const lines = getLineStrings(geometry);
+  const R = 3958.7613;
+  let total = 0;
+  for (const coords of lines) {
+    for (let i = 1; i < coords.length; i += 1) {
+      const [lon1, lat1] = coords[i - 1];
+      const [lon2, lat2] = coords[i];
+      const dLat = toRadians(lat2 - lat1);
+      const dLon = toRadians(lon2 - lon1);
+      const a =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.sin(dLon / 2) ** 2;
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      total += R * c;
+    }
+  }
+  return total;
+}
+
+function findDirectPairLineIds(source, sub1, sub2, projectRows) {
+  const target1 = normalizeName(sub1);
+  const target2 = normalizeName(sub2);
+  const directCandidates = [];
+
+  for (const feature of source?.features || []) {
+    const f1 = normalizeName(feature?.properties?.SUB_1);
+    const f2 = normalizeName(feature?.properties?.SUB_2);
+    const matchesPair = (f1 === target1 && f2 === target2) || (f1 === target2 && f2 === target1);
+    if (!matchesPair) {
+      continue;
+    }
+    directCandidates.push(feature);
+  }
+
+  if (!directCandidates.length) {
+    return new Set();
+  }
+
+  const utilityAliases = new Set(
+    (projectRows || []).flatMap((row) => getUtilityAliases(row?.Utility))
+  );
+  let narrowed = directCandidates;
+  if (utilityAliases.size) {
+    const utilityMatched = directCandidates.filter((feature) => {
+      const owner = normalizeTextToken(getFeatureOwnerLabel(feature));
+      if (!owner) {
+        return false;
+      }
+      for (const alias of utilityAliases) {
+        if (owner.includes(alias) || alias.includes(owner)) {
+          return true;
+        }
+      }
+      return false;
+    });
+    if (utilityMatched.length) {
+      narrowed = utilityMatched;
+    }
+  }
+
+  const targetDistance = (projectRows || [])
+    .map((row) => parseDistanceMiles(row?.["Distance (mi)"]))
+    .find((value) => Number.isFinite(value));
+
+  let selected = narrowed[0];
+  if (Number.isFinite(targetDistance) && narrowed.length > 1) {
+    selected = narrowed
+      .map((feature) => ({
+        feature,
+        delta: Math.abs(lineLengthMiles(feature.geometry) - targetDistance),
+      }))
+      .sort((a, b) => a.delta - b.delta)[0]?.feature || narrowed[0];
+  }
+
+  return new Set([selected.properties.__featureIndex]);
+}
+
+function chooseBestFeatureForWorkbookPair(features, projectRows) {
+  if (!features.length) {
+    return null;
+  }
+
+  const utilityAliases = new Set(
+    (projectRows || []).flatMap((row) => getUtilityAliases(row?.Utility))
+  );
+  let narrowed = features;
+  if (utilityAliases.size) {
+    const utilityMatched = features.filter((feature) => {
+      const owner = normalizeTextToken(getFeatureOwnerLabel(feature));
+      if (!owner) {
+        return false;
+      }
+      for (const alias of utilityAliases) {
+        if (owner.includes(alias) || alias.includes(owner)) {
+          return true;
+        }
+      }
+      return false;
+    });
+    if (utilityMatched.length) {
+      narrowed = utilityMatched;
+    }
+  }
+
+  const targetDistance = (projectRows || [])
+    .map((row) => parseDistanceMiles(row?.["Distance (mi)"]))
+    .find((value) => Number.isFinite(value));
+  if (Number.isFinite(targetDistance) && narrowed.length > 1) {
+    return narrowed
+      .map((feature) => ({
+        feature,
+        delta: Math.abs(lineLengthMiles(feature.geometry) - targetDistance),
+      }))
+      .sort((a, b) => a.delta - b.delta)[0]?.feature || narrowed[0];
+  }
+
+  return narrowed[0];
+}
+
+function dedupeWorkbookBackedPairFeatures(features, workbookRowsByPair) {
+  const grouped = new Map();
+  for (const feature of features || []) {
+    const props = feature?.properties || {};
+    const pairKey = buildCanonicalPairLabel(props.SUB_1, props.SUB_2);
+    if (!grouped.has(pairKey)) {
+      grouped.set(pairKey, []);
+    }
+    grouped.get(pairKey).push(feature);
+  }
+
+  const selected = [];
+  for (const [pairKey, group] of grouped.entries()) {
+    const projectRows = workbookRowsByPair.get(pairKey) || [];
+    if (projectRows.length && group.length > 1) {
+      const winner = chooseBestFeatureForWorkbookPair(group, projectRows);
+      if (winner) {
+        selected.push(winner);
+      }
+      continue;
+    }
+    selected.push(...group);
+  }
+  return selected;
+}
+
+function applyWorkbookProjectMetadata(properties, projectRows) {
+  const rows = dedupeProjectRows(projectRows || []);
+  if (!rows.length) {
+    return properties;
+  }
+
+  const primary = rows[0];
+  const sub1 = String(primary?.SUB_1 || "").trim();
+  const sub2 = String(primary?.SUB_2 || "").trim();
+  if (sub1 && sub2) {
+    properties.substation_pair = `${sub1} -> ${sub2}`;
+    properties.SUB_1 = sub1;
+    properties.SUB_2 = sub2;
+  }
+  properties.project_records = rows;
+  return properties;
 }
 
 function getIsoStates(isoConfig, hierarchyRows) {
@@ -594,12 +814,15 @@ async function generate() {
     const regionalFeatures = transmissionIndex.features.filter((feature) => featureIntersectsAnyRegion(feature, regionIndex));
     const regionalIndex = buildTransmissionIndex(regionalFeatures.map((feature) => cloneFeature(feature)));
     const derivedPairs = deriveSubstationPairsFromMatchers(regionalIndex.features, isoConfig.directMatchers);
-    const targetPairs = dedupeSubstationPairs([...(isoConfig.substationPairs || []), ...derivedPairs]);
     const workbookRows = workbookProjectsByIso[isoConfig.key] || [];
+    const workbookPairs = getPairsFromWorkbookRows(workbookRows);
+    const basePairs = workbookPairs.length ? workbookPairs : (isoConfig.substationPairs || []);
+    const targetPairs = dedupeSubstationPairs([...basePairs, ...derivedPairs]);
     const projectsByPair = buildProjectsByPair(workbookRows);
     const newLineFeatures = [];
     const existingLineIds = new Set();
     const lineProjectsById = new Map();
+    const lineIntendedPairById = new Map(); // featureIndex -> [sub1, sub2]
     const pairRowsMatchCount = new Set();
     for (const [sub1, sub2] of targetPairs) {
       const pairKey = buildCanonicalPairLabel(sub1, sub2);
@@ -608,9 +831,15 @@ async function generate() {
         pairRowsMatchCount.add(pairKey);
       }
       const beforeNewLineCount = newLineFeatures.length;
-      const ids = processSubstationPair(regionalIndex, sub1, sub2, newLineFeatures, isoConfig.label);
+      let ids = findDirectPairLineIds(regionalIndex, sub1, sub2, projectRows);
+      if (!ids.size) {
+        ids = processSubstationPair(regionalIndex, sub1, sub2, newLineFeatures, isoConfig.label);
+      }
       for (const id of ids) {
         existingLineIds.add(id);
+        if (!lineIntendedPairById.has(id)) {
+          lineIntendedPairById.set(id, [sub1, sub2]);
+        }
         if (projectRows.length) {
           if (!lineProjectsById.has(id)) {
             lineProjectsById.set(id, []);
@@ -620,24 +849,33 @@ async function generate() {
       }
       if (newLineFeatures.length > beforeNewLineCount && projectRows.length) {
         const newest = newLineFeatures[newLineFeatures.length - 1];
-        newest.properties.project_records = projectRows;
+        newest.properties = applyWorkbookProjectMetadata(newest.properties || {}, projectRows);
       }
     }
-    const existingFeatures = regionalIndex.features
+    let existingFeatures = regionalIndex.features
       .filter((feature) => existingLineIds.has(feature.properties.__featureIndex))
       .map((feature) => {
         const clone = cloneFeature(feature);
         const lineId = feature.properties.__featureIndex;
-        const projectRows = dedupeProjectRows(lineProjectsById.get(lineId) || []);
+        const projectRows = lineProjectsById.get(lineId) || [];
+        const intendedPair = lineIntendedPairById.get(lineId);
         clone.properties.project_type = "existing-reconductoring";
         clone.properties.iso_region = isoConfig.label;
-        clone.properties.substation_pair = `${feature.properties.SUB_1 || "-"} -> ${feature.properties.SUB_2 || "-"}`;
-        clone.properties.reconductoring_voltage = getFeatureProperty(feature.properties, ["VOLTAGE", "Voltage", "voltage"]);
-        if (projectRows.length) {
-          clone.properties.project_records = projectRows;
+        // Default to intended pair for display; applyWorkbookProjectMetadata will
+        // override with project record SUB_1/SUB_2 if records are available.
+        if (intendedPair) {
+          const [pSub1, pSub2] = intendedPair;
+          clone.properties.substation_pair = `${pSub1} -> ${pSub2}`;
+          clone.properties.SUB_1 = pSub1;
+          clone.properties.SUB_2 = pSub2;
+        } else {
+          clone.properties.substation_pair = `${feature.properties.SUB_1 || "-"} -> ${feature.properties.SUB_2 || "-"}`;
         }
+        clone.properties.reconductoring_voltage = getFeatureProperty(feature.properties, ["VOLTAGE", "Voltage", "voltage"]);
+        clone.properties = applyWorkbookProjectMetadata(clone.properties, projectRows);
         return clone;
       });
+    existingFeatures = dedupeWorkbookBackedPairFeatures(existingFeatures, projectsByPair);
     const projectsUnmatchedToPairs = (workbookRows || []).filter((row) => {
       const key = buildCanonicalPairLabel(row?.SUB_1, row?.SUB_2);
       return !pairRowsMatchCount.has(key);

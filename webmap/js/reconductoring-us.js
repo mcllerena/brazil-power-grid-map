@@ -13,42 +13,39 @@ const ISO_RECONDUCTORING_CONFIG = [
       fillColor: "#fbbf24",
     },
     substationPairs: [
-      ["JULIAN HINDS", "MIRAGE"],
-      ["GWF 2", "KINGSBURG"],
-      ["EAGLE ROCK", "FULTON"],
-      ["FULTON", "SILVERADO"],
-      ["SAN JOSE STA. A", "EL PATIO"],
-      ["SAN JOSE STA. B", "TRIMBLE"],
-      ["KIFER", "FMC"],
-      ["MOUNTAIN VIEW", "MONTA VISTA"],
-      ["WHISMAN", "MONTA VISTA"],
-      ["PIERCY", "METCALF 2"],
-      ["TESLA", "NEWARK"],
-      ["TULUCAY", "NAPA"],
-      ["MESA", "TALEGA"],
-      ["RIO OSO", "WEST SACRAMENTO"],
-      ["RIO OSO", "LINCOLN"],
-      ["VACAVILLE", "PLAINFIELD"],
-      ["WILSON", "ORO LOMA"],
-      ["NORTH DUBLIN", "VINEYARD"],
-      ["VICTOR", "KRAMER"],
-      // ["CLEAR LAKE", "EAGLE ROCK"],
-      // ["CORTINA", "WILLIAMS ST"],
-      // ["EL DORADO", "MISSOURI CITY"],
-      // ["MORAGA", "SAN LEANDRO U"],
-      // ["MORAGA", "OAKLAND X"],
-      // ["OAKLAND X", "SAN LEANDRO U"],
-      
-      // ["WARNERVILLE", "BELLOTA"],
-      // ["WILSON", "LE GRAND"],
-      // ["BORDEN CO", "STORY"],
-      // ["CHRISTIE", "SOBRANTE"],
-      // ["HERNDON", "BULLARD"],
-      // ["MANTECA", "RIPON"],
-      // ["RIPON", "RIVERBANK"],
-      // ["RIVERBANK", "MELONES"],
-      // ["MIDWAY", "KERN"],
-      // ["MIDWAY", "TEMBLOR"],
+      ["JULIAN HINDS", "MIRAGE"], // Planned
+      ["GWF 2", "KINGSBURG"], // Planned
+      ["EAGLE ROCK", "FULTON"], // Planned
+      ["FULTON", "SILVERADO"], // Planned
+      ["SAN JOSE STA. A", "EL PATIO"], // Planned
+      ["SAN JOSE STA. B", "TRIMBLE"], // Planned
+      ["KIFER", "FMC"], // Planned
+      ["MOUNTAIN VIEW", "MONTA VISTA"], // Planned
+      ["WHISMAN", "MONTA VISTA"], // Planned
+      ["PIERCY", "METCALF 2"], // Planned
+      ["TESLA", "NEWARK"], // Planned
+      ["TULUCAY", "NAPA"], // Planned
+      ["MESA", "TALEGA"], // Planned
+      ["RIO OSO", "WEST SACRAMENTO"], // Planned
+      ["RIO OSO", "LINCOLN"], // Planned
+      ["VACAVILLE", "PLAINFIELD"], // Planned
+      ["WILSON", "ORO LOMA"], // Planned
+      ["NORTH DUBLIN", "VINEYARD"], // Planned
+      ["VICTOR", "KRAMER"], // Planned
+      ["WARNERVILLE", "BELLOTA"], // In Operation
+      ["MIDWAY", "KERN"], // In Flight
+      ["MANTECA", "RIPON"], // In Flight
+      ["RIPON", "RIVERBANK"], // In Flight
+      ["RIVERBANK", "MELONES"], // In Flight
+      ["MIDWAY", "TEMBLOR"], // Planned
+      ["HERNDON", "BULLARD"], // Planned
+      ["CHRISTIE", "SOBRANTE"], // Planned
+      ["BORDEN CO", "STORY"], // Initiating
+      ["WILSON", "LE GRAND"], // In Operation
+      ["MORAGA", "OAKLAND X"], // Planned
+      ["MORAGA", "SAN LEANDRO U"], // Planned
+      ["OAKLAND X", "SAN LEANDRO U"], // Planned
+      ["EL DORADO", "MISSOURI CITY"], // Planned
     ],
   },
   {
@@ -61,6 +58,7 @@ const ISO_RECONDUCTORING_CONFIG = [
       fillColor: "#2dd4bf",
     },
     substationPairs: [
+      ["VERNON VT", "NORTHFIELD"],
       ["TEWKSBURY SUBSTATION", "WOBURN"],
       ["SOUTH WRENTHAM", "UNION STREET"],
       ["SOUTH WRENTHAM", "BERRY STREET"],
@@ -68,7 +66,6 @@ const ISO_RECONDUCTORING_CONFIG = [
       ["N. HAVEN", "WILLISTON"],
       ["WILLISTON", "TAFT"],
       ["COOLIDGE", "COLD RIVER"],
-      ["VERNON VT", "NORTHFIELD"],
       ["SOMERSET", "BELL ROCK ROAD"],
     ],
   },
@@ -1007,12 +1004,17 @@ function buildPopupProperties(feature) {
   const projectNames = projectRecords
     .map((row) => String(row?.["Project Name"] || "").trim())
     .filter(Boolean);
+  const projectSub1 = String(primaryProject?.SUB_1 || "").trim();
+  const projectSub2 = String(primaryProject?.SUB_2 || "").trim();
+  const displaySub1 = projectSub1 || props.SUB_1 || "-";
+  const displaySub2 = projectSub2 || props.SUB_2 || "-";
+  const displayPair = projectSub1 && projectSub2 ? `${projectSub1} -> ${projectSub2}` : props.substation_pair || "-";
   const rows = [
     ["Region", props.iso_region || "-"],
     ["Project", props.project_type === "new-reconductoring" ? "New reconductoring" : "Existing reconductoring"],
-    ["Substation pair", props.substation_pair || "-"],
-    ["SUB_1", props.SUB_1 || "-"],
-    ["SUB_2", props.SUB_2 || "-"],
+    ["Substation pair", displayPair],
+    ["SUB_1", displaySub1],
+    ["SUB_2", displaySub2],
     [
       "Voltage",
       primaryProject?.["Voltage (kV)"] || primaryProject?.Voltage || props.reconductoring_voltage || props.VOLTAGE || "-",
