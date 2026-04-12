@@ -3,6 +3,62 @@ import {
   buildReconductoringPopupHtml,
 } from "./reconductoring-us.js";
 
+// Canvas-rendered square marker with diagonal line (substation symbol)
+const SquareMarker = L.CircleMarker.extend({
+  _updatePath() {
+    const renderer = this._renderer;
+    if (!renderer || !renderer._ctx) return;
+    if (this._empty()) return;
+    const ctx = renderer._ctx;
+    const p = this._point;
+    const r = Math.max(Math.round(this._radius), 1);
+    ctx.beginPath();
+    ctx.rect(p.x - r, p.y - r, r * 2, r * 2);
+    renderer._fillStroke(ctx, this);
+    // diagonal line from bottom-left to top-right
+    ctx.beginPath();
+    ctx.moveTo(p.x - r, p.y + r);
+    ctx.lineTo(p.x + r, p.y - r);
+    if (this.options.stroke && this.options.weight !== 0) {
+      if (ctx.setLineDash) {
+        ctx.setLineDash(this.options.dashArray || []);
+      }
+      ctx.globalAlpha = this.options.opacity ?? 1;
+      ctx.lineWidth = this.options.weight;
+      ctx.strokeStyle = this.options.color;
+      ctx.lineCap = this.options.lineCap || "round";
+      ctx.lineJoin = this.options.lineJoin || "round";
+      ctx.stroke();
+    }
+  },
+  _containsPoint(p) {
+    const r = this._radius + (this.options.weight || 0);
+    return Math.abs(p.x - this._point.x) <= r && Math.abs(p.y - this._point.y) <= r;
+  },
+});
+
+// Canvas-rendered triangle marker (TAP symbol)
+const TriangleMarker = L.CircleMarker.extend({
+  _updatePath() {
+    const renderer = this._renderer;
+    if (!renderer || !renderer._ctx) return;
+    if (this._empty()) return;
+    const ctx = renderer._ctx;
+    const p = this._point;
+    const r = Math.max(Math.round(this._radius), 1);
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y - r);           // top
+    ctx.lineTo(p.x + r, p.y + r);       // bottom-right
+    ctx.lineTo(p.x - r, p.y + r);       // bottom-left
+    ctx.closePath();
+    renderer._fillStroke(ctx, this);
+  },
+  _containsPoint(p) {
+    const r = this._radius + (this.options.weight || 0);
+    return Math.abs(p.x - this._point.x) <= r && Math.abs(p.y - this._point.y) <= r;
+  },
+});
+
 // Load and render US substations and TAPs from CSV
 async function loadUsSubstationLayer() {
   // Load the substations CSV file
@@ -82,7 +138,7 @@ async function loadUsSubstationLayer() {
   const sortedSubstationEntries = sortEntries(substationRecordsByVoltage);
   const sortedTapEntries = sortEntries(tapRecordsByVoltage);
 
-  const buildLayerEntries = (entries, targetLayer, targetMap) => {
+  const buildLayerEntries = (entries, targetLayer, targetMap, markerFactory) => {
     entries.forEach((entry, index) => {
       const levelRecords = entry.rows || [];
       const color = getVoltageColorByIndex(index);
@@ -92,13 +148,7 @@ async function loadUsSubstationLayer() {
       const levelLayer = L.layerGroup();
 
       for (const row of levelRecords) {
-        const marker = L.circleMarker([row.__lat, row.__lon], {
-          radius: 2.8,
-          color,
-          weight: 1.1,
-          fillColor: color,
-          fillOpacity: 0.88,
-        });
+        const marker = markerFactory(row, color);
         bindHoverPersistentPopup(marker, buildSubstationPopupHTML(row));
         levelLayer.addLayer(marker);
       }
@@ -118,8 +168,25 @@ async function loadUsSubstationLayer() {
     });
   };
 
-  buildLayerEntries(sortedSubstationEntries, usSubstationLayer, usSubstationVoltageLayers);
-  buildLayerEntries(sortedTapEntries, usTapLayer, usTapVoltageLayers);
+  const substationMarker = (row, color) =>
+    new SquareMarker([row.__lat, row.__lon], {
+      radius: 2,
+      color: "#0b0f0f",
+      weight: 0.5,
+      fillColor: color,
+      fillOpacity: 0.88,
+    });
+  const tapMarker = (row, color) =>
+    new TriangleMarker([row.__lat, row.__lon], {
+      radius: 1.8,
+      color: "#0b0f0f",
+      weight: 0.4,
+      fillColor: color,
+      fillOpacity: 0.85,
+    });
+
+  buildLayerEntries(sortedSubstationEntries, usSubstationLayer, usSubstationVoltageLayers, substationMarker);
+  buildLayerEntries(sortedTapEntries, usTapLayer, usTapVoltageLayers, tapMarker);
 
   usSubstationLayer.addTo(map);
   usTapLayer.addTo(map);
@@ -132,7 +199,7 @@ const US_BOUNDS = [
   [49.6, -66.8],
 ];
 const US_DEFAULT_CENTER = [39.5, -98.35];
-const US_DEFAULT_ZOOM = 4.25;
+const US_DEFAULT_ZOOM = 5;
 
 const THEME_STORAGE_KEY = "webmap-theme";
 const US_DATA_ROOT = "../geoinfo/us-data";
@@ -154,7 +221,7 @@ const US_VOLTAGE_PALETTE = [
   "#52525b",
 ];
 const US_ALLOWED_VOLTAGE_LEVELS = ["765", "500", "345", "230", "161", "138", "115", "69", "34.5"];
-const US_DEFAULT_VISIBLE_TRANSMISSION_LEVELS = new Set();
+const US_DEFAULT_VISIBLE_TRANSMISSION_LEVELS = new Set(["765", "500", "345", "230", "161", "138", "115", "69"]);
 const US_DEFAULT_VISIBLE_SUBSTATION_LEVELS = new Set();
 const US_TRANSMISSION_PRIMARY_LEVELS = new Set(["1000", "765", "500", "450", "400", "348", "169", "115", "69"]);
 const US_SUBSTATION_PRIMARY_LEVELS = new Set(["1000", "765", "500", "450", "400", "348", "169", "115", "69"]);
@@ -1780,10 +1847,20 @@ function buildUsReconductoringControl() {
   const optionsWrap = document.createElement("div");
   optionsWrap.className = "voltage-filter-container";
 
-  const optionsTitle = document.createElement("div");
+  const optionsTitle = document.createElement("label");
   optionsTitle.className = "voltage-filter-title";
-  optionsTitle.textContent = "ISO regions:";
+
+  const reconductoringSelectAll = document.createElement("input");
+  reconductoringSelectAll.type = "checkbox";
+
+  const optionsTitleSpan = document.createElement("span");
+  optionsTitleSpan.textContent = "ISO regions:";
+
+  optionsTitle.appendChild(reconductoringSelectAll);
+  optionsTitle.appendChild(optionsTitleSpan);
   optionsWrap.appendChild(optionsTitle);
+
+  const enabledCheckboxes = [];
 
   for (const iso of ISO_RECONDUCTORING_CONFIG) {
     const row = document.createElement("label");
@@ -1791,7 +1868,7 @@ function buildUsReconductoringControl() {
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
-    checkbox.checked = Boolean(iso.enabled);
+    checkbox.checked = false;
     checkbox.disabled = !iso.enabled;
 
     const text = document.createElement("span");
@@ -1805,11 +1882,31 @@ function buildUsReconductoringControl() {
     if (iso.enabled) {
       checkbox.addEventListener("change", () => {
         syncUsReconductoringLayer(iso.key, checkbox.checked);
+        updateReconductoringSelectAll();
       });
+      enabledCheckboxes.push(checkbox);
     } else {
       row.title = `${iso.label} reconductoring is not implemented yet.`;
     }
   }
+
+  const updateReconductoringSelectAll = () => {
+    const checkedCount = enabledCheckboxes.filter((cb) => cb.checked).length;
+    reconductoringSelectAll.checked = checkedCount > 0;
+    reconductoringSelectAll.indeterminate = checkedCount > 0 && checkedCount < enabledCheckboxes.length;
+  };
+
+  reconductoringSelectAll.addEventListener("change", () => {
+    const nextChecked = reconductoringSelectAll.checked;
+    for (const cb of enabledCheckboxes) {
+      if (cb.checked !== nextChecked) {
+        cb.checked = nextChecked;
+        cb.dispatchEvent(new Event("change"));
+      }
+    }
+  });
+
+  updateReconductoringSelectAll();
 
   body.appendChild(optionsWrap);
 
@@ -1874,6 +1971,63 @@ function updateUsTransmissionMasterCheckbox() {
   usTransmissionMasterCheckbox.checked = visibleCount > 0;
 }
 
+function createUsTransmissionSwatch(color) {
+  const w = 20;
+  const h = 12;
+  const el = document.createElement("span");
+  el.className = "layer-swatch transmission-swatch";
+  el.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><line x1="0" y1="${h / 2}" x2="${w}" y2="${h / 2}" stroke="${color}" stroke-width="2"/></svg>`;
+  return el;
+}
+
+function usSubstationSvg(size, color, strokeColor) {
+  const sw = size > 12 ? 0.8 : 0.6;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><rect x="${sw / 2}" y="${sw / 2}" width="${size - sw}" height="${size - sw}" fill="${color}" stroke="${strokeColor}" stroke-width="${sw}"/><line x1="${sw / 2}" y1="${size - sw / 2}" x2="${size - sw / 2}" y2="${sw / 2}" stroke="${strokeColor}" stroke-width="${sw}"/></svg>`;
+}
+
+function createUsSubstationIcon(color) {
+  const size = 12;
+  return L.divIcon({
+    html: usSubstationSvg(size, color, "#0b0f0f"),
+    className: "substation-icon",
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+    popupAnchor: [0, -size / 2],
+  });
+}
+
+function createUsSubstationSwatch(color) {
+  const el = document.createElement("span");
+  el.className = "layer-swatch substation-swatch";
+  el.innerHTML = usSubstationSvg(12, color, "#0b0f0f");
+  return el;
+}
+
+function usTriangleSvg(size, color, strokeColor) {
+  const sw = 0.6;
+  const cx = size / 2;
+  const points = `${cx},${sw / 2} ${size - sw / 2},${size - sw / 2} ${sw / 2},${size - sw / 2}`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><polygon points="${points}" fill="${color}" stroke="${strokeColor}" stroke-width="${sw}"/></svg>`;
+}
+
+function createUsTapIcon(color) {
+  const size = 12;
+  return L.divIcon({
+    html: usTriangleSvg(size, color, "#0b0f0f"),
+    className: "triangle-icon",
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+    popupAnchor: [0, -size / 2],
+  });
+}
+
+function createUsTapSwatch(color) {
+  const el = document.createElement("span");
+  el.className = "layer-swatch triangle-swatch";
+  el.innerHTML = usTriangleSvg(12, color, "#0b0f0f");
+  return el;
+}
+
 function renderUsVoltageControls() {
   if (!usTransmissionVoltageContainer) {
     return;
@@ -1887,16 +2041,26 @@ function renderUsVoltageControls() {
     container.innerHTML = "";
     container.classList.toggle("is-multi-column", multiColumn);
 
-    const title = document.createElement("div");
-    title.className = "voltage-filter-title";
-    title.textContent = titleText;
-    container.appendChild(title);
+    const titleRow = document.createElement("label");
+    titleRow.className = "voltage-filter-title";
+
+    const selectAllCheckbox = document.createElement("input");
+    selectAllCheckbox.type = "checkbox";
+
+    const titleSpan = document.createElement("span");
+    titleSpan.textContent = titleText;
+
+    titleRow.appendChild(selectAllCheckbox);
+    titleRow.appendChild(titleSpan);
+    container.appendChild(titleRow);
 
     const target = multiColumn ? document.createElement("div") : container;
     if (multiColumn) {
       target.className = "voltage-filter-grid";
       container.appendChild(target);
     }
+
+    const groupCheckboxes = [];
 
     for (const [, voltageState] of usTransmissionVoltageLayers.entries()) {
       if (voltageState.group !== filterGroup) {
@@ -1910,9 +2074,7 @@ function renderUsVoltageControls() {
       checkbox.type = "checkbox";
       checkbox.checked = voltageState.visible;
 
-      const swatch = document.createElement("span");
-      swatch.className = "layer-swatch";
-      swatch.style.backgroundColor = voltageState.color;
+      const swatch = createUsTransmissionSwatch(voltageState.color);
 
       const text = document.createElement("span");
       text.textContent = voltageState.displayLabel;
@@ -1930,14 +2092,35 @@ function renderUsVoltageControls() {
         }
 
         updateUsTransmissionMasterCheckbox();
+        updateSelectAllState();
         activateStatusTracking();
       });
+
+      groupCheckboxes.push({ checkbox, voltageState });
 
       row.appendChild(checkbox);
       row.appendChild(swatch);
       row.appendChild(text);
       target.appendChild(row);
     }
+
+    const updateSelectAllState = () => {
+      const checkedCount = groupCheckboxes.filter((entry) => entry.checkbox.checked).length;
+      selectAllCheckbox.checked = checkedCount > 0;
+      selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount < groupCheckboxes.length;
+    };
+
+    selectAllCheckbox.addEventListener("change", () => {
+      const nextChecked = selectAllCheckbox.checked;
+      for (const entry of groupCheckboxes) {
+        if (entry.checkbox.checked !== nextChecked) {
+          entry.checkbox.checked = nextChecked;
+          entry.checkbox.dispatchEvent(new Event("change"));
+        }
+      }
+    });
+
+    updateSelectAllState();
   };
 
   renderContainer(usTransmissionVoltageContainer, "Main Voltage Levels:", "primary", false);
@@ -1967,16 +2150,27 @@ function renderUsSubstationVoltageControls() {
 
     container.innerHTML = "";
     container.classList.toggle("is-multi-column", multiColumn);
-    const title = document.createElement("div");
-    title.className = "voltage-filter-title";
-    title.textContent = titleText;
-    container.appendChild(title);
+
+    const titleRow = document.createElement("label");
+    titleRow.className = "voltage-filter-title";
+
+    const selectAllCheckbox = document.createElement("input");
+    selectAllCheckbox.type = "checkbox";
+
+    const titleSpan = document.createElement("span");
+    titleSpan.textContent = titleText;
+
+    titleRow.appendChild(selectAllCheckbox);
+    titleRow.appendChild(titleSpan);
+    container.appendChild(titleRow);
 
     const target = multiColumn ? document.createElement("div") : container;
     if (multiColumn) {
       target.className = "voltage-filter-grid";
       container.appendChild(target);
     }
+
+    const groupCheckboxes = [];
 
     for (const [, voltageState] of usSubstationVoltageLayers.entries()) {
       if (voltageState.group !== filterGroup) {
@@ -1990,9 +2184,7 @@ function renderUsSubstationVoltageControls() {
       checkbox.type = "checkbox";
       checkbox.checked = voltageState.visible;
 
-      const swatch = document.createElement("span");
-      swatch.className = "layer-swatch";
-      swatch.style.backgroundColor = voltageState.color;
+      const swatch = createUsSubstationSwatch(voltageState.color);
 
       const text = document.createElement("span");
       text.textContent = voltageState.displayLabel;
@@ -2010,14 +2202,35 @@ function renderUsSubstationVoltageControls() {
         }
 
         updateUsSubstationMasterCheckbox();
+        updateSelectAllState();
         activateStatusTracking();
       });
+
+      groupCheckboxes.push({ checkbox, voltageState });
 
       row.appendChild(checkbox);
       row.appendChild(swatch);
       row.appendChild(text);
       target.appendChild(row);
     }
+
+    const updateSelectAllState = () => {
+      const checkedCount = groupCheckboxes.filter((entry) => entry.checkbox.checked).length;
+      selectAllCheckbox.checked = checkedCount > 0;
+      selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount < groupCheckboxes.length;
+    };
+
+    selectAllCheckbox.addEventListener("change", () => {
+      const nextChecked = selectAllCheckbox.checked;
+      for (const entry of groupCheckboxes) {
+        if (entry.checkbox.checked !== nextChecked) {
+          entry.checkbox.checked = nextChecked;
+          entry.checkbox.dispatchEvent(new Event("change"));
+        }
+      }
+    });
+
+    updateSelectAllState();
   };
 
   renderContainer(usSubstationVoltageContainer, "Main Voltage Levels:", "primary", false);
@@ -2037,16 +2250,26 @@ function renderUsTapVoltageControls() {
     container.innerHTML = "";
     container.classList.toggle("is-multi-column", multiColumn);
 
-    const title = document.createElement("div");
-    title.className = "voltage-filter-title";
-    title.textContent = titleText;
-    container.appendChild(title);
+    const titleRow = document.createElement("label");
+    titleRow.className = "voltage-filter-title";
+
+    const selectAllCheckbox = document.createElement("input");
+    selectAllCheckbox.type = "checkbox";
+
+    const titleSpan = document.createElement("span");
+    titleSpan.textContent = titleText;
+
+    titleRow.appendChild(selectAllCheckbox);
+    titleRow.appendChild(titleSpan);
+    container.appendChild(titleRow);
 
     const target = multiColumn ? document.createElement("div") : container;
     if (multiColumn) {
       target.className = "voltage-filter-grid";
       container.appendChild(target);
     }
+
+    const groupCheckboxes = [];
 
     for (const [, voltageState] of usTapVoltageLayers.entries()) {
       if (voltageState.group !== filterGroup) {
@@ -2060,9 +2283,7 @@ function renderUsTapVoltageControls() {
       checkbox.type = "checkbox";
       checkbox.checked = voltageState.visible;
 
-      const swatch = document.createElement("span");
-      swatch.className = "layer-swatch";
-      swatch.style.backgroundColor = voltageState.color;
+      const swatch = createUsTapSwatch(voltageState.color);
 
       const text = document.createElement("span");
       text.textContent = voltageState.displayLabel;
@@ -2079,14 +2300,35 @@ function renderUsTapVoltageControls() {
           usTapLayer.removeLayer(voltageState.layer);
         }
 
+        updateSelectAllState();
         activateStatusTracking();
       });
+
+      groupCheckboxes.push({ checkbox, voltageState });
 
       row.appendChild(checkbox);
       row.appendChild(swatch);
       row.appendChild(text);
       target.appendChild(row);
     }
+
+    const updateSelectAllState = () => {
+      const checkedCount = groupCheckboxes.filter((entry) => entry.checkbox.checked).length;
+      selectAllCheckbox.checked = checkedCount > 0;
+      selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount < groupCheckboxes.length;
+    };
+
+    selectAllCheckbox.addEventListener("change", () => {
+      const nextChecked = selectAllCheckbox.checked;
+      for (const entry of groupCheckboxes) {
+        if (entry.checkbox.checked !== nextChecked) {
+          entry.checkbox.checked = nextChecked;
+          entry.checkbox.dispatchEvent(new Event("change"));
+        }
+      }
+    });
+
+    updateSelectAllState();
   };
 
   renderContainer(usTapVoltageContainer, "Main Voltage Levels:", "primary", false);
@@ -2111,10 +2353,20 @@ function renderUsPowerPlantTypeControls() {
 
   usPowerPlantTypeContainer.innerHTML = "";
 
-  const title = document.createElement("div");
-  title.className = "voltage-filter-title";
-  title.textContent = "By TYPE:";
-  usPowerPlantTypeContainer.appendChild(title);
+  const titleRow = document.createElement("label");
+  titleRow.className = "voltage-filter-title";
+
+  const selectAllCheckbox = document.createElement("input");
+  selectAllCheckbox.type = "checkbox";
+
+  const titleSpan = document.createElement("span");
+  titleSpan.textContent = "By TYPE:";
+
+  titleRow.appendChild(selectAllCheckbox);
+  titleRow.appendChild(titleSpan);
+  usPowerPlantTypeContainer.appendChild(titleRow);
+
+  const groupCheckboxes = [];
 
   for (const [typeLabel, typeState] of usPowerPlantTypeLayers.entries()) {
     const row = document.createElement("label");
@@ -2144,14 +2396,35 @@ function renderUsPowerPlantTypeControls() {
       }
 
       updateUsPowerPlantMasterCheckbox();
+      updatePowerPlantSelectAllState();
       activateStatusTracking();
     });
+
+    groupCheckboxes.push({ checkbox, typeState });
 
     row.appendChild(checkbox);
     row.appendChild(swatch);
     row.appendChild(text);
     usPowerPlantTypeContainer.appendChild(row);
   }
+
+  const updatePowerPlantSelectAllState = () => {
+    const checkedCount = groupCheckboxes.filter((entry) => entry.checkbox.checked).length;
+    selectAllCheckbox.checked = checkedCount > 0;
+    selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount < groupCheckboxes.length;
+  };
+
+  selectAllCheckbox.addEventListener("change", () => {
+    const nextChecked = selectAllCheckbox.checked;
+    for (const entry of groupCheckboxes) {
+      if (entry.checkbox.checked !== nextChecked) {
+        entry.checkbox.checked = nextChecked;
+        entry.checkbox.dispatchEvent(new Event("change"));
+      }
+    }
+  });
+
+  updatePowerPlantSelectAllState();
 }
 
 function buildUsTransmissionControl() {
@@ -2689,12 +2962,9 @@ async function initializeUsMap() {
   setLoadingOverlayVisible(true);
 
   try {
-    // Start with no default regular layers visible; reconductoring regions are visible by default.
-    const defaultReconductoringKeys = ISO_RECONDUCTORING_CONFIG.filter((entry) => entry.enabled).map((entry) => entry.key);
     await Promise.all([
       loadUsTransmissionLayer(),
       loadUsSubstationLayer(),
-      ...defaultReconductoringKeys.map((isoKey) => syncUsReconductoringLayer(isoKey, true)),
     ]);
   } catch (error) {
     setStatus("us-map", "error", `US data load failed: ${error?.message || "unknown error"}`);
