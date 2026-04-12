@@ -952,6 +952,49 @@ body[data-theme="dark"] .theme-icon-sun {
   flex-shrink: 0;
 }
 
+.substation-icon {
+  background: none !important;
+  border: none !important;
+}
+
+.substation-swatch {
+  background: none !important;
+  border-radius: 0 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.transmission-swatch {
+  background: none !important;
+  border-radius: 0 !important;
+  width: 20px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.triangle-icon {
+  background: none !important;
+  border: none !important;
+}
+
+.triangle-swatch {
+  background: none !important;
+  border-radius: 0 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.circle-swatch {
+  background: none !important;
+  border-radius: 0 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .footnote {
   margin: 0;
   font-size: 0.78rem;

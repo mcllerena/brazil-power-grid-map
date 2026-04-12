@@ -83,6 +83,7 @@ const statusListEl = document.getElementById("status-list");
 const loadingOverlayEl = document.getElementById("loading-overlay");
 const SUBSTATION_GROUP_IDS = new Set(["substations-operation", "substations-planned"]);
 const TRANSMISSION_GROUP_IDS = new Set(["transmission-operation", "transmission-planned"]);
+const ISOLATED_SYSTEMS_GROUP_ID = "regions-isolated-systems";
 const VOLTAGE_GROUP_IDS = new Set([...SUBSTATION_GROUP_IDS, ...TRANSMISSION_GROUP_IDS]);
 const LEFT_SECTIONS = new Set(["Substations", "Transmission lines"]);
 const STATUS_SUBGROUP_SECTIONS = new Set(["Substations", "Transmission lines", "Power plants"]);
@@ -933,6 +934,79 @@ function pointStyleWithColor(color, radius = 3) {
   };
 }
 
+function substationSvg(size, color, fillOpacity, strokeColor, dashed) {
+  const sw = size > 12 ? 0.8 : 0.6;
+  const dash = dashed ? ` stroke-dasharray="${size > 12 ? '3 2' : '2 1.5'}"` : "";
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><rect x="${sw / 2}" y="${sw / 2}" width="${size - sw}" height="${size - sw}" fill="${color}" fill-opacity="${fillOpacity}" stroke="${strokeColor}" stroke-width="${sw}"${dash}/><line x1="${sw / 2}" y1="${size - sw / 2}" x2="${size - sw / 2}" y2="${sw / 2}" stroke="${strokeColor}" stroke-width="${sw}"${dash}/></svg>`;
+}
+
+function createSubstationIcon(color, fillOpacity = 0.95, dashed = false) {
+  const size = 14;
+  return L.divIcon({
+    html: substationSvg(size, color, fillOpacity, "#0b0f0f", dashed),
+    className: "substation-icon",
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+    popupAnchor: [0, -size / 2],
+  });
+}
+
+function createSubstationSwatch(color, dashed) {
+  const el = document.createElement("span");
+  el.className = "layer-swatch substation-swatch";
+  el.innerHTML = substationSvg(12, color, 1, "#0b0f0f", dashed);
+  return el;
+}
+
+function createTransmissionSwatch(color, dashed) {
+  const w = 20;
+  const h = 12;
+  const dash = dashed ? ' stroke-dasharray="4 2"' : "";
+  const el = document.createElement("span");
+  el.className = "layer-swatch transmission-swatch";
+  el.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><line x1="0" y1="${h / 2}" x2="${w}" y2="${h / 2}" stroke="${color}" stroke-width="2"${dash}/></svg>`;
+  return el;
+}
+
+function triangleSvg(size, color, fillOpacity, strokeColor) {
+  const sw = 0.6;
+  const cx = size / 2;
+  const points = `${cx},${sw / 2} ${size - sw / 2},${size - sw / 2} ${sw / 2},${size - sw / 2}`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><polygon points="${points}" fill="${color}" fill-opacity="${fillOpacity}" stroke="${strokeColor}" stroke-width="${sw}"/></svg>`;
+}
+
+function createTriangleIcon(color, fillOpacity = 0.95) {
+  const size = 14;
+  return L.divIcon({
+    html: triangleSvg(size, color, fillOpacity, "#0b0f0f"),
+    className: "triangle-icon",
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+    popupAnchor: [0, -size / 2],
+  });
+}
+
+function createTriangleSwatch(color) {
+  const el = document.createElement("span");
+  el.className = "layer-swatch triangle-swatch";
+  el.innerHTML = triangleSvg(12, color, 1, "#0b0f0f");
+  return el;
+}
+
+function isIsolatedSystemsGroup(group) {
+  return group?.id === ISOLATED_SYSTEMS_GROUP_ID;
+}
+
+function createCircleSwatch(color, dashed) {
+  const size = 12;
+  const r = (size - 1) / 2;
+  const dash = dashed ? ' stroke-dasharray="2 1.5"' : '';
+  const el = document.createElement("span");
+  el.className = "layer-swatch circle-swatch";
+  el.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="${color}" stroke="#0b0f0f" stroke-width="0.6"${dash}/></svg>`;
+  return el;
+}
+
 function isPowerPlantGroup(group) {
   return group?.section === "Power plants";
 }
@@ -1007,6 +1081,10 @@ function pointStyleByGroup(color, group, feature) {
 
   if (opacity !== null) {
     style.fillOpacity = opacity;
+  }
+
+  if (isPlannedGroup(group)) {
+    style.dashArray = "3 2";
   }
 
   return style;
@@ -1231,17 +1309,25 @@ map.getContainer().addEventListener("mouseleave", () => {
 function createLeafletLayer(group, collection) {
   const thematicColorIndex = buildThematicColorIndex(collection, group);
 
-  return L.geoJSON(collection, {
-    pointToLayer: (feature, latlng) =>
-      L.circleMarker(
-        latlng,
-        pointStyleByGroup(getFeatureColor(feature, group, thematicColorIndex), group, feature)
-      ),
+  const geoJsonOptions = {
     style: (feature) => featureStyle(feature, group, thematicColorIndex),
     onEachFeature: (feature, layer) => {
       bindFeaturePopup(feature, layer, group);
     },
-  });
+  };
+
+  if (isIsolatedSystemsGroup(group)) {
+    geoJsonOptions.pointToLayer = (_feature, latlng) =>
+      L.marker(latlng, { icon: createTriangleIcon(group.color) });
+  } else {
+    geoJsonOptions.pointToLayer = (feature, latlng) =>
+      L.circleMarker(
+        latlng,
+        pointStyleByGroup(getFeatureColor(feature, group, thematicColorIndex), group, feature)
+      );
+  }
+
+  return L.geoJSON(collection, geoJsonOptions);
 }
 
 function isSubstationGroup(group) {
@@ -1865,11 +1951,11 @@ function createVoltageGroupedLayer(group, collection, state) {
     };
 
     if (isSubstationGroup(group)) {
-      geoJsonOptions.pointToLayer = (feature, latlng) => {
-        const radius = getVoltageScaledRadius(getFeatureVoltageKV(feature));
-        return L.circleMarker(latlng, {
-          ...pointStyleWithColor(color, radius),
-          fillOpacity: isPlannedStatusGroup(group) ? 0.58 : 0.96,
+      const planned = isPlannedStatusGroup(group);
+      geoJsonOptions.pointToLayer = (_feature, latlng) => {
+        const opacity = planned ? 0.58 : 0.96;
+        return L.marker(latlng, {
+          icon: createSubstationIcon(color, opacity, planned),
         });
       };
     } else if (isTransmissionGroup(group)) {
@@ -1929,9 +2015,16 @@ function renderVoltageFilterControls(group, state) {
     checkbox.checked = voltageState.visible;
     voltageState.checkbox = checkbox;
 
-    const swatch = document.createElement("span");
-    swatch.className = "layer-swatch";
-    swatch.style.backgroundColor = voltageState.color;
+    let swatch;
+    if (isSubstationGroup(group)) {
+      swatch = createSubstationSwatch(voltageState.color, isPlannedStatusGroup(group));
+    } else if (isTransmissionGroup(group)) {
+      swatch = createTransmissionSwatch(voltageState.color, isPlannedStatusGroup(group));
+    } else {
+      swatch = document.createElement("span");
+      swatch.className = "layer-swatch";
+      swatch.style.backgroundColor = voltageState.color;
+    }
 
     const text = document.createElement("span");
     text.textContent = getVoltageDisplayLabel(group, voltageLabel);
@@ -2243,9 +2336,20 @@ function buildLayerControl(group) {
   checkbox.type = "checkbox";
   checkbox.checked = group.defaultVisible;
 
-  const swatch = document.createElement("span");
-  swatch.className = "layer-swatch";
-  swatch.style.backgroundColor = group.color;
+  let swatch;
+  if (isSubstationGroup(group)) {
+    swatch = createSubstationSwatch(group.color, isPlannedStatusGroup(group));
+  } else if (isTransmissionGroup(group)) {
+    swatch = createTransmissionSwatch(group.color, isPlannedStatusGroup(group));
+  } else if (isIsolatedSystemsGroup(group)) {
+    swatch = createTriangleSwatch(group.color);
+  } else if (isPlannedGroup(group)) {
+    swatch = createCircleSwatch(group.color, true);
+  } else {
+    swatch = document.createElement("span");
+    swatch.className = "layer-swatch";
+    swatch.style.backgroundColor = group.color;
+  }
 
   const text = document.createElement("span");
   let rowLabel = group.label;
