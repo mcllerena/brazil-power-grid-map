@@ -207,6 +207,8 @@ const US_TRANSMISSION_BASENAME = "Electric_Power_Transmission_Lines";
 const US_PCA_BASENAME = "US_PCA";
 const US_SUBSTATIONS_FILENAME = "Substations.csv";
 const US_POWER_PLANTS_FILENAME = "Power_Plants.csv";
+const US_DATA_CENTERS_ATLAS_CSV = "im3_open_source_data_center_atlas/im3_open_source_data_center_atlas.csv";
+const US_DATA_CENTERS_POWER_CSV = "im3_open_source_data_center_atlas/data_centers.csv";
 const US_VOLTAGE_PALETTE = [
   "#2563eb",
   "#0891b2",
@@ -339,6 +341,9 @@ let usPcaLayer = null;
 let usPcaFeatureCollection = null;
 let usPcaVisible = false;
 let usPcaLoaded = false;
+let usDataCenterLayer = null;
+let usDataCenterVisible = false;
+let usDataCenterLoaded = false;
 const usReconductoringLayers = new Map();
 const usReconductoringCheckboxes = new Map();
 const usReconductoringSummaries = new Map();
@@ -443,14 +448,19 @@ function initializeStatusPanelToggle() {
   const toggleButton = document.createElement("button");
   toggleButton.type = "button";
   toggleButton.className = "section-toggle-btn";
-  toggleButton.textContent = "Hide";
-  toggleButton.setAttribute("aria-expanded", "true");
-  toggleButton.setAttribute("title", "Hide Status Window");
-  toggleButton.addEventListener("click", () => {
-    const collapsed = statusPanelEl.classList.toggle("is-collapsed");
+  const setCollapsedState = (collapsed) => {
+    statusPanelEl.classList.toggle("is-collapsed", collapsed);
+    body.hidden = collapsed;
+    body.setAttribute("aria-hidden", String(collapsed));
     toggleButton.textContent = collapsed ? "Show" : "Hide";
     toggleButton.setAttribute("aria-expanded", String(!collapsed));
     toggleButton.setAttribute("title", `${collapsed ? "Show" : "Hide"} Status Window`);
+  };
+
+  setCollapsedState(false);
+
+  toggleButton.addEventListener("click", () => {
+    setCollapsedState(!statusPanelEl.classList.contains("is-collapsed"));
   });
   header.appendChild(toggleButton);
 }
@@ -611,6 +621,12 @@ function refreshStatusFromVisibility() {
   if (pcaVisible) {
     const pcaFeatureCount = (usPcaFeatureCollection?.features || []).length;
     addItem("us-pca", `PCA areas: ${pcaFeatureCount} feature(s) visible`);
+  }
+
+  const dataCentersVisible = Boolean(usDataCenterVisible && usDataCenterLayer && map.hasLayer(usDataCenterLayer));
+  if (dataCentersVisible) {
+    const dataCenterCount = usDataCenterLayer.getLayers().length;
+    addItem("us-data-centers", `Data centers: ${dataCenterCount} site(s) visible`);
   }
 
   appendVisibleEntryStatuses(addItem, {
@@ -1823,6 +1839,210 @@ function buildUsPcaControl() {
 
 }
 
+function buildDataCenterPopupHTML(record) {
+  const powerMw = parseLooseNumericValue(record.power_mw);
+  const powerLabel = Number.isFinite(powerMw) ? `${powerMw.toLocaleString(undefined, { maximumFractionDigits: 2 })} MW` : "-";
+
+  const rows = [
+    ["Name", record.name || "-"],
+    ["Operator", record.operator || "-"],
+    ["Power", powerLabel],
+    ["Type", record.type || "-"],
+    ["State", record.state_abb || record.state || "-"],
+    ["County", record.county || "-"],
+    ["Sqft", record.sqft || "-"],
+  ];
+
+  const tableRows = rows
+    .map(([key, value]) => `<tr><th>${escapeHtml(key)}</th><td>${escapeHtml(value ?? "-")}</td></tr>`)
+    .join("");
+
+  return `<table>${tableRows}</table>`;
+}
+
+function normalizeDataCenterMatchKey(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function findPowerMatchForAtlasRecord(atlasRecord, indexedPowerRecords) {
+  const atlasName = normalizeDataCenterMatchKey(atlasRecord?.name);
+  if (atlasName && indexedPowerRecords.byName.has(atlasName)) {
+    return indexedPowerRecords.byName.get(atlasName);
+  }
+
+  // Conservative fuzzy name match for long names only.
+  if (atlasName.length >= 10) {
+    const fuzzy = indexedPowerRecords.records.find((row) => row.name.includes(atlasName) || atlasName.includes(row.name));
+    if (fuzzy) {
+      return fuzzy;
+    }
+  }
+
+  // Fallback: match on operator + state hints when available.
+  const operator = normalizeDataCenterMatchKey(atlasRecord?.operator);
+  const stateAbb = String(atlasRecord?.state_abb || "").toUpperCase().trim();
+  if (!operator || !stateAbb) {
+    return null;
+  }
+
+  const byOperator = indexedPowerRecords.byOperator.get(operator) || [];
+  const stateMatch = byOperator.find((row) => row.address.includes(`, ${stateAbb} `));
+  return stateMatch || null;
+}
+
+async function loadUsDataCenterLayer() {
+  const atlasCsvUrl = makeAbsoluteUrl(`${US_DATA_ROOT}/${US_DATA_CENTERS_ATLAS_CSV}`);
+  const powerCsvUrl = makeAbsoluteUrl(`${US_DATA_ROOT}/${US_DATA_CENTERS_POWER_CSV}`);
+  const [atlasCsvText, powerCsvText] = await Promise.all([
+    fetchText(atlasCsvUrl),
+    fetchText(powerCsvUrl),
+  ]);
+  const records = parseCsvText(atlasCsvText);
+  const powerRecords = parseCsvText(powerCsvText);
+
+  const indexedPowerRecords = {
+    byName: new Map(),
+    byOperator: new Map(),
+    records: [],
+  };
+
+  for (const row of powerRecords) {
+    const powerMw = parseLooseNumericValue(row["Current power (MW)"]);
+    if (!Number.isFinite(powerMw)) {
+      continue;
+    }
+
+    const normalizedName = normalizeDataCenterMatchKey(row.Name);
+    const normalizedOwner = normalizeDataCenterMatchKey(row.Owner);
+    const normalizedAddress = String(row.Address || "").toUpperCase();
+    const indexedRow = {
+      name: normalizedName,
+      owner: normalizedOwner,
+      address: normalizedAddress,
+      powerMw,
+    };
+
+    if (normalizedName && !indexedPowerRecords.byName.has(normalizedName)) {
+      indexedPowerRecords.byName.set(normalizedName, indexedRow);
+    }
+
+    if (normalizedOwner) {
+      if (!indexedPowerRecords.byOperator.has(normalizedOwner)) {
+        indexedPowerRecords.byOperator.set(normalizedOwner, []);
+      }
+      indexedPowerRecords.byOperator.get(normalizedOwner).push(indexedRow);
+    }
+
+    indexedPowerRecords.records.push(indexedRow);
+  }
+
+  usDataCenterLayer = L.layerGroup();
+
+  for (const record of records) {
+    const latitude = parseNumericValue(record.lat);
+    const longitude = parseNumericValue(record.lon);
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+      continue;
+    }
+
+    const marker = L.circleMarker([latitude, longitude], {
+      radius: 5,
+      color: "#0b0f0f",
+      weight: 0.8,
+      fillColor: "#22d3ee",
+      fillOpacity: 0.9,
+    });
+
+    const powerMatch = findPowerMatchForAtlasRecord(record, indexedPowerRecords);
+    if (powerMatch && Number.isFinite(powerMatch.powerMw)) {
+      record.power_mw = powerMatch.powerMw;
+    }
+
+    bindHoverPersistentPopup(marker, buildDataCenterPopupHTML(record));
+    usDataCenterLayer.addLayer(marker);
+  }
+
+  usDataCenterLoaded = true;
+  if (usDataCenterVisible) {
+    usDataCenterLayer.addTo(map);
+  }
+}
+
+function buildUsDataCenterControl() {
+  if (!mapUiRightEl) {
+    return;
+  }
+
+  const card = document.createElement("section");
+  card.id = "section-us-data-centers";
+  card.className = "section-card";
+
+  const header = document.createElement("div");
+  header.className = "section-card-header";
+
+  const title = document.createElement("h2");
+  title.className = "section-card-title";
+  title.textContent = "Data Centers";
+  header.appendChild(title);
+  card.appendChild(header);
+
+  const body = document.createElement("div");
+  body.className = "section-card-body";
+
+  const showRow = document.createElement("label");
+  showRow.className = "voltage-filter-row";
+  const showCheckbox = document.createElement("input");
+  showCheckbox.type = "checkbox";
+  showCheckbox.checked = usDataCenterVisible;
+  const showText = document.createElement("span");
+  showText.textContent = "Show data centers";
+  showRow.appendChild(showCheckbox);
+  showRow.appendChild(showText);
+  body.appendChild(showRow);
+
+  card.appendChild(body);
+  mapUiRightEl.appendChild(card);
+  enableSectionCardDrag(card);
+
+  showCheckbox.addEventListener("change", () => {
+    const applyToggle = async () => {
+      usDataCenterVisible = showCheckbox.checked;
+
+      if (usDataCenterVisible && !usDataCenterLoaded) {
+        try {
+          await loadUsDataCenterLayer();
+        } catch (error) {
+          setStatusById("us-data-centers", "warn", `US data centers load skipped: ${error?.message || "unknown error"}`);
+          console.warn("US data centers load skipped", error);
+          usDataCenterVisible = false;
+          showCheckbox.checked = false;
+          activateStatusTracking();
+          return;
+        }
+      }
+
+      if (!usDataCenterLayer) {
+        activateStatusTracking();
+        return;
+      }
+
+      if (usDataCenterVisible) {
+        usDataCenterLayer.addTo(map);
+      } else if (map.hasLayer(usDataCenterLayer)) {
+        map.removeLayer(usDataCenterLayer);
+      }
+
+      activateStatusTracking();
+    };
+
+    applyToggle();
+  });
+}
+
 function buildUsReconductoringControl() {
   if (!mapUiRightEl) {
     return;
@@ -2950,6 +3170,7 @@ async function initializeUsMap() {
   buildUsTransmissionControl();
   buildUsPcaControl();
   buildUsReconductoringControl();
+  buildUsDataCenterControl();
   buildUsPowerPlantControl();
   requestAnimationFrame(() => {
     positionUsStatusPanelNearSubstations();

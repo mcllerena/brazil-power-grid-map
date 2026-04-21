@@ -875,6 +875,11 @@ body[data-theme="dark"] .theme-icon-sun {
   align-self: flex-end;
 }
 
+#section-us-data-centers {
+  width: min(320px, calc(100% - 28px));
+  align-self: flex-end;
+}
+
 #section-us-substations-other-range,
 #section-us-taps-other-range,
 #section-us-transmission-other-levels {
@@ -889,7 +894,6 @@ body[data-theme="dark"] .theme-icon-sun {
 #section-us-power-plants .section-card-body {
   display: block;
 }
-
 .section-inline-actions {
   margin-top: 10px;
   display: flex;

@@ -1,0 +1,528 @@
+Model,Manufacturer,Length (m),Width (m),Height (m),Area (m^2),"Cooling capacity (stated, kW)","Cooling capacity (central estimate, kW)",Source,Link,Spot check,Notes,Fan Diameter (m),Number of Fans,Fan estimate diameter (m),Type,Motor Horsepower
+XES3E-1020-07G,BAC,6.12,3.0,3.71,18.35,"1,001",1001.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.8499999999999996,,3.0
+XES15E-1212-09GC,BAC,4.34,3.66,4.24,15.89,"1,005",1005.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+XES3E-8518-06H,BAC,5.51,2.59,3.4,14.28,"1,010",1010.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.4604999999999997,,5.0
+XES15E-1212-11FN,BAC,5.16,3.66,5.05,18.86,"1,014",1014.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+XES3E-8518-05J,BAC,5.51,2.59,3.0,14.28,"1,023",1023.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.4604999999999997,,7.5
+XES15E-1285-10KN,BAC,4.78,2.59,4.78,12.37,"1,023",1023.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+S15E-1285-07MN,BAC,3.45,2.59,3.38,8.95,"1,036",1036.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+XES15E-1212-12FN,BAC,5.56,3.66,5.46,20.35,"1,049",1049.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+XES15E-1212-10GC,BAC,4.75,3.66,4.65,17.37,"1,058",1058.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+XES15E-1212-09GN,BAC,4.34,3.66,4.24,15.89,"1,067",1067.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+XES3E-1020-06H,BAC,6.12,3.0,3.3,18.35,"1,071",1071.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.8499999999999996,,5.0
+XES15E-1212-07HN,BAC,3.45,3.66,3.38,12.63,"1,084",1084.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.2775,,
+XES15E-1212-11GC,BAC,5.16,3.66,5.05,18.86,"1,089",1089.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+XES15E-1218-07EN,BAC,3.61,5.49,3.61,19.79,"1,106",1106.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.4294999999999995,,
+S15E-1285-09LN,BAC,4.37,2.59,4.37,11.32,"1,111",1111.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+XES15E-1212-10GN,BAC,4.75,3.66,4.65,17.37,"1,119",1119.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+XES3E-8518-07H,BAC,5.51,2.59,3.81,14.28,"1,124",1124.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.4604999999999997,,5.0
+XES3E-8518-05K,BAC,5.51,2.59,3.0,14.28,"1,124",1124.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.4604999999999997,,10.0
+XES15E-1212-12GC,BAC,5.56,3.66,5.46,20.35,"1,128",1128.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+XES3E-8518-06J,BAC,5.51,2.59,3.4,14.28,"1,150",1150.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.4604999999999997,,7.5
+XES15E-1212-11GN,BAC,5.16,3.66,5.05,18.86,"1,155",1155.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+XES15E-1212-09HC,BAC,4.34,3.66,4.24,15.89,"1,155",1155.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+S15E-1285-10LN,BAC,4.78,2.59,4.78,12.37,"1,159",1159.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+XES3E-1020-07H,BAC,6.12,3.0,3.71,18.35,"1,190",1190.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.8499999999999996,,5.0
+XES15E-1212-12GN,BAC,5.56,3.66,5.46,20.35,"1,194",1194.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+S15E-1285-09MN,BAC,4.37,2.59,4.37,11.32,"1,212",1212.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+XES15E-1212-10HC,BAC,4.75,3.66,4.65,17.37,"1,212",1212.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+XES15E-1218-07FN,BAC,3.61,5.49,3.61,19.79,"1,216",1216.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.4294999999999995,,
+XES3E-1020-06J,BAC,6.12,3.0,3.3,18.35,"1,225",1225.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.8499999999999996,,7.5
+XES3E-1222-06H,BAC,6.58,3.61,3.33,23.73,"1,225",1225.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,5.0
+S15E-1212-07JN,BAC,3.45,3.66,3.38,12.63,"1,238",1238.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.2775,,
+XES15E-1212-11HC,BAC,5.16,3.66,5.05,18.86,"1,251",1251.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+XES15E-1212-09HN,BAC,4.34,3.66,4.24,15.89,"1,260",1260.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+XES3E-8518-06K,BAC,5.51,2.59,3.4,14.28,"1,264",1264.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.4604999999999997,,10.0
+S15E-1285-10MN,BAC,4.78,2.59,4.78,12.37,"1,269",1269.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+XES15E-1218-09EN,BAC,4.5,5.49,4.47,24.67,"1,277",1277.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,4.2749999999999995,,
+XES3E-8518-07J,BAC,5.51,2.59,3.81,14.28,"1,282",1282.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.4604999999999997,,7.5
+S3E-8518-05L,BAC,5.51,2.59,3.0,14.28,"1,286",1286.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.4604999999999997,,15.0
+XES15E-1212-12HC,BAC,5.56,3.66,5.46,20.35,"1,295",1295.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+XES15E-1212-10HN,BAC,4.75,3.66,4.65,17.37,"1,326",1326.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+XES15E-1218-10EN,BAC,4.9,5.49,4.88,26.9,"1,339",1339.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,4.655,,
+XES3E-1020-06K,BAC,6.12,3.0,3.3,18.35,"1,348",1348.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.8499999999999996,,10.0
+S15E-1212-07KN,BAC,3.45,3.66,3.38,12.63,"1,357",1357.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.2775,,
+S15E-1285-10NN,BAC,4.78,2.59,4.78,12.37,"1,361",1361.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+XES3E-1020-07J,BAC,6.12,3.0,3.71,18.35,"1,361",1361.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.8499999999999996,,7.5
+XES15E-1212-11HN,BAC,5.16,3.66,5.05,18.86,"1,365",1365.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+S15E-1285-06JN-2,BAC,3.05,5.23,2.97,15.95,"1,387",1387.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,2.8974999999999995,,
+XES15E-1218-11EN,BAC,5.31,5.49,5.28,29.13,"1,396",1396.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,5.044499999999999,,
+XES15E-1218-07GN,BAC,3.61,5.49,3.61,19.79,"1,396",1396.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.4294999999999995,,
+XES3E-1222-06J,BAC,6.58,3.61,3.33,23.73,"1,396",1396.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,7.5
+XES15E-1218-09FN,BAC,4.5,5.49,4.47,24.67,"1,400",1400.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,4.2749999999999995,,
+XES3E-8518-07K,BAC,5.51,2.59,3.81,14.28,"1,405",1405.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.4604999999999997,,10.0
+S3E-8518-05M,BAC,5.51,2.59,3.0,14.28,"1,414",1414.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.4604999999999997,,20.0
+XES15E-1212-12HN,BAC,5.56,3.66,5.46,20.35,"1,418",1418.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+S15E-1212-09JN,BAC,4.34,3.66,4.24,15.89,"1,440",1440.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+S3E-8518-06L,BAC,5.51,2.59,3.4,14.28,"1,444",1444.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.4604999999999997,,15.0
+XES15E-1218-12EN,BAC,5.72,5.49,5.69,31.35,"1,444",1444.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,5.2155,,
+S15E-1212-07LC,BAC,3.45,3.66,3.38,12.63,"1,457",1457.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.2775,,
+XES15E-1218-10FN,BAC,4.9,5.49,4.88,26.9,"1,471",1471.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,4.655,,
+XES3E-1020-07K,BAC,6.12,3.0,3.71,18.35,"1,493",1493.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.8499999999999996,,10.0
+XES15E-1212-10JN,BAC,4.75,3.66,4.65,17.37,"1,510",1510.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+S15E-1285-06KN-2,BAC,3.05,5.23,2.97,15.95,"1,519",1519.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,2.8974999999999995,,
+XES15E-1218-11FN,BAC,5.31,5.49,5.28,29.13,"1,528",1528.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,5.044499999999999,,
+XES3E-1020-06L,BAC,6.12,3.0,3.3,18.35,"1,537",1537.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.8499999999999996,,15.0
+XES3E-1222-06K,BAC,6.58,3.61,3.33,23.73,"1,537",1537.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,10.0
+XES3E-1222-07J,BAC,6.58,3.61,3.73,23.73,"1,554",1554.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,7.5
+XES15E-1212-11JN,BAC,5.16,3.66,5.46,18.86,"1,558",1558.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+S15E-1212-09KN,BAC,4.34,3.66,4.24,15.89,"1,572",1572.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+XES15E-1218-12FN,BAC,5.72,5.49,5.69,31.35,"1,585",1585.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,5.2155,,
+S3E-8518-06M,BAC,5.51,2.59,3.4,14.28,"1,585",1585.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.4604999999999997,,20.0
+XES3E-8518-07L,BAC,5.51,2.59,3.81,14.28,"1,602",1602.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.4604999999999997,,15.0
+XES15E-1218-09GN,BAC,4.5,5.49,4.47,24.67,"1,607",1607.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,4.2749999999999995,,
+XES15E-1212-12JN,BAC,5.56,3.66,5.46,20.35,"1,616",1616.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+XES15E-1218-07HN,BAC,3.61,5.49,3.61,19.79,"1,637",1637.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.4294999999999995,,
+S15E-1212-10KN,BAC,4.75,3.66,4.65,17.37,"1,651",1651.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+S15E-1285-07KN-2,BAC,3.45,5.23,3.38,18.07,"1,659",1659.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,3.2775,,
+S15E-1212-09LC,BAC,4.34,3.66,4.24,15.89,"1,681",1681.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+S3E-1020-06M,BAC,6.12,3.0,3.3,18.35,"1,686",1686.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.8499999999999996,,20.0
+XES15E-1218-10GN,BAC,4.9,5.49,4.88,26.9,"1,690",1690.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,4.655,,
+S15E-1212-11KN,BAC,5.16,3.66,5.05,18.86,"1,699",1699.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+S3E-8518-06N,BAC,5.51,2.59,3.4,14.28,"1,703",1703.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.4604999999999997,,25.0
+XES3E-1020-07L,BAC,6.12,3.0,3.71,18.35,"1,703",1703.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.8499999999999996,,15.0
+XES3E-1222-07K,BAC,6.58,3.61,3.73,23.73,"1,708",1708.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,10.0
+XES3E-1424-07J,BAC,7.34,4.27,3.76,31.32,"1,738",1738.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,7.5
+S15E-1285-06LN-2,BAC,3.05,5.23,2.97,15.95,"1,738",1738.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,2.8974999999999995,,
+XES3E-1222-06L,BAC,6.58,3.61,3.33,23.73,"1,752",1752.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,15.0
+S3E-8518-07M,BAC,5.51,2.59,3.81,14.28,"1,756",1756.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.4604999999999997,,20.0
+S15E-1212-12KN,BAC,5.56,3.66,5.46,20.35,"1,760",1760.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+S15E-1212-09LN,BAC,4.34,3.66,4.24,15.89,"1,760",1760.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+XES15E-1218-11GN,BAC,5.31,5.49,5.28,29.13,"1,760",1760.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,5.044499999999999,,
+S15E-1212-10LC,BAC,4.75,3.66,4.65,17.37,"1,765",1765.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+S3E-8518-06O,BAC,5.51,2.59,3.4,14.28,"1,782",1782.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.4604999999999997,,30.0
+S3E-1020-06N,BAC,6.12,3.0,3.3,18.35,"1,809",1809.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.8499999999999996,,25.0
+S15E-1212-11LC,BAC,5.16,3.66,5.05,18.86,"1,817",1817.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+XES15E-1218-12GN,BAC,5.72,5.49,5.69,31.35,"1,822",1822.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,5.2155,,
+S15E-1212-10LN,BAC,4.75,3.66,4.65,17.37,"1,848",1848.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+S3E-1020-07M,BAC,6.12,3.0,3.71,18.35,"1,866",1866.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.8499999999999996,,20.0
+S15E-1218-07JN,BAC,3.61,5.49,3.61,19.79,"1,875",1875.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.4294999999999995,,
+S3E-8518-07N,BAC,5.51,2.59,3.81,14.28,"1,883",1883.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.4604999999999997,,25.0
+S15E-1212-12LC,BAC,5.56,3.66,5.46,20.35,"1,883",1883.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+XES15E-1218-09HN,BAC,4.5,5.49,4.47,24.67,"1,888",1888.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,4.2749999999999995,,
+S15E-1285-07LN-2,BAC,3.45,5.23,3.38,18.07,"1,905",1905.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,3.2775,,
+S15E-1212-11LN,BAC,5.16,3.66,5.05,18.86,"1,905",1905.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+XES3E-1424-07K,BAC,7.34,4.27,3.76,31.32,"1,910",1910.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,10.0
+S3E-1020-06O,BAC,6.12,3.0,3.3,18.35,"1,914",1914.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.8499999999999996,,30.0
+S3E-1222-06M,BAC,6.58,3.61,3.33,23.73,"1,923",1923.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,20.0
+XES3E-1222-07L,BAC,6.58,3.61,3.73,23.73,"1,949",1949.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,15.0
+S15E-1285-09KN-2,BAC,4.37,5.23,4.37,22.86,"1,958",1958.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.1514999999999995,,
+S15E-1212-12LN,BAC,5.56,3.66,5.46,20.35,"1,971",1971.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+S3E-8518-07O,BAC,5.51,2.59,3.81,14.28,"1,980",1980.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.4604999999999997,,30.0
+XES15E-1218-10HN,BAC,4.9,5.49,4.88,26.9,"1,980",1980.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,4.655,,
+S3E-1020-07N,BAC,6.12,3.0,3.71,18.35,"2,006",2006.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.8499999999999996,,25.0
+S15E-1212-10MN,BAC,4.75,3.66,4.65,17.37,"2,015",2015.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+S15E-1218-07KN,BAC,3.61,5.49,3.61,19.79,"2,046",2046.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.4294999999999995,,
+XES15E-1218-11HN,BAC,5.31,5.49,5.28,29.13,"2,063",2063.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,5.044499999999999,,
+S3E-1222-06N,BAC,6.58,3.61,3.33,23.73,"2,068",2068.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,25.0
+S15E-1285-07MN-2,BAC,3.45,5.23,3.38,18.07,"2,072",2072.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,3.2775,,
+S15E-1212-11MN,BAC,5.16,3.66,5.05,18.86,"2,098",2098.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+S3E-1020-07O,BAC,6.12,3.0,3.71,18.35,"2,125",2125.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.8499999999999996,,30.0
+S3E-8518-07P,BAC,5.51,2.59,3.81,14.28,"2,125",2125.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.4604999999999997,,40.0
+XES15E-1218-12HN,BAC,5.72,5.49,5.69,31.35,"2,134",2134.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,5.2155,,
+XES3E-1222-07M,BAC,6.58,3.61,3.73,23.73,"2,138",2138.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,20.0
+S15E-1218-09JN,BAC,4.5,5.49,4.47,24.67,"2,151",2151.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,4.2749999999999995,,
+XES3E-1222-10K,BAC,6.58,3.61,5.0,23.73,"2,155",2155.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,10.0
+S15E-1212-12MN,BAC,5.56,3.66,5.46,20.35,"2,173",2173.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+XES3E-1424-07L,BAC,7.34,4.27,3.76,31.32,"2,182",2182.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,15.0
+S3E-1222-06O,BAC,6.58,3.61,3.33,23.73,"2,195",2195.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,30.0
+S15E-1218-07LC,BAC,3.61,5.49,3.61,19.79,"2,199",2199.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.4294999999999995,,
+S15E-1285-09LN-2,BAC,4.37,5.23,4.37,22.86,"2,221",2221.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.1514999999999995,,
+XES15E-1218-10JN,BAC,4.9,5.49,4.88,26.9,"2,256",2256.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,4.655,,
+S3E-1222-07N,BAC,6.58,3.61,3.73,23.73,"2,296",2296.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,25.0
+S15E-1285-10LN-2,BAC,4.78,5.23,4.78,24.99,"2,318",2318.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.541,,
+XES3E-1222-12K,BAC,6.58,3.61,5.82,23.73,"2,318",2318.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,10.0
+S3E-1020-07P,BAC,6.12,3.0,3.71,18.35,"2,327",2327.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.8499999999999996,,40.0
+S15E-1218-09KN,BAC,4.5,5.49,4.47,24.67,"2,349",2349.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,4.2749999999999995,,
+XES15E-1218-11JN,BAC,5.31,5.49,5.28,29.13,"2,353",2353.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,5.044499999999999,,
+XES3E-1424-07M,BAC,7.34,4.27,3.76,31.32,"2,393",2393.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,20.0
+XES3E-1222-13K,BAC,6.58,3.61,6.22,23.73,"2,393",2393.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,10.0
+S15E-1285-09MN-2,BAC,4.37,5.23,4.37,22.86,"2,423",2423.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.1514999999999995,,
+S3E-1222-07O,BAC,6.58,3.61,3.73,23.73,"2,432",2432.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,30.0
+XES15E-1218-12JN,BAC,5.72,5.49,5.69,31.35,"2,436",2436.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,5.2155,,
+XES3E-1222-10L,BAC,6.58,3.61,5.0,23.73,"2,454",2454.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,15.0
+S15E-1218-10KN,BAC,4.9,5.49,4.88,26.9,"2,463",2463.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,4.655,,
+S15E-1212-07JN-2,BAC,3.45,7.37,3.38,25.45,"2,476",2476.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,3.2775,,
+S15E-1218-09LC,BAC,4.5,5.49,4.47,24.67,"2,511",2511.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,4.2749999999999995,,
+S15E-1285-10MN-2,BAC,4.78,5.23,4.78,24.99,"2,537",2537.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.541,,
+S15E-1218-11KN,BAC,5.31,5.49,5.28,29.13,"2,564",2564.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,5.044499999999999,,
+XES3E-1424-07N,BAC,7.34,4.27,3.76,31.32,"2,568",2568.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,25.0
+S3E-8518-05L-2,BAC,5.51,5.26,3.0,28.98,"2,568",2568.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,4.997,,30.0
+XES3E-1222-12L,BAC,6.58,3.61,5.82,23.73,"2,634",2634.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,15.0
+S15E-1218-10LC,BAC,4.9,5.49,4.88,26.9,"2,634",2634.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,4.655,,
+S15E-1218-12KN,BAC,5.72,5.49,5.69,31.35,"2,656",2656.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,5.2155,,
+S15E-1218-09LN,BAC,4.5,5.49,4.47,24.67,"2,660",2660.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,4.2749999999999995,,
+S3E-1222-07P,BAC,6.58,3.61,3.73,23.73,"2,665",2665.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,40.0
+XES3E-1222-10M,BAC,6.58,3.61,5.0,23.73,"2,682",2682.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,20.0
+S15E-1212-07KN-2,BAC,3.45,7.37,3.38,25.45,"2,713",2713.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,3.2775,,
+S15E-1285-10NN-2,BAC,4.78,5.23,4.78,24.99,"2,722",2722.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.541,,
+XES3E-1222-13L,BAC,6.58,3.61,6.22,23.73,"2,722",2722.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,15.0
+S3E-1424-07O,BAC,7.34,4.27,3.76,31.32,"2,726",2726.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,30.0
+S15E-1218-11LC,BAC,5.31,5.49,5.28,29.13,"2,744",2744.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,5.044499999999999,,
+S15E-1218-10LN,BAC,4.9,5.49,4.88,26.9,"2,761",2761.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,4.655,,
+S3E-8518-05M-2,BAC,5.51,5.26,3.0,28.98,"2,823",2823.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,4.997,,40.0
+XES3E-1222-14L,BAC,6.58,3.61,6.63,23.73,"2,832",2832.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,15.0
+S15E-1218-12LC,BAC,5.72,5.49,5.69,31.35,"2,840",2840.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,5.2155,,
+S3E-1222-07Q,BAC,6.58,3.61,3.73,23.73,"2,862",2862.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,50.0
+XES3E-1222-10N,BAC,6.58,3.61,5.0,23.73,"2,875",2875.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,25.0
+S15E-1218-11LN,BAC,5.31,5.49,5.28,29.13,"2,875",2875.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,5.044499999999999,,
+S15E-1212-09JN-2,BAC,4.34,7.37,4.24,31.99,"2,880",2880.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.122999999999999,,
+XES3E-1222-12M,BAC,6.58,3.61,5.82,23.73,"2,884",2884.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,20.0
+S3E-8518-06L-2,BAC,5.51,5.26,3.4,28.98,"2,889",2889.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,4.997,,30.0
+S15E-1212-07LC-2,BAC,3.45,7.37,3.38,25.45,"2,915",2915.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,3.2775,,
+S15E-1218-12LN,BAC,5.72,5.49,5.69,31.35,"2,976",2976.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,5.2155,,
+XES3E-1222-13M,BAC,6.58,3.61,6.22,23.73,"2,976",2976.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,20.0
+S3E-1424-07P,BAC,7.34,4.27,3.76,31.32,"2,985",2985.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,40.0
+S3E-1222-07R,BAC,6.58,3.61,3.89,23.73,"3,029",3029.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,60.0
+XES3E-1424-12L,BAC,7.34,4.27,5.87,31.32,"3,033",3033.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,15.0
+XES3E-1222-10O,BAC,6.58,3.61,5.0,23.73,"3,042",3042.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,30.0
+S15E-1218-10MN,BAC,4.9,5.49,4.88,26.9,"3,047",3047.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,4.655,,
+XES3E-1222-12N,BAC,6.58,3.61,5.82,23.73,"3,086",3086.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,25.0
+XES3E-1222-14M,BAC,6.58,3.61,6.63,23.73,"3,099",3099.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,20.0
+S15E-1212-09KN-2,BAC,4.34,7.37,4.24,31.99,"3,143",3143.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.122999999999999,,
+XES3E-1424-13L,BAC,7.34,4.27,6.27,31.32,"3,148",3148.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,15.0
+S15E-1218-11MN,BAC,5.31,5.49,5.28,29.13,"3,170",3170.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,5.044499999999999,,
+S3E-8518-06M-2,BAC,5.51,5.26,3.4,28.98,"3,174",3174.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,4.997,,40.0
+XES3E-1222-13N,BAC,6.58,3.61,6.22,23.73,"3,192",3192.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,25.0
+S3E-1424-07Q,BAC,7.34,4.27,3.76,31.32,"3,200",3200.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,50.0
+XES3E-1222-12O,BAC,6.58,3.61,5.82,23.73,"3,266",3266.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,30.0
+S15E-1218-12MN,BAC,5.72,5.49,5.69,31.35,"3,279",3279.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,5.2155,,
+S15E-1212-10KN-2,BAC,4.75,7.37,4.65,34.99,"3,301",3301.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.5125,,
+XES3E-1424-12M,BAC,7.34,4.27,5.87,31.32,"3,314",3314.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,20.0
+XES3E-1222-14N,BAC,6.58,3.61,6.63,23.73,"3,319",3319.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,25.0
+S3E-1222-10P,BAC,6.58,3.61,5.0,23.73,"3,323",3323.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,40.0
+S15E-1212-09LC-2,BAC,4.34,7.37,4.24,31.99,"3,363",3363.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.122999999999999,,
+S3E-1020-06M-2,BAC,6.12,6.05,3.3,37.01,"3,367",3367.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,5.7475,,40.0
+XES3E-1222-13O,BAC,6.58,3.61,6.22,23.73,"3,376",3376.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,30.0
+S3E-1424-07R,BAC,7.34,4.27,3.76,31.32,"3,389",3389.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,60.0
+S15E-1212-11KN-2,BAC,5.16,7.37,5.05,37.98,"3,398",3398.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.902,,
+S3E-8518-06N-2,BAC,5.51,5.26,3.4,28.98,"3,407",3407.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,4.997,,50.0
+XES3E-1424-13M,BAC,7.34,4.27,6.27,31.32,"3,437",3437.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,20.0
+XES3E-1222-14O,BAC,6.58,3.61,6.63,23.73,"3,508",3508.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,30.0
+S3E-8518-07M-2,BAC,5.51,5.26,3.81,28.98,"3,512",3512.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,4.997,,40.0
+S15E-1212-09LN-2,BAC,4.34,7.37,4.24,31.99,"3,521",3521.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.122999999999999,,
+S15E-1212-12KN-2,BAC,5.56,7.37,5.46,40.97,"3,521",3521.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,5.281999999999999,,
+S15E-1212-10LC-2,BAC,4.75,7.37,4.65,34.99,"3,530",3530.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.5125,,
+XES3E-1424-12N,BAC,7.34,4.27,5.87,31.32,"3,547",3547.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,25.0
+S3E-1222-10Q,BAC,6.58,3.61,5.0,23.73,"3,556",3556.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,50.0
+S3E-1222-12P,BAC,6.58,3.61,5.82,23.73,"3,565",3565.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,40.0
+S3E-8518-06O-2,BAC,5.51,5.26,3.4,28.98,"3,569",3569.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,4.997,,60.0
+XES3E-1424-14M,BAC,7.34,4.27,6.68,31.32,"3,587",3587.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,20.0
+S3E-1020-06N-2,BAC,6.12,6.05,3.3,37.01,"3,613",3613.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,5.7475,,50.0
+S15E-1212-11LC-2,BAC,5.16,7.37,5.05,37.98,"3,635",3635.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.902,,
+XES3E-1424-13N,BAC,7.34,4.27,6.27,31.32,"3,679",3679.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,25.0
+S3E-1222-13P,BAC,6.58,3.61,6.22,23.73,"3,683",3683.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,40.0
+S15E-1212-10LN-2,BAC,4.75,7.37,4.65,34.99,"3,696",3696.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.5125,,
+S3E-1020-07M-2,BAC,6.12,6.05,3.71,37.01,"3,736",3736.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,5.7475,,40.0
+S15E-1218-07JN-2,BAC,3.61,11.02,3.61,39.76,"3,749",3749.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,3.4294999999999995,,
+XES3E-1424-12O,BAC,7.34,4.27,5.87,31.32,"3,749",3749.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,30.0
+S3E-1222-10R,BAC,6.58,3.61,5.0,23.73,"3,758",3758.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,60.0
+S15E-1212-12LC-2,BAC,5.56,7.37,5.46,40.97,"3,767",3767.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,5.281999999999999,,
+S3E-8518-07N-2,BAC,5.51,5.26,3.81,28.98,"3,767",3767.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,4.997,,50.0
+S15E-1212-11LN-2,BAC,5.16,7.37,5.05,37.98,"3,811",3811.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.902,,
+S3E-1222-12Q,BAC,6.58,3.61,5.82,23.73,"3,815",3815.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,50.0
+S3E-1222-14P,BAC,6.58,3.61,6.63,23.73,"3,828",3828.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,40.0
+S3E-1020-06O-2,BAC,6.12,6.05,3.3,37.01,"3,828",3828.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,5.7475,,60.0
+XES3E-1424-14N,BAC,7.34,4.27,6.68,31.32,"3,837",3837.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,25.0
+S3E-1222-06M-2,BAC,6.58,7.29,3.33,47.96,"3,850",3850.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.2509999999999994,,40.0
+XES3E-1424-13O,BAC,7.34,4.27,6.27,31.32,"3,885",3885.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,30.0
+S3E-1222-13Q,BAC,6.58,3.61,6.22,23.73,"3,938",3938.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,50.0
+S15E-1212-12LN-2,BAC,5.56,7.37,5.46,40.97,"3,942",3942.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,5.281999999999999,,
+S3E-8518-07O-2,BAC,5.51,5.26,3.81,28.98,"3,964",3964.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,4.997,,60.0
+S3E-1020-07N-2,BAC,6.12,6.05,3.71,37.01,"4,008",4008.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,5.7475,,50.0
+S3E-1222-10S,BAC,6.58,3.61,5.0,23.73,"4,021",4021.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,75.0
+S3E-1222-12R,BAC,6.58,3.61,5.82,23.73,"4,026",4026.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,60.0
+S15E-1212-10MN-2,BAC,4.75,7.37,4.65,34.99,"4,030",4030.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.5125,,
+XES3E-1424-14O,BAC,7.34,4.27,6.68,31.32,"4,056",4056.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,30.0
+XES3E-1424-12P,BAC,7.34,4.27,5.87,31.32,"4,087",4087.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,40.0
+S15E-1218-07KN-2,BAC,3.61,11.02,3.61,39.76,"4,091",4091.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,3.4294999999999995,,
+S3E-1222-14Q,BAC,6.58,3.61,6.63,23.73,"4,096",4096.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,50.0
+S3E-1222-06N-2,BAC,6.58,7.29,3.33,47.96,"4,135",4135.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.2509999999999994,,50.0
+S3E-1222-13R,BAC,6.58,3.61,6.22,23.73,"4,157",4157.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,60.0
+S15E-1212-11MN-2,BAC,5.16,7.37,5.05,37.98,"4,197",4197.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.902,,
+XES3E-1424-13P,BAC,7.34,4.27,6.27,31.32,"4,236",4236.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,40.0
+S3E-8518-07P-2,BAC,5.51,5.26,3.81,28.98,"4,250",4250.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,4.997,,80.0
+S3E-1020-07O-2,BAC,6.12,6.05,3.71,37.01,"4,250",4250.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,5.7475,,60.0
+S15E-1218-09JN-2,BAC,4.5,11.02,4.47,49.56,"4,302",4302.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.2749999999999995,,
+S3E-1222-12S,BAC,6.58,3.61,5.82,23.73,"4,307",4307.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,75.0
+S3E-1222-14R,BAC,6.58,3.61,6.63,23.73,"4,324",4324.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,60.0
+S15E-1212-12MN-2,BAC,5.56,7.37,5.46,40.97,"4,346",4346.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,5.281999999999999,,
+S3E-1424-12Q,BAC,7.34,4.27,5.87,31.32,"4,368",4368.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,50.0
+S3E-1222-06O-2,BAC,6.58,7.29,3.33,47.96,"4,386",4386.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.2509999999999994,,60.0
+S15E-1218-07LC-2,BAC,3.61,11.02,3.61,39.76,"4,399",4399.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,3.4294999999999995,,
+XES3E-1424-14P,BAC,7.34,4.27,6.68,31.32,"4,421",4421.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,40.0
+S3E-1222-13S,BAC,6.58,3.61,6.22,23.73,"4,447",4447.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,75.0
+S3E-1424-13Q,BAC,7.34,4.27,6.27,31.32,"4,526",4526.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,50.0
+S3E-1222-07N-2,BAC,6.58,7.29,3.73,47.96,"4,592",4592.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.2509999999999994,,50.0
+S3E-1424-12R,BAC,7.34,4.27,6.02,31.32,"4,610",4610.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,60.0
+S3E-1222-14S,BAC,6.58,3.61,6.63,23.73,"4,636",4636.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,75.0
+S3E-1020-07P-2,BAC,6.12,6.05,3.71,37.01,"4,653",4653.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,5.7475,,80.0
+S15E-1218-09KN-2,BAC,4.5,11.02,4.47,49.56,"4,697",4697.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.2749999999999995,,
+S3E-1424-14Q,BAC,7.34,4.27,6.68,31.32,"4,719",4719.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,50.0
+S3E-1424-13R,BAC,7.34,4.27,6.43,31.32,"4,776",4776.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,60.0
+S3E-1222-07O-2,BAC,6.58,7.29,3.73,47.96,"4,869",4869.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.2509999999999994,,60.0
+S3E-1424-12S,BAC,7.34,4.27,6.02,31.32,"4,921",4921.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,75.0
+S15E-1218-10KN-2,BAC,4.9,11.02,4.88,54.04,"4,926",4926.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.655,,
+S3E-1424-14R,BAC,7.34,4.27,6.83,31.32,"4,978",4978.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,60.0
+S15E-1218-09LC-2,BAC,4.5,11.02,4.47,49.56,"5,022",5022.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.2749999999999995,,
+S3E-1222-14T[1],BAC,6.58,3.61,6.63,23.73,"5,035",5035.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,3.4294999999999995,,100.0
+S3E-1424-13S,BAC,7.34,4.27,6.43,31.32,"5,097",5097.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,75.0
+S15E-1218-11KN-2,BAC,5.31,11.02,5.28,58.52,"5,128",5128.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,5.044499999999999,,
+S15E-1218-10LC-2,BAC,4.9,11.02,4.88,54.04,"5,268",5268.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.655,,
+S3E-1424-12T[1],BAC,7.34,4.27,6.12,31.32,"5,299",5299.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,100.0
+S15E-1218-12KN-2,BAC,5.72,11.02,5.69,63.0,"5,312",5312.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,5.433999999999999,,
+S15E-1218-09LN-2,BAC,4.5,11.02,4.47,49.56,"5,321",5321.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.2749999999999995,,
+S3E-1424-14S,BAC,7.34,4.27,6.83,31.32,"5,334",5334.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,75.0
+S3E-1222-07P-2,BAC,6.58,7.29,3.73,47.96,"5,334",5334.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.2509999999999994,,80.0
+S3E-1424-07O-2,BAC,7.34,8.59,3.76,63.02,"5,448",5448.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.973,,60.0
+S15E-1218-11LC-2,BAC,5.31,11.02,5.28,58.52,"5,488",5488.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,5.044499999999999,,
+S3E-1424-13T[1],BAC,7.34,4.27,6.53,31.32,"5,488",5488.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,100.0
+S15E-1218-10LN-2,BAC,4.9,11.02,4.88,54.04,"5,523",5523.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.655,,
+S15E-1218-12LC-2,BAC,5.72,11.02,5.69,63.0,"5,681",5681.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,5.433999999999999,,
+S3E-1222-07Q-2,BAC,6.58,7.29,3.73,47.96,"5,720",5720.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.2509999999999994,,100.0
+S3E-1424-14T[1],BAC,7.34,4.27,6.93,31.32,"5,720",5720.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,100.0
+S15E-1218-11LN-2,BAC,5.31,11.02,5.28,58.52,"5,751",5751.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,5.044499999999999,,
+S15E-1218-12LN-2,BAC,5.72,11.02,5.69,63.0,"5,953",5953.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,5.433999999999999,,
+S3E-1424-07P-2,BAC,7.34,8.59,3.76,63.02,"5,970",5970.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.973,,80.0
+S3E-1424-14U[2],BAC,7.34,4.27,6.83,31.32,"6,032",6032.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,119.0
+S3E-1222-07R-2,BAC,6.58,7.29,3.89,47.96,"6,058",6058.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.2509999999999994,,120.0
+S15E-1218-10MN-2,BAC,4.9,11.02,4.88,54.04,"6,093",6093.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,4.655,,
+S3E-1424-14W[2],BAC,7.34,4.27,6.83,31.32,"6,120",6120.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,4.0565,,125.0
+S15E-1218-11MN-2,BAC,5.31,11.02,5.28,58.52,"6,339",6339.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,5.044499999999999,,
+S3E-1424-07Q-2,BAC,7.34,8.59,3.76,63.02,"6,405",6405.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.973,,100.0
+S15E-1218-12MN-2,BAC,5.72,11.02,5.69,63.0,"6,559",6559.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,2.0,5.433999999999999,,
+S3E-1222-10P-2,BAC,6.58,7.29,5.0,47.96,"6,646",6646.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.2509999999999994,,80.0
+S3E-1424-07R-2,BAC,7.34,8.59,3.76,63.02,"6,783",6783.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.973,,120.0
+S3E-1222-10Q-2,BAC,6.58,7.29,5.0,47.96,"7,116",7116.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.2509999999999994,,100.0
+S3E-1222-12P-2,BAC,6.58,7.29,5.82,47.96,"7,129",7129.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.2509999999999994,,80.0
+S3E-1222-13P-2,BAC,6.58,7.29,6.22,47.96,"7,366",7366.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.2509999999999994,,80.0
+S3E-1222-10R-2,BAC,6.58,7.29,5.0,47.96,"7,516",7516.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.2509999999999994,,120.0
+S3E-1222-12Q-2,BAC,6.58,7.29,5.82,47.96,"7,625",7625.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.2509999999999994,,100.0
+S3E-1222-14P-2,BAC,6.58,7.29,6.63,47.96,"7,656",7656.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.2509999999999994,,80.0
+S3E-1222-13Q-2,BAC,6.58,7.29,6.22,47.96,"7,876",7876.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.2509999999999994,,100.0
+S3E-1222-10S-2,BAC,6.58,7.29,5.0,47.96,"8,042",8042.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.2509999999999994,,150.0
+S3E-1222-12R-2,BAC,6.58,7.29,5.82,47.96,"8,056",8056.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.2509999999999994,,120.0
+S3E-1222-14Q-2,BAC,6.58,7.29,6.63,47.96,"8,192",8192.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.2509999999999994,,100.0
+S3E-1222-13R-2,BAC,6.58,7.29,6.22,47.96,"8,319",8319.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.2509999999999994,,120.0
+S3E-1222-12S-2,BAC,6.58,7.29,5.82,47.96,"8,609",8609.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.2509999999999994,,150.0
+S3E-1222-14R-2,BAC,6.58,7.29,6.63,47.96,"8,648",8648.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.2509999999999994,,120.0
+S3E-1424-12Q-2,BAC,7.34,8.59,5.87,63.02,"8,732",8732.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.973,,100.0
+S3E-1222-13S-2,BAC,6.58,7.29,6.22,47.96,"8,890",8890.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.2509999999999994,,150.0
+S3E-1424-13Q-2,BAC,7.34,8.59,6.27,63.02,"9,052",9052.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.973,,100.0
+S3E-1424-12R-2,BAC,7.34,8.59,6.02,63.02,"9,215",9215.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.973,,120.0
+S3E-1222-14S-2,BAC,6.58,7.29,6.63,47.96,"9,272",9272.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.2509999999999994,,150.0
+S3E-1424-14Q-2,BAC,7.34,8.59,6.68,63.02,"9,439",9439.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.973,,100.0
+S3E-1424-13R-2,BAC,7.34,8.59,6.43,63.02,"9,548",9548.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.973,,120.0
+S3E-1424-12S-2,BAC,7.34,8.59,6.02,63.02,"9,842",9842.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.973,,150.0
+S3E-1424-14R-2,BAC,7.34,8.59,6.83,63.02,"9,957",9957.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.973,,120.0
+S3E-1222-14T-2[1],BAC,6.58,7.29,6.63,47.96,"10,071",10071.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.2509999999999994,,200.0
+S3E-1424-13S-2,BAC,7.34,8.59,6.43,63.02,"10,194",10194.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.973,,150.0
+S3E-1424-12T-2[1],BAC,7.34,8.59,6.12,63.02,"10,597",10597.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.973,,200.0
+S3E-1424-14S-2,BAC,7.34,8.59,6.83,63.02,"10,672",10672.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.973,,150.0
+S3E-1424-13T-2[1],BAC,7.34,8.59,6.53,63.02,"10,975",10975.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.973,,200.0
+S3E-1424-14T-2[1],BAC,7.34,8.59,6.93,63.02,"11,436",11436.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.973,,200.0
+S3E-1424-14U-2[2],BAC,7.34,8.59,6.83,63.02,"12,064",12064.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.973,,238.0
+S3E-1424-14W-2[2],BAC,7.34,8.59,6.83,63.02,"12,235",12235.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,2.0,6.973,,250.0
+"Liebert EFC Indirect Evaporative Freecooling System, 400kW, Perimeter",Vertiv,5.5,3.98,,21.88,400,400.0,,https://www.vertiv.com/en-in/products-catalog/thermal-management/evaporative-free-cooling/#/,,Bit of an outlier,,,3.7809999999999997,,
+"Liebert EFC Indirect Evaporative Freecooling System, 400kW, Rooftop",Vertiv,6.71,3.98,,26.71,400,400.0,,https://www.vertiv.com/en-in/products-catalog/thermal-management/evaporative-free-cooling/#/,,Bit of an outlier,,,3.7809999999999997,,
+XES15E-1285-06EN,BAC,3.05,2.59,2.97,7.9,404,404.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+XES15E-1285-07EN,BAC,3.45,2.59,3.38,8.95,443,443.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+XES15E-1285-06FN,BAC,3.05,2.59,2.97,7.9,443,443.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+NC8401G-1,SPX Cooling Technologies,3.91,1.99,3.11,7.77,444.0,444.0,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,1.83,1.0,1.83,Wet,2.0
+XES15E-1285-07FN,BAC,3.45,2.59,3.38,8.95,487,487.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+XES15E-1285-06GN,BAC,3.05,2.59,2.97,7.9,514,514.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+NC8401H-1,SPX Cooling Technologies,3.91,1.99,3.11,7.77,514.4,514.4,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,1.83,1.0,1.83,Wet,3.0
+NX1010K-1,SPX Cooling Technologies,1.73,3.24,,5.61,531.9,531.9,"NX cooling tower engineering data (sea_NX-TS-23, 1/2023), NX1000 table (p.7)",https://spxcooling.com,,,,,1.6435,,
+XES15E-1285-07GN,BAC,3.45,2.59,3.38,8.95,562,562.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+XES15E-1285-09FN,BAC,4.37,2.59,4.37,11.32,575,575.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+XES15E-1285-10FN,BAC,4.78,2.59,4.78,12.37,601,601.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+XES15E-1285-06HN,BAC,3.05,2.59,2.97,7.9,606,606.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+NX1010M-1,SPX Cooling Technologies,1.73,3.24,,5.61,611.0,611.0,"NX cooling tower engineering data (sea_NX-TS-23, 1/2023), NX1000 table (p.7)",https://spxcooling.com,,,,,1.6435,,
+NC8401K-1,SPX Cooling Technologies,3.91,1.99,3.11,7.77,611.1,611.1,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,1.83,1.0,1.83,Wet,5.0
+XES15E-1285-07HN,BAC,3.45,2.59,3.38,8.95,659,659.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+XES15E-1285-09GN,BAC,4.37,2.59,4.37,11.32,663,663.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+NX1010N-1,SPX Cooling Technologies,1.73,3.24,,5.61,677.0,677.0,"NX cooling tower engineering data (sea_NX-TS-23, 1/2023), NX1000 table (p.7)",https://spxcooling.com,,,,,1.6435,,
+NC8402H-1,SPX Cooling Technologies,4.32,2.56,4.5,11.05,685.9 - 738.6,712.3,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,2.13,1.0,2.13,Wet,3.0
+S15E-1285-06JN,BAC,3.05,2.59,2.97,7.9,694,694.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+XES15E-1285-10GN,BAC,4.78,2.59,4.78,12.37,694,694.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+NC8401M-1,SPX Cooling Technologies,3.91,1.99,3.11,7.77,699.0,699.0,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,1.83,1.0,1.83,Wet,7.5
+XES15E-1212-07EN,BAC,3.45,3.66,3.38,12.63,733,733.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.2775,,
+XES3E-8518-05G,BAC,5.51,2.59,3.0,14.28,751,751.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.4604999999999997,,3.0
+S15E-1285-06KN,BAC,3.05,2.59,2.97,7.9,759,759.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+XES15E-1285-07JN,BAC,3.45,2.59,3.38,8.95,764,764.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+NX1010P-1,SPX Cooling Technologies,1.73,3.24,,5.61,764.9,764.9,"NX cooling tower engineering data (sea_NX-TS-23, 1/2023), NX1000 table (p.7)",https://spxcooling.com,,,,,1.6435,,
+NC8401N-1,SPX Cooling Technologies,3.91,1.99,3.11,7.77,769.4,769.4,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,1.83,1.0,1.83,Wet,10.0
+XES15E-1285-09HN,BAC,4.37,2.59,4.37,11.32,781,781.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+NX1015K-1,SPX Cooling Technologies,2.52,3.86,,9.73,800.1,800.1,"NX cooling tower engineering data (sea_NX-TS-23, 1/2023), NX1000 table (p.7)",https://spxcooling.com,,,,,2.3939999999999997,,
+XES15E-1212-07FN,BAC,3.45,3.66,3.38,12.63,803,803.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.2775,,
+XES15E-1285-10HN,BAC,4.78,2.59,4.78,12.37,817,817.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+NC8402K-1,SPX Cooling Technologies,4.32,2.56,4.5,11.05,817.8 - 874.9,846.3,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,2.13,1.0,2.13,Wet,5.0
+S15E-1285-07KN,BAC,3.45,2.59,3.38,8.95,830,830.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+XES3E-8518-06G,BAC,5.51,2.59,3.4,14.28,852,852.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.4604999999999997,,3.0
+XES15E-1212-09EN,BAC,4.34,3.66,4.24,15.89,856,856.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+NC8403H-1,SPX Cooling Technologies,5.54,2.56,5.01,14.17,861.6 - 940.8,901.3,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,2.13,1.0,2.13,Wet,3.0
+XES15E-1212-07GC,BAC,3.45,3.66,3.38,12.63,865,865.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.2775,,
+S15E-1285-06LN,BAC,3.05,2.59,2.97,7.9,869,869.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+NC8401P-1,SPX Cooling Technologies,3.91,1.99,3.11,7.77,870.5,870.5,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,1.83,1.0,1.83,Wet,15.0
+NX1015M-1,SPX Cooling Technologies,2.52,3.86,,9.73,879.3,879.3,"NX cooling tower engineering data (sea_NX-TS-23, 1/2023), NX1000 table (p.7)",https://spxcooling.com,,,,,2.3939999999999997,,
+GT-20 200 Ton,Aggreko,6.1,2.44,2.9,14.88,879.3,879.3,Aggreko product page,https://www.aggreko.com/en-us/products/hvac/cooling/cooling-towers/cooling-tower-gt-20-200-ton,,,,,2.318,,
+XES3E-8518-05H,BAC,5.51,2.59,3.0,14.28,891,891.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.4604999999999997,,5.0
+XES15E-1285-09JN,BAC,4.37,2.59,4.37,11.32,896,896.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+XES15E-1212-10EN,BAC,4.75,3.66,4.65,17.37,896,896.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+XES3E-1020-06G,BAC,6.12,3.0,3.3,18.35,904,904.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.8499999999999996,,3.0
+XES15E-1212-07GN,BAC,3.45,3.66,3.38,12.63,913,913.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.2775,,
+XES15E-1212-11EN,BAC,5.16,3.66,5.05,18.86,926,926.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+NC8402M-1,SPX Cooling Technologies,4.32,2.56,4.5,11.05,932.0 - 1002.4,967.1,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,2.13,1.0,2.13,Wet,7.5
+XES15E-1285-10JN,BAC,4.78,2.59,4.78,12.37,935,935.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+XES15E-1212-09FN,BAC,4.34,3.66,4.24,15.89,935,935.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+XES3E-8518-07G,BAC,5.51,2.59,3.81,14.28,948,948.0,Product Catalog,https://www.calameo.com/read/0073621279a1d0c9ca0e2?authid=Ms66hE7oFhAO,,,,1.0,2.4604999999999997,,3.0
+S15E-1285-07LN,BAC,3.45,2.59,3.38,8.95,953,953.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+NX1015N-1,SPX Cooling Technologies,2.52,3.86,,9.73,967.1,967.1,"NX cooling tower engineering data (sea_NX-TS-23, 1/2023), NX1000 table (p.7)",https://spxcooling.com,,,,,2.3939999999999997,,
+S15E-1285-09KN,BAC,4.37,2.59,4.37,11.32,979,979.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,2.4604999999999997,,
+XES15E-1212-10FN,BAC,4.75,3.66,4.65,17.37,983,983.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.477,,
+XES15E-1212-07HC,BAC,3.45,3.66,3.38,12.63,992,992.0,,https://www.calameo.com/read/007362127e29aeca4d414?authid=Vtd8DMG7ouV6,,,,1.0,3.2775,,
+NC8402N-1,SPX Cooling Technologies,4.32,2.56,4.5,11.05,1037.5 - 1107.9,1072.6,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,2.13,1.0,2.13,Wet,10.0
+NC8403K-1,SPX Cooling Technologies,5.54,2.56,5.01,14.17,1041.9 - 1125.5,1083.6,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,2.13,1.0,2.13,Wet,5.0
+NC8405H-1,SPX Cooling Technologies,6.07,3.02,5.01,18.31,1063.9 - 1081.5,1072.6,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,2.74,1.0,2.74,Wet,3.0
+NX1020N-1,SPX Cooling Technologies,2.81,4.13,,11.6,1068.3,1068.3,"NX cooling tower engineering data (sea_NX-TS-23, 1/2023), NX1000 table (p.7)",https://spxcooling.com,,,,,2.6694999999999998,,
+NX1015P-1,SPX Cooling Technologies,2.52,3.86,,9.73,1094.6,1094.6,"NX cooling tower engineering data (sea_NX-TS-23, 1/2023), NX1000 table (p.7)",https://spxcooling.com,,,,,2.3939999999999997,,
+NC8402P-1,SPX Cooling Technologies,4.32,2.56,4.5,11.05,1165.0 - 1244.1,1204.6,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,2.13,1.0,2.13,Wet,15.0
+NC8403M-1,SPX Cooling Technologies,5.54,2.56,5.01,14.17,1182.6 - 1279.3,1231.0,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,2.13,1.0,2.13,Wet,7.5
+NC8405K-1,SPX Cooling Technologies,6.07,3.02,5.01,18.31,1231.0 - 1283.8,1257.4,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,2.74,1.0,2.74,Wet,5.0
+NX1020P-1,SPX Cooling Technologies,2.81,4.13,,11.6,1257.3,1257.3,"NX cooling tower engineering data (sea_NX-TS-23, 1/2023), NX1000 table (p.7)",https://spxcooling.com,,,,,2.6694999999999998,,
+NC8402Q-1,SPX Cooling Technologies,4.32,2.56,4.5,11.05,1266.1 - 1354.0,1310.1,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,2.13,1.0,2.13,Wet,20.0
+NC8403N-1,SPX Cooling Technologies,5.54,2.56,5.01,14.17,1305.6 - 1406.8,1356.3,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,2.13,1.0,2.13,Wet,10.0
+GT-20 300 Ton,Aggreko,6.1,2.44,2.9,14.88,1318.9,1318.9,Aggreko product page,https://www.aggreko.com/en-us/products/hvac/cooling/cooling-towers/cooling-tower-gt-20-300-ton,,,,,2.318,,
+NX1025N-1,SPX Cooling Technologies,3.49,4.5,,15.74,1336.4,1336.4,"NX cooling tower engineering data (sea_NX-TS-23, 1/2023), NX1000 table (p.7)",https://spxcooling.com,,,,,3.3155,,
+TMX 1 Cell,Delta Cooling Towers,6.25,2.59,,16.19,1358.8 - 2637.5,1998.1,TMX series page,https://deltacooling.com/products/cooling-towers/TMX-induced-draft-tower,"Correct, a range of capacity is given in tons.",,,,2.4604999999999997,,
+NX1020Q-1,SPX Cooling Technologies,2.81,4.13,,11.6,1393.5,1393.5,"NX cooling tower engineering data (sea_NX-TS-23, 1/2023), NX1000 table (p.7)",https://spxcooling.com,,,,,2.6694999999999998,,
+NC8405M-1,SPX Cooling Technologies,6.07,3.02,5.01,18.31,1398.0 - 1459.5,1428.8,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,2.74,1.0,2.74,Wet,7.5
+NC8407K-1,SPX Cooling Technologies,6.4,3.63,5.02,23.21,1406.8 - 1450.8,1428.8,pg. 7,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.05,1.0,3.05,Wet,5.0
+NC8403P-1,SPX Cooling Technologies,5.54,2.56,5.01,14.17,1446.4 - 1595.9,1521.1,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,2.13,1.0,2.13,Wet,15.0
+NX1025P-1,SPX Cooling Technologies,3.49,4.5,,15.74,1481.5,1481.5,"NX cooling tower engineering data (sea_NX-TS-23, 1/2023), NX1000 table (p.7)",https://spxcooling.com,,,,,3.3155,,
+AT 214-2H14,Evapco,4.6,4.26,3.93,19.6,1503.5,1503.5,p.13,https://www.evapco.com/sites/evapco.com/files/2025-07/AT25ENG_WEB.pdf,,,,,4.047,,
+NC8405N-1,SPX Cooling Technologies,6.07,3.02,5.01,18.31,1556.3 - 1622.3,1589.3,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,2.74,1.0,2.74,Wet,10.0
+NX2030P-1,SPX Cooling Technologies,3.47,5.54,,19.23,1560.6,1560.6,p.9,https://spxcooling.com/wp-content/uploads/sea_NX-TS-23.pdf,,,,,3.2965,,
+NC8407M-1,SPX Cooling Technologies,6.4,3.63,5.02,23.21,1604.6 - 1670.6,1637.6,pg. 7,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.05,1.0,3.05,Wet,7.5
+NC8403Q-1,SPX Cooling Technologies,5.54,2.56,5.01,14.17,1626.6 - 1749.8,1688.1,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,2.13,1.0,2.13,Wet,20.0
+NX1025Q-1,SPX Cooling Technologies,3.49,4.5,,15.74,1635.4,1635.4,"NX cooling tower engineering data (sea_NX-TS-23, 1/2023), NX1000 table (p.7)",https://spxcooling.com,,,,,3.3155,,
+NX2030Q-1,SPX Cooling Technologies,3.47,5.54,,19.23,1710.1,1710.1,p.9,https://spxcooling.com/wp-content/uploads/sea_NX-TS-23.pdf,,,,,3.2965,,
+NC8403R-1,SPX Cooling Technologies,5.54,2.56,5.01,14.17,1718.9 - 1855.3,1787.1,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,2.13,1.0,2.13,Wet,25.0
+GT-20 400-ton,Aggreko,6.1,2.44,,14.88,1758.8,1758.8,Aggreko product page,https://www.aggreko.com/en-us/products/hvac/cooling/cooling-towers/cooling-tower-gt-20-400-ton,"Correct. 400 refrigerant tons * 3.51685 ~= 1407 kW, 8ft ~= 2.44m",,,,2.318,,
+NC8407N-1,SPX Cooling Technologies,6.4,3.63,5.02,23.21,1762.9 - 1837.6,1800.3,pg. 7,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.05,1.0,3.05,Wet,10.0
+NC8405P-1,SPX Cooling Technologies,6.07,3.02,5.01,18.31,1771.8 - 1846.4,1809.0,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,2.74,1.0,2.74,Wet,15.0
+NX2030R-1,SPX Cooling Technologies,3.47,5.54,,19.23,1824.4,1824.4,p.9,https://spxcooling.com/wp-content/uploads/sea_NX-TS-23.pdf,,,,,3.2965,,
+NC8409M-1,SPX Cooling Technologies,6.83,4.24,5.02,28.94,1833.3 - 1877.3,1855.3,pg. 7,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,7.5
+NC8403S-1,SPX Cooling Technologies,5.54,2.56,5.01,14.17,1846.4 - 1951.9,1899.1,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,2.13,1.0,2.13,Wet,30.0
+NX2030S-1,SPX Cooling Technologies,3.47,5.54,,19.23,1921.1,1921.1,p.9,https://spxcooling.com/wp-content/uploads/sea_NX-TS-23.pdf,,,,,3.2965,,
+NC8405Q-1,SPX Cooling Technologies,6.07,3.02,5.01,18.31,1943.1 - 2026.6,1984.9,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,2.74,1.0,2.74,Wet,20.0
+NX2040P-1,SPX Cooling Technologies,3.64,5.8,,21.11,1965.0,1965.0,p.9,https://spxcooling.com/wp-content/uploads/sea_NX-TS-23.pdf,,,,,3.4579999999999997,,
+NC8403T-1,SPX Cooling Technologies,5.54,2.56,5.01,14.17,1969.5 - 2119.0,2044.3,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,2.13,1.0,2.13,Wet,40.0
+NC8407P-1,SPX Cooling Technologies,6.4,3.63,5.02,23.21,2013.5 - 2092.6,2053.0,pg. 7,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.05,1.0,3.05,Wet,15.0
+NC8409N-1,SPX Cooling Technologies,6.83,4.24,5.02,28.94,2017.9 - 2075.0,2046.5,pg. 7,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,10.0
+NC8405R-1,SPX Cooling Technologies,6.07,3.02,5.01,18.31,2061.9 - 2158.5,2110.3,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,2.74,1.0,2.74,Wet,25.0
+NX2040Q-1,SPX Cooling Technologies,3.64,5.8,,21.11,2158.5,2158.5,p.9,https://spxcooling.com/wp-content/uploads/sea_NX-TS-23.pdf,,,,,3.4579999999999997,,
+NC8405S-1,SPX Cooling Technologies,6.07,3.02,5.01,18.31,2158.5 - 2255.3,2206.9,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,2.74,1.0,2.74,Wet,30.0
+NC8407Q-1,SPX Cooling Technologies,6.4,3.63,5.02,23.21,2180.5 - 2272.9,2226.8,pg. 7,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.05,1.0,3.05,Wet,20.0
+NC8410N-1,SPX Cooling Technologies,6.83,3.63,6.25,24.77,2189.4 - 2294.9,2242.1,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,10.0
+GT-40 500 Ton,Aggreko,12.19,2.44,2.9,29.74,2198.1,2198.1,Aggreko product page,https://www.aggreko.com/en-us/products/hvac/cooling/cooling-towers/cooling-tower-gt-40-500-ton,,,,,2.318,,
+GT-20 500-ton,Aggreko,6.1,2.44,,14.88,2198.8,2198.8,Aggreko product page,https://www.aggreko.com/en-us/products/hvac/cooling/cooling-towers/cooling-tower-gt-20-500-ton,,,,,2.318,,
+NX2040R-1,SPX Cooling Technologies,3.64,5.8,,21.11,2303.5,2303.5,p.9,https://spxcooling.com/wp-content/uploads/sea_NX-TS-23.pdf,,,,,3.4579999999999997,,
+NC8409P-1,SPX Cooling Technologies,6.83,4.24,5.02,28.94,2303.6 - 2365.1,2334.4,pg. 7,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,15.0
+NC8407R-1,SPX Cooling Technologies,6.4,3.63,5.02,23.21,2343.3 - 2439.9,2391.5,pg. 7,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.05,1.0,3.05,Wet,25.0
+NC8405T-1,SPX Cooling Technologies,6.07,3.02,5.01,18.31,2369.6 - 2439.9,2404.8,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,2.74,1.0,2.74,Wet,40.0
+NC8411N-1,SPX Cooling Technologies,6.83,3.63,7.11,24.77,2400.4 - 2527.9,2464.1,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,10.0
+NX2040S-1,SPX Cooling Technologies,3.64,5.8,,21.11,2426.6,2426.6,p.9,https://spxcooling.com/wp-content/uploads/sea_NX-TS-23.pdf,,,,,3.4579999999999997,,
+NC8407S-1,SPX Cooling Technologies,6.4,3.63,5.02,23.21,2470.8 - 2571.8,2521.3,pg. 7,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.05,1.0,3.05,Wet,30.0
+NC8405U-1,SPX Cooling Technologies,6.07,3.02,5.01,18.31,2488.3 - 2598.1,2543.3,pg. 5,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,2.74,1.0,2.74,Wet,50.0
+NC8410P-1,SPX Cooling Technologies,6.83,3.63,6.25,24.77,2488.3 - 2607.0,2547.6,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,15.0
+NC8409Q-1,SPX Cooling Technologies,6.83,4.24,5.02,28.94,2527.9 - 2598.1,2563.0,pg. 7,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,20.0
+NX2050Q-1,SPX Cooling Technologies,3.9,6.05,,23.56,2532.1,2532.1,p.9,https://spxcooling.com/wp-content/uploads/sea_NX-TS-23.pdf,,,,,3.7049999999999996,,
+GT-40 600 Ton,Aggreko,12.19,2.44,2.9,29.74,2637.8,2637.8,Aggreko product page,https://www.aggreko.com/en-us/products/hvac/cooling/cooling-towers/cooling-tower-gt-40-600-ton,,,,,2.318,,
+NC8413N-1,SPX Cooling Technologies,6.83,3.63,8.26,24.77,2655.4 - 2844.4,2749.9,pg. 11,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,10.0
+TMX 2 Cells,Delta Cooling Towers,6.25,5.21,,32.56,2656.3 - 5152.5,3904.4,TMX series page,https://deltacooling.com/products/cooling-towers/TMX-induced-draft-tower,,,,,4.9495,,
+NC8407T-1,SPX Cooling Technologies,6.4,3.63,5.02,23.21,2694.9 - 2804.8,2749.9,pg. 7,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.05,1.0,3.05,Wet,40.0
+NX2050R-1,SPX Cooling Technologies,3.9,6.05,,23.56,2699.1,2699.1,p.9,https://spxcooling.com/wp-content/uploads/sea_NX-TS-23.pdf,,,,,3.7049999999999996,,
+NC8411P-1,SPX Cooling Technologies,6.83,3.63,7.11,24.77,2703.8 - 2862.0,2782.9,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,15.0
+NC8409R-1,SPX Cooling Technologies,6.83,4.24,5.02,28.94,2712.5 - 2787.3,2749.9,pg. 7,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,25.0
+NC8410Q-1,SPX Cooling Technologies,6.83,3.63,6.25,24.77,2725.6 - 2875.1,2800.4,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,20.0
+NX2060Q-1,SPX Cooling Technologies,4.14,6.3,,26.1,2800.3,2800.3,p.9,https://spxcooling.com/wp-content/uploads/sea_NX-TS-23.pdf,,,,,3.9329999999999994,,
+NX2050S-1,SPX Cooling Technologies,3.9,6.05,,23.56,2839.9,2839.9,p.9,https://spxcooling.com/wp-content/uploads/sea_NX-TS-23.pdf,,,,,3.7049999999999996,,
+NC8409S-1,SPX Cooling Technologies,6.83,4.24,5.02,28.94,2857.6 - 2923.5,2890.5,pg. 7,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,30.0
+AT 214-4M14,Evapco,4.6,4.26,4.54,19.6,2892.6,2892.6,p.13,https://www.evapco.com/sites/evapco.com/files/2025-07/AT25ENG_WEB.pdf,,,,,4.047,,
+NC8407U-1,SPX Cooling Technologies,6.4,3.63,5.02,23.21,2892.8 - 3002.6,2947.6,pg. 7,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.05,1.0,3.05,Wet,50.0
+NC8410R-1,SPX Cooling Technologies,6.83,3.63,6.25,24.77,2923.5 - 3073.0,2998.3,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,25.0
+NC8411Q-1,SPX Cooling Technologies,6.83,3.63,7.11,24.77,2954.3 - 3121.4,3037.8,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,20.0
+NX2060R-1,SPX Cooling Technologies,4.14,6.3,,26.1,2989.4,2989.4,p.9,https://spxcooling.com/wp-content/uploads/sea_NX-TS-23.pdf,,,,,3.9329999999999994,,
+NC8413P-1,SPX Cooling Technologies,6.83,3.63,8.26,24.77,2989.5 - 3231.3,3110.4,pg. 11,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,15.0
+NC8407V-1,SPX Cooling Technologies,6.4,3.63,5.02,23.21,3033.4 - 3125.8,3079.6,pg. 7,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.05,1.0,3.05,Wet,60.0
+GT-40 700 Ton,Aggreko,12.19,2.44,2.9,29.74,3077.4,3077.4,Aggreko product page,https://www.aggreko.com/en-us/products/hvac/cooling/cooling-towers/cooling-tower-gt-40-700-ton,,,,,2.318,,
+NC8412P-1,SPX Cooling Technologies,6.83,4.24,7.11,28.94,3077.4 - 3240.0,3158.8,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,15.0
+NC8410S-1,SPX Cooling Technologies,6.83,3.63,6.25,24.77,3090.6 - 3248.9,3169.8,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,30.0
+NC8409T-1,SPX Cooling Technologies,6.83,4.24,5.02,28.94,3099.4 - 3178.5,3138.9,pg. 7,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,40.0
+NX2060S-1,SPX Cooling Technologies,4.14,6.3,,26.1,3152.0,3152.0,p.9,https://spxcooling.com/wp-content/uploads/sea_NX-TS-23.pdf,,,,,3.9329999999999994,,
+NC8411R-1,SPX Cooling Technologies,6.83,3.63,7.11,24.77,3152.1 - 3345.5,3248.9,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,25.0
+NC8413Q-1,SPX Cooling Technologies,6.83,3.63,8.26,24.77,3248.9 - 3464.3,3356.5,pg. 11,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,20.0
+NC8409U-1,SPX Cooling Technologies,6.83,4.24,5.02,28.94,3310.4 - 3389.5,3350.0,pg. 7,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,50.0
+NC8411S-1,SPX Cooling Technologies,6.83,3.63,7.11,24.77,3332.4 - 3512.6,3422.5,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,30.0
+NC8414P-1,SPX Cooling Technologies,6.83,4.24,8.26,28.94,3345.5 - 3543.4,3444.5,pg. 11,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,15.0
+NC8412Q-1,SPX Cooling Technologies,6.83,4.24,7.11,28.94,3354.4 - 3512.6,3433.5,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,20.0
+NC8410T-1,SPX Cooling Technologies,6.83,3.63,6.25,24.77,3354.4 - 3525.8,3440.1,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,40.0
+NX2060T-1,SPX Cooling Technologies,4.14,6.3,,26.1,3464.1,3464.1,p.9,https://spxcooling.com/wp-content/uploads/sea_NX-TS-23.pdf,,,,,3.9329999999999994,,
+NC8409V-1,SPX Cooling Technologies,6.83,4.24,5.02,28.94,3464.3 - 3543.4,3503.8,pg. 7,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,60.0
+NC8413R-1,SPX Cooling Technologies,6.83,3.63,8.26,24.77,3477.4 - 3714.9,3596.1,pg. 11,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,25.0
+GT-40 800 Ton,Aggreko,12.19,2.44,,29.74,3517.0,3517.0,Aggreko product page,https://www.aggreko.com/en-us/products/hvac/cooling/cooling-towers/cooling-tower-gt-40-800-ton,,,,,2.318,,
+NC8410U-1,SPX Cooling Technologies,6.83,3.63,6.25,24.77,3574.1 - 3763.3,3668.6,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,50.0
+NC8412R-1,SPX Cooling Technologies,6.83,4.24,7.11,28.94,3578.5 - 3754.4,3666.5,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,25.0
+NC8411T-1,SPX Cooling Technologies,6.83,3.63,7.11,24.77,3635.8 - 3820.4,3728.0,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,40.0
+NC8414Q-1,SPX Cooling Technologies,6.83,4.24,8.26,28.94,3635.8 - 3851.1,3743.4,pg. 11,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,20.0
+NC8409W-1,SPX Cooling Technologies,6.83,4.24,5.02,28.94,3644.5 - 3728.0,3686.3,pg. 7,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,75.0
+NC8413S-1,SPX Cooling Technologies,6.83,3.63,8.26,24.77,3666.5 - 3912.6,3789.6,pg. 11,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,30.0
+NC8410V-1,SPX Cooling Technologies,6.83,3.63,6.25,24.77,3750.0 - 3956.6,3853.4,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,60.0
+NC8412S-1,SPX Cooling Technologies,6.83,4.24,7.11,28.94,3776.4 - 3961.0,3868.8,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,30.0
+NC8411U-1,SPX Cooling Technologies,6.83,3.63,7.11,24.77,3877.5 - 4079.8,3978.6,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,50.0
+NC8414R-1,SPX Cooling Technologies,6.83,4.24,8.26,28.94,3881.9 - 4101.8,3991.8,pg. 11,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,25.0
+NC8410W-1,SPX Cooling Technologies,6.83,3.63,6.25,24.77,3939.0 - 4106.1,4022.6,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,75.0
+NC8413T-1,SPX Cooling Technologies,6.83,3.63,8.26,24.77,3978.6 - 4264.4,4121.5,pg. 11,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,40.0
+NC8414S-1,SPX Cooling Technologies,6.83,4.24,8.26,28.94,4084.1 - 4321.5,4202.9,pg. 11,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,30.0
+NC8411V-1,SPX Cooling Technologies,6.83,3.63,7.11,24.77,4088.5 - 4321.5,4205.0,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,60.0
+NC8412T-1,SPX Cooling Technologies,6.83,4.24,7.11,28.94,4114.9 - 4317.1,4216.0,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,40.0
+NC8413U-1,SPX Cooling Technologies,6.83,3.63,8.26,24.77,4224.8 - 4497.4,4361.1,pg. 11,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,50.0
+NC8411W-1,SPX Cooling Technologies,6.83,3.63,7.11,24.77,4325.9 - 4580.9,4453.4,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,75.0
+GT-40 1000-ton,Aggreko,12.19,2.44,,29.74,4396.3,4396.3,Aggreko product page,https://www.aggreko.com/en-us/products/hvac/cooling/cooling-towers/cooling-tower-gt-40-1000-ton,,,,,2.318,,
+NC8412U-1,SPX Cooling Technologies,6.83,4.24,7.11,28.94,4400.6 - 4594.1,4497.4,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,50.0
+NC8414T-1,SPX Cooling Technologies,6.83,4.24,8.26,28.94,4444.6 - 4739.1,4591.9,pg. 11,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,40.0
+NC8413V-1,SPX Cooling Technologies,6.83,3.63,8.26,24.77,4449.0 - 4730.4,4589.6,pg. 11,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,60.0
+TMX 3 Cells,Delta Cooling Towers,6.25,7.86,,49.13,4523.8 - 7566.3,6045.0,TMX series page,https://deltacooling.com/products/cooling-towers/TMX-induced-draft-tower,,,,,5.9375,,
+NC8412V-1,SPX Cooling Technologies,6.83,4.24,7.11,28.94,4629.3 - 4840.3,4734.8,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,60.0
+NC8413W-1,SPX Cooling Technologies,6.83,3.63,8.26,24.77,4717.1 - 5011.8,4864.5,pg. 11,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,75.0
+NC8414U-1,SPX Cooling Technologies,6.83,4.24,8.26,28.94,4840.3 - 5104.0,4972.1,pg. 11,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,50.0
+NC8412W-1,SPX Cooling Technologies,6.83,4.24,7.11,28.94,4945.8 - 5165.6,5055.8,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,75.0
+NC8413X-1,SPX Cooling Technologies,6.83,3.63,8.26,24.77,5051.3 - 5359.0,5205.1,pg. 11,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.35,1.0,3.35,Wet,100.0
+NC8414V-1,SPX Cooling Technologies,6.83,4.24,8.26,28.94,5073.3 - 5341.5,5207.4,pg. 11,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,60.0
+NC8412X-1,SPX Cooling Technologies,6.83,4.24,7.11,28.94,5275.5 - 5521.8,5398.6,pg. 9,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,100.0
+NC8414W-1,SPX Cooling Technologies,6.83,4.24,8.26,28.94,5332.6 - 5719.5,5526.1,pg. 11,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,75.0
+NC8414X-1,SPX Cooling Technologies,6.83,4.24,8.26,28.94,5693.1 - 6000.9,5847.0,pg. 11,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,100.0
+NC8422R-1,SPX Cooling Technologies,9.09,6.83,8.26,62.13,5763.5,5763.5,pg. 12,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,5.79,1.0,5.79,Wet,25.0
+TMX 4 Cells,Delta Cooling Towers,6.25,10.45,,65.31,5930.0 - 9917.5,7923.8,TMX series page,https://deltacooling.com/products/cooling-towers/TMX-induced-draft-tower,,,,,5.9375,,
+NC8422S-1,SPX Cooling Technologies,9.09,6.83,8.26,62.13,6080.0,6080.0,pg. 12,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,5.79,1.0,5.79,Wet,30.0
+NC8414Y-1,SPX Cooling Technologies,6.83,4.24,8.26,28.94,6154.8 - 6537.3,6346.0,pg. 11,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,3.66,1.0,3.66,Wet,125.0
+NC8422T-1,SPX Cooling Technologies,9.09,6.83,8.26,62.13,6550.4,6550.4,pg. 12,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,5.79,1.0,5.79,Wet,40.0
+NC8422U-1,SPX Cooling Technologies,9.09,6.83,8.26,62.13,7012.0,7012.0,pg. 12,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,5.79,1.0,5.79,Wet,50.0
+TMX 5 Cells,Delta Cooling Towers,6.25,13.08,,81.75,7253.8 - 12133.8,9693.8,TMX series page,https://deltacooling.com/products/cooling-towers/TMX-induced-draft-tower,,,,,5.9375,,
+NC8422V-1,SPX Cooling Technologies,9.09,6.83,8.26,62.13,7420.9,7420.9,pg. 12,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,5.79,1.0,5.79,Wet,60.0
+NC8422W-1,SPX Cooling Technologies,9.09,6.83,8.26,62.13,7957.3,7957.3,pg. 12,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,5.79,1.0,5.79,Wet,75.0
+TMX 6 Cells,Delta Cooling Towers,6.25,15.7,,98.13,8542.5 - 14292.5,11417.5,TMX series page,https://deltacooling.com/products/cooling-towers/TMX-induced-draft-tower,,,,,5.9375,,
+NC8422X-1,SPX Cooling Technologies,9.09,6.83,8.26,62.13,8647.4,8647.4,pg. 12,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,5.79,1.0,5.79,Wet,100.0
+AT 214-5K52,Evapco,15.75,4.25,6.79,66.93,8664.6,8664.6,p.73,https://www.evapco.com/sites/evapco.com/files/2025-07/AT25ENG_WEB.pdf,,,,,4.0375,,
+NC8422Y-1,SPX Cooling Technologies,9.09,6.83,8.26,62.13,9144.3,9144.3,pg. 12,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,5.79,1.0,5.79,Wet,125.0
+NC8422Z-1,SPX Cooling Technologies,9.09,6.83,8.26,62.13,9623.4,9623.4,pg. 12,https://spxcooling.com/wp-content/uploads/TECH-NC-23.pdf,,,5.79,1.0,5.79,Wet,150.0
+AT 214-5O52,Evapco,15.75,4.25,6.79,66.93,11526.5,11526.5,p.73,https://www.evapco.com/sites/evapco.com/files/2025-07/AT25ENG_WEB.pdf,,,,,4.0375,,
+AT 314-5K78,Evapco,23.66,4.25,6.79,100.53,12906.8,12906.9,p.74,https://www.evapco.com/sites/evapco.com/files/2025-07/AT25ENG_WEB.pdf,,,,,4.0375,,
+AT 456-5K26,Evapco,17.38,7.85,6.79,136.38,16713.8,16713.9,p.77,https://www.evapco.com/sites/evapco.com/files/2025-07/AT25ENG_WEB.pdf,,,,,7.4575,,
+AT 314-5O78,Evapco,23.66,4.25,6.79,100.53,17179.8,17179.8,p.74,https://www.evapco.com/sites/evapco.com/files/2025-07/AT25ENG_WEB.pdf,,,,,4.0375,,
+AT 456-5O26,Evapco,17.38,7.85,6.79,136.38,22310.0,22310.0,p.77,https://www.evapco.com/sites/evapco.com/files/2025-07/AT25ENG_WEB.pdf,,,,,7.4575,,
+CT10000 (per cell),Aggreko,4.06,2.44,4.18,9.9064,3333.33,3333.33,Aggreko product page,https://www.aggreko.com/en/products/hvac/cooling/cooling-towers/cooling-tower-10000-kw,,Packaged in 40 ft container frame; forced draft counterflow; variable speed fan drive,,1.0,2.318,Wet,
+TM 6 Cell (per cell),Delta Cooling Towers,5.03,2.59,5.03,13.03,982 - 1758,1370.0,Delta Cooling product page,https://deltacooling.com/products/cooling-towers/tm-series-induced-draft-towers,,Induced draft counterflow; HDPE construction; 20-year shell warranty,,1.0,2.4604999999999997,Wet,90.0
+AT 124-5T30-EV,Evapco,9.14,7.32,9.702,66.9,10677.884,10677.884,p.6,https://www.evapco.com/sites/evapco.com/files/2024-04/ATLS24MRKT.pdf,,2386 nominal tons per cell; counterflow induced draft; stainless steel construction; basin 24ft x 30ft,,1.0,6.954,Wet,150.0
+MD 5030,SPX Cooling Technologies,11.0,11.0,,121.0,16676,16676.0,p.7,https://spxcooling.com/wp-content/uploads/MDE-26.pdf,,3790 tons max capacity; counterflow; preassembled modules; CTI certified,,1.0,10.45,Wet,

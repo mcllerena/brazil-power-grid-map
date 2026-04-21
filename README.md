@@ -37,3 +37,4 @@ Then open:
 - Data sources:
 	- Brazil: <a href="https://www.epe.gov.br/en/publications/publications/webmap-epe" target="_blank" rel="noopener">EPE - Empresa de Pesquisa Energética</a>
 	- US: <a href="https://mapyourgrid.org/global-grid-data/" target="_blank" rel="noopener">MapYourGrid - Global Grid Data</a>
+
